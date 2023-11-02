@@ -1,11 +1,19 @@
-# Reddy
-R-Package: Analyzing Eddy-Covariance Measurements
+# Reddy (dev): Analyzing Eddy-Covariance Measurements
 
+R-Package (under development) for analyzing and visualizing turbulent data, e.g., from eddy-covariance measurements.
 
-Package should contain:
-- standard post-processing routines
-- calculation of important turbulent quantities (e.g., ustar, Ri, ...)
-- MRD (calc + plot)
-- quadrant analysis (calc + plot)
-- spectra/cospectra
-- ...
+## Scripts
+- `anisotropy.R`: invariant analysis of the Reynolds stress tensor, calculation of turbulence anisotropy and visualization in a barycentric map
+- `mrd.R`: calculation and visualization of multiresolution decomposition 
+- `quantities_turbulence.R`
+- `quantities_meteorology.R`
+- `quadrant_analysis.R`
+- `binning.R`
+
+## Workflow
+- create documentation with roxygen2: `roxygen2::roxygenize("./Reddy")` 
+- build package: `devtools::build("./Reddy")` or via terminal `R CMD build Reddy`
+- check package: `devtools::check("./Reddy")` or via terminal `R CMD check Reddy`
+
+## Literature
+- Vickers, D. and Mahrt, L. (2003). The Cospectral Gap and Turbulent Flux Calculations. Journal of Atmospheric and Oceanic Technology, 20:660-672.
