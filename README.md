@@ -9,9 +9,10 @@ R-Package (under development) for analyzing and visualizing turbulent data, e.g.
 - `quantities_meteorology.R`
 - `quadrant_analysis.R`
 - `binning.R`
+- `surface_energy_balance.R`
 
 ## Workflow
-- create documentation with roxygen2: `roxygen2::roxygenize("./Reddy")` 
+- create documentation (Rd files) with roxygen2: `roxygen2::roxygenize("./Reddy")` 
 - build package: `devtools::build("./Reddy")` or via terminal `R CMD build Reddy`
 - check package: `devtools::check("./Reddy")` or via terminal `R CMD check Reddy`
 
