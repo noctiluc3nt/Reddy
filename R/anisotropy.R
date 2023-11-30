@@ -52,3 +52,27 @@ calc_anisotropy = function(a11,a12,a13,a22,a23,a33) {
 	}
 	return(list("eta"=eta,"xi"=xi,"xb"=xb,"yb"=yb))
 }
+
+
+#' Plot in barycentric map
+#'
+#'@description Plots (xb, yb) from invariant analysis of Reynolds stress tensor (calc_anisotropy) in barycentric map
+#'@param xb xb coordinate (e.g., from calc_anisotropy)
+#'@param yb yb coordinate (e.g., from calc_anisotropy)
+#'@param ... parameters passed to plot function
+#'@return plots (xb, yb) in barycentric map (no return)
+#'@export
+#'
+#'@examples
+#'example1=calc_anisotropy(rep(1,100),rep(0,100),rnorm(100,0,1),rep(1,100),rep(0,100),rep(1,100))
+#'plot_barycentric_map(example1$xb,example1$yb)
+#'
+plot_barycentric_map = function(xb,yb,...) {
+	if (!exists("pch")) pch=16
+	if (!exists("col")) col=rgb(0,0,0.6,0.5)
+    plot(xb,yb,pch=pch,col=col,xlim=c(0,1),ylim=c(0,sqrt(3)/2))
+    segments(0,0,1,0,lwd=2)
+	segments(0,0,0.5,sqrt(3)/2,lwd=2)
+	segments(1,0,0.5,sqrt(3)/2,lwd=2)
+	points(0.5,sqrt(3)/6,pch=3,lwd=2)
+}

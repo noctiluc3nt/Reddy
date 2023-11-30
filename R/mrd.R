@@ -1,6 +1,6 @@
 #' Multiresolution Decomposition (MRD) according to Vickers and Mahrt, 2003
 #'
-#'@description Calculates Multiresolution Decomposition (MRD) according to Vickers and Mahrt, 2003
+#'@description Calculates multiresolution decomposition (MRD) according to Vickers and Mahrt, 2003
 #'@param var1 timeseries of a variable
 #'@param var2 timeseries of another variable to calculate cospectrum of var1 and var2, optional (default is NULL)
 #'@param time_res time resolution of the given timeseries in seconds (e.g., 0.05 for 20 Hz)
@@ -8,10 +8,10 @@
 #'@export
 #'
 #'@examples
-#'series=c(1,3,2,5,1,2,1,3)
-#'mrd(series)
+#'series=c(1,3,2,5,1,2,1,3) #example used in Vickers and Mahrt, 2003
+#'calc_mrd(series)
 #'
-mrd = function(var1,var2=NULL,time_res=0.05) {
+calc_mrd = function(var1,var2=NULL,time_res=0.05) {
     nf=length(var1)
     #calc exponent M
     pot=2^(0:100)
@@ -57,7 +57,35 @@ mrd = function(var1,var2=NULL,time_res=0.05) {
             var2=c(t(var2-wn2))
         }
     }
-    out=data.frame("index"=1:(M+1),"scale"=2^(M:0),"time"=time_res*(2^(M:0)),"mean"=mrd_mean,"median"=mrd_median,"q25"=mrd_q25,"q75"=mrd_q75)
+    out=data.frame("index"=1:(M+1),"m"=M:0,"scale"=2^(M:0),"time"=time_res*(2^(M:0)),"mean"=mrd_mean,"median"=mrd_median,"q25"=mrd_q25,"q75"=mrd_q75)
     return(out)
 }
 
+
+#' Plotting Multiresolution Decomposition
+#'
+#'@description Plots multiresolution decomposition (MRD)
+#'@param mrd_out an output object from calc_mrd
+#'@param ... parameters passed to plot function
+#'@return creates a plot of MRD with logarithmic time scale (no return)
+#'@export
+#'
+#'@examples
+#'set.seed(5)
+#'series=rnorm(2^10)
+#'mrd_test=calc_mrd(c(series))
+#'plot_mrd(mrd_test)
+#'
+plot_mrd=function(mrd_out,...) {
+    if (!exists("ylab")) { ylab="MRD" }
+    if (!exists("xlab")) { xlab="averaging time [s]"}
+    if (!exists("ylim")) { ylim=c(min(mrd_out$q25[!is.na(mrd_out$q25)]),max(mrd_out$q75[!is.na(mrd_out$q75)])) }
+	plot(log10(mrd_out$time),mrd_out$median,lwd=2,pch=3,col=2,xlab=xlab,ylab=ylab,ylim=ylim,xaxt="n",type="b",...)
+	arrows(log10(mrd_out$time),mrd_out$median,log10(mrd_out$time),mrd_out$q75,lwd=1,col=2,angle=90,length=0.05)
+	arrows(log10(mrd_out$time),mrd_out$median,log10(mrd_out$time),mrd_out$q25,lwd=1,col=2,angle=90,length=0.05)
+	points(log10(mrd_out$time),mrd_out$mean,lwd=2,col=1,type="b")
+	axis(1,at=-1:4,labels=10^(-1:4))
+	legend("topleft",legend=c("mean","median"),col=c(1,2),lwd=2,pch=c(1,3),cex=1.3)
+	abline(v=log10(60),lty=3)
+	abline(v=log10(60*30),lty=3)
+}
