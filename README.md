@@ -13,6 +13,7 @@ R-Package (under development) for analyzing turbulence data, e.g., from eddy-cov
 - `auxillary.R`: some (maybe) useful auxillary functions
 - `footprint.R`: calculation and visualization of 2D flux footprint (FFP, Kljun et al., 2015)
 - `mrd.R`: calculation and visualization of multiresolution decomposition (MRD, Vickers and Mahrt, 2003)
+- `quadrant-analysis.R`: calculation and visualization of quadrant analysis
 - `quantities_turbulence.R`
 - `quantities_meteorology.R`
 - `quadrant_analysis.R`

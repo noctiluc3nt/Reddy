@@ -2,5 +2,6 @@
 
 export(calc_anisotropy)
 export(calc_mrd)
+export(calc_quadrant_analysis)
 export(plot_barycentric_map)
 export(plot_mrd)
