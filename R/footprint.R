@@ -28,7 +28,7 @@ calc_flux_footprint = function(zm, umean=NA, h, L, sigmav, ustar, z0=NA,contours
     bc=1.66
     cc=20
     #prepare non-dimensional upwind distance
-    xstar=seq(d,30,length=nres)
+    xstar=seq(d,30,length=nres)[-1]
     #calculate crosswind-integrated footprint
     fstar=a*(xstar-d)^b*exp(-c/(xstar-d)) #eq. 14
     #calculate standard deviation of crosswind distance
@@ -48,8 +48,8 @@ calc_flux_footprint = function(zm, umean=NA, h, L, sigmav, ustar, z0=NA,contours
             psim=-5.3*zm/L
         }
         aux2=zm/(1-zm/h)*(log(zm/z0)-psim)
-        x=xstar*aux2 #eq. 22
-        xmax=xstarmax*aux2
+        x=xstar*aux2 #eq. 22 #is correct
+        xmax=xstarmax*aux2 #is correct
         if ((log(zm/z0)-psim)>0) {
             fy_mean=fstar/aux2 #eq. 9
         } else {
@@ -58,14 +58,11 @@ calc_flux_footprint = function(zm, umean=NA, h, L, sigmav, ustar, z0=NA,contours
     } else {
         print("ERROR: You have to know either umean or z0.")
     }
-    print(aux2)
     #calculate real scale sigmay
-    ps1=min(1,abs(1/(zm/L))*10^-5 + ifelse(L<=0,0.8,0.55))
+    ps1=min(1,abs(1/(zm/L))*1E-5 + ifelse(L<=0,0.8,0.55))
     sigmay=sigmay_star/ps1*zm*sigmav/ustar #eq. 13 inverted
     #calculate real scale f(x,y)
     dx=x[3]-x[2]
-    print(length(x))
-    print(dx)
     ypos=seq(0,length(x)/2*dx*1.5,dx)
     #print(ypos)
     fpos=matrix(NA,nrow=length(fy_mean),ncol=length(ypos))
@@ -77,8 +74,6 @@ calc_flux_footprint = function(zm, umean=NA, h, L, sigmav, ustar, z0=NA,contours
     n1=1
     n2=length(ypos)
     nf=nrow(fpos)
-    print(n1)
-    print(n2)
     fmat=array(NA,dim=c(nf,2*n2-1))
     fmat[,1:(n2-1)]=fpos[,n2:2]
     fmat[,n2:(2*n2-1)]=fpos
@@ -90,17 +85,20 @@ calc_flux_footprint = function(zm, umean=NA, h, L, sigmav, ustar, z0=NA,contours
     ymat=matrix(rep(x,ny),nrow=ny,ncol=nx)
     #footprint contours
     nc=length(contours)
-    fmat_tmp=rev(sort(c(fmat)))
-    fmat_tmp=fmat_tmp[!is.na(fmat_tmp)]
-    fint=cumsum(fmat_tmp)*dx^2
+    fsort=rev(sort(c(fmat)))
+    fsort=fsort[!is.na(fsort)]
+    fint=cumsum(fsort)*dx^2
     ffp_cont=list()
     for (i in 1:nc) {
-        cont=contourLines(x,y,fmat,levels=contours[i])
-        print(str(cont))
+        fdiff=abs(fint-contours[i])
+        ind=which.min(fdiff)
+        fr=fsort[ind]
+        cont=contourLines(x,y,fmat,levels=fr)
         ffp_cont$xcont[[i]]=cont[[1]]$x
         ffp_cont$ycont[[i]]=cont[[1]]$y
     }
     #output
+    ffp=list()
     ffp$xmax=xmax
     ffp$x=x
     ffp$y=y
@@ -109,4 +107,5 @@ calc_flux_footprint = function(zm, umean=NA, h, L, sigmav, ustar, z0=NA,contours
     ffp$f2d=fmat
     ffp$xcontour=ffp_cont$xcont
     ffp$ycontour=ffp_cont$ycont
+    return(ffp)
 }

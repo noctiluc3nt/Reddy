@@ -1,19 +1,20 @@
 # Reddy (dev): Analyzing Turbulence Data
 <!-- badges: start --> 
-[![CRAN status](https://www.r-pkg.org/badges/version/meteoEVT)](https://cran.r-project.org/package=meteoEVT)
-[![Downloads (total)](http://cranlogs.r-pkg.org/badges/grand-total/meteoEVT?color=brightgreen)](https://cran.r-project.org/package=meteoEVT)
-[![Last Commit](https://img.shields.io/github/last-commit/noctiluc3nt/meteoEVT)](https://github.com/noctiluc3nt/meteoEVT)
+[![CRAN status](https://www.r-pkg.org/badges/version/Reddy)](https://cran.r-project.org/package=Reddy)
+[![Last Commit](https://img.shields.io/github/last-commit/noctiluc3nt/Reddy)](https://github.com/noctiluc3nt/Reddy)
 [![License](https://eddelbuettel.github.io/badges/GPL2+.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
 <!-- badges: end -->
 
 R-Package (under development) for analyzing turbulence data, e.g., from eddy-covariance measurements. 
 
 ## Scripts
+contains currently
 - `anisotropy.R`: invariant analysis of the Reynolds stress tensor, calculation of turbulence anisotropy and visualization in a barycentric map
-- `auxillary.R`: some (maybe) useful auxillary functions
 - `footprint.R`: calculation and visualization of 2D flux footprint (FFP, Kljun et al., 2015)
-- `mrd.R`: calculation and visualization of multiresolution decomposition (MRD, Vickers and Mahrt, 2003)
+- `multiresolution-decomposition.R`: calculation and visualization of multiresolution decomposition (MRD, Vickers and Mahrt, 2003)
 - `quadrant-analysis.R`: calculation and visualization of quadrant analysis
+some things that might follow...:
+- `auxillary.R`: some (maybe) useful auxillary functions
 - `quantities_turbulence.R`
 - `quantities_meteorology.R`
 - `quadrant_analysis.R`
