@@ -13,6 +13,7 @@ contains currently
 - `footprint.R`: calculation and visualization of 2D flux footprint (FFP, Kljun et al., 2015)
 - `multiresolution-decomposition.R`: calculation and visualization of multiresolution decomposition (MRD, Vickers and Mahrt, 2003)
 - `quadrant-analysis.R`: calculation and visualization of quadrant analysis
+
 some things that might follow...:
 - `auxillary.R`: some (maybe) useful auxillary functions
 - `quantities_turbulence.R`
