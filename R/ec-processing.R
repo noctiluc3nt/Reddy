@@ -10,6 +10,8 @@
 #'@return despiked timeseries
 #'@export
 #'
+#'@importFrom pracma detrend
+#'
 #'@examples
 #'set.seed(5)
 #'ts1=rnorm(100)
@@ -89,7 +91,7 @@ rotate_planar = function(u,v,w) {
 	theta=atan2(mean(v),mean(u))
 	rot1=matrix(c(cos(theta),-sin(theta),0,sin(theta),cos(theta),0,0,0,1), nrow=3,ncol=3,byrow=TRUE) #B bzw. M^T
 	wind1=c(u,v,w)%*%rot1
-	return(list("wind"=wind1,"theta"=theta*180/pi)
+	return(list("wind"=wind1,"theta"=theta*180/pi))
 }
 
 
@@ -107,7 +109,7 @@ rotate_planar = function(u,v,w) {
 #'set.seed(5)
 #'ts1=rnorm(30)
 #'ts2=rnorm(30)
-#'flag_stationarity(var1,var2)
+#'flag_stationarity(ts1,ts2)
 #'
 flag_stationarity = function(var1,var2,nsub=6) {
     if (length(var1) != length(var2)) {
@@ -189,7 +191,7 @@ flag_distortion = function(u,v,dir_blocked=c(30,60),threshold_cr=0.9) {
 #'
 #'@examples
 #'
-flag_most = function(sigma_w,ustar) {
+flag_most = function(sigma_w,ustar,zeta) {
     parameterized=1.3*(1+2*abs(zeta))^(1/3) #sigma_w/ustar parametrized according to scaling function based on zeta
     itc=abs((sigma_w/ustar-parameterized)/parameterized)
     flag=ifelse(itc<0.3,0,ifelse(itc<0.8,1,2))
