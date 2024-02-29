@@ -1,3 +1,50 @@
+#' Despiking
+#'
+#'@description Three despiking method based on 1) predefined thresholds, 2) median deviation (mad) test and 3) skewness and kurtosis
+#'@param series timeseries that shall be despiked
+#'@param thresholds vector with two elements representing lower and upper bound for despiking (predefined thresholds), NA means not using the respective limit
+#'@param mad_factor factor for the mad test, default mad_factor = 10
+#'@param threshold_skewness threshold for skewness test, default threshold_skewness = 2
+#'@param threshold_kurtosis threshold for kurtosis test, default threshold_kurtosis = 8
+#'
+#'@return despiked timeseries
+#'@export
+#'
+#'@examples
+#'set.seed(5)
+#'ts1=rnorm(100)
+#'despiking(ts1,thresholds=c(-1,1))
+#'
+#'ts2=rexp(1000)
+#'despiking(ts2)
+#'
+despiking = function(series,thresholds=c(NA,NA),mad_factor=10,threshold_skewness=2,threshold_kurtosis=8) {
+	#despiking based on predefined limits
+    if (sum(is.na(thresholds))==0) {
+        pass = (series>thresholds[1] & series<thresholds[2])
+	    series[!pass] = NA
+    } else if (is.na(thresholds[1])) {
+        pass = (series<thresholds[2])
+	    series[!pass] = NA
+    } else if (is.na(thresholds[2])) {
+        pass = (series>thresholds[1])
+	    series[!pass] = NA
+    }
+    #despiking based on median deviation test
+    med=median(series,na.rm=TRUE)
+	mad=median(abs(series-med),na.rm=TRUE)
+	pass=(abs(series-med) <= mad_factor*mad) #pass criterion
+	series[!pass] = NA
+    #despiking based on skewness and kurtosis
+    seriesLDT=pracma::detrend(series,tt="linear") #linear detrending to eliminate trends (departures from stationarity) -> would influnece higher moments
+	skewness=mean(seriesLDT^3)/sd(seriesLDT)^3
+	kurtosis=mean(seriesLDT^4)/sd(seriesLDT)^4
+	pass=(abs(skewness)<threshold_skewness & kurtosis<threshold_kurtosis)
+	series[!pass] = NA
+    return(series)
+}
+
+
 #' Double rotation
 #'
 #'@description Double rotation
