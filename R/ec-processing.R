@@ -195,3 +195,40 @@ flag_most = function(sigma_w,ustar) {
     flag=ifelse(itc<0.3,0,ifelse(itc<0.8,1,2))
     return(flag)
 }
+
+#' SND correction
+#'
+#'@description SND correction of sensible heat flux
+#'@param u u-wind (levelled sonic)
+#'@param v v-wind (levelled sonic)
+#'@param w w-wind (levelled sonic)
+#'@param Ts temperature (sonic temperature or corrected temperature)
+#'@param q specific humidity (if measured, default NULL)
+#'@param A constant used in SND correction, default A = 7/8
+#'@param B constant used in SND correction, default B = 7/8
+#'
+#'@return 
+#'@export
+#'
+#'@examples
+#'
+SNDcorrection = function(u,v,w,Ts,q=NULL,A=7/8,B=7/8) {
+    #calculation of respective covariances
+	not_na=!is.na(w)&!is.na(Ts)
+	covar_wTs = cov(w[not_na],Ts[not_na]) 
+	not_na=!is.na(w)&!is.na(u)
+	covar_uw = cov(u[not_na],w[not_na]) 
+	not_na=!is.na(w)&!is.na(v)
+	covar_vw = cov(v[not_na],w[not_na])
+	ubar=mean(u,na.rm=TRUE)
+	vbar=mean(v,na.rm=TRUE)
+	Tsbar=mean(Ts,na.rm=TRUE)
+	if (!is.null(q)) { #considering q
+		not_na=!is.na(w)&!is.na(q)
+		covar_qw=covar(q[not_na],w[not_na])
+		return(covar_wTs - 0.51*covar_qw + 2*Tsbar/clight()^2*(A*ubar*covar_uw + B*vbar*covar_vw))
+	}
+    #without q
+	return(covar_wTs + 2*Tsbar/clight()^2*(A*ubar*covar_uw + B*vbar*covar_vw))
+}
+
