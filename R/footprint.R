@@ -5,7 +5,7 @@
 #'@param umean mean horizontal wind speed [m/s] (alternatively you can also use z0)
 #'@param h boundary-layer height [m]
 #'@param L Obukhov length [m]
-#'@param sigmav standard deviation of crosswind [m/s]
+#'@param v_sd standard deviation of crosswind [m/s]
 #'@param ustar friction velocity [m/s]
 #'@param z0 roughness length [m] (either umean or z0 have to be given)
 #'@param nres resolution (default is nres=1000)
@@ -14,16 +14,16 @@
 #'@export
 #'
 #'@examples
-#'ffp=calc_flux_footprint(zm=20,z0=0.01,h=200,L=-100,sigmav=0.6,ustar=0.4,contours=0.8)
+#'ffp=calc_flux_footprint(zm=20,z0=0.01,h=200,L=-100,v_sd=0.6,ustar=0.4,contours=0.8)
 #'
-calc_flux_footprint = function(zm, umean=NA, h, L, sigmav, ustar, z0=NA,contours=seq(0.9,0.1,-0.1),nres=1000,do_plot=TRUE) {
-    #fitting parameter for crosswind-integrated footprint, see (Kljun et al., 2015) eq. 17
+calc_flux_footprint = function(zm, umean=NA, h, L, v_sd, ustar, z0=NA,contours=seq(0.9,0.1,-0.1),nres=1000,do_plot=TRUE) {
+    #fitting parameters for crosswind-integrated footprint, see (Kljun et al., 2015) eq. 17
     a=1.452
     b=-1.991
     c=1.462
     d=0.136
     xstarmax=-c/b+d #eq. 20
-    #fitting parameter for crosswind footprint, see (Kljun et al., 2015) eq. 19
+    #fitting parameters for crosswind footprint, see (Kljun et al., 2015) eq. 19
     ac=2.17
     bc=1.66
     cc=20
@@ -40,7 +40,7 @@ calc_flux_footprint = function(zm, umean=NA, h, L, sigmav, ustar, z0=NA,contours
         fy_mean=fstar/aux1 #eq. 8 inverted
         xmax=xstarmax*aux1
     } else if (!is.na(z0)) {
-        #uses eq. 5, stability correction function for diabatic winprofiles, following Hogstroem, 1996
+        #uses eq. 5, stability correction function for diabatic wind profiles following Hogstroem, 1996
         if (L<=0) { #unstable or neutral conditions
             xi=(1-19*zm/L)^0.25
             psim=log((1+xi^2)/2) + 2*log((1+xi)/2) - 2*atan(xi)+pi/2 
@@ -60,7 +60,7 @@ calc_flux_footprint = function(zm, umean=NA, h, L, sigmav, ustar, z0=NA,contours
     }
     #calculate real scale sigmay
     ps1=min(1,abs(1/(zm/L))*1E-5 + ifelse(L<=0,0.8,0.55))
-    sigmay=sigmay_star/ps1*zm*sigmav/ustar #eq. 13 inverted
+    sigmay=sigmay_star/ps1*zm*v_sd/ustar #eq. 13 inverted
     #calculate real scale f(x,y)
     dx=x[3]-x[2]
     ypos=seq(0,length(x)/2*dx*1.5,dx)
@@ -122,7 +122,7 @@ calc_flux_footprint = function(zm, umean=NA, h, L, sigmav, ustar, z0=NA,contours
 #'@export
 #'
 #'@examples
-#'ffp=calc_flux_footprint(zm=20,z0=0.01,h=200,L=-100,sigmav=0.6,ustar=0.4,contours=seq(0.1,0.9,0.1))
+#'ffp=calc_flux_footprint(zm=20,z0=0.01,h=200,L=-100,v_sd=0.6,ustar=0.4,contours=seq(0.1,0.9,0.1))
 #'plot(ffp)
 #' 
 plot_flux_footprint = function(ffp) {

@@ -1,11 +1,11 @@
 #' Despiking
 #'
-#'@description Three despiking method based on 1) predefined thresholds, 2) median deviation (mad) test and 3) skewness and kurtosis
+#'@description Three despiking method based on 1) pre-defined thresholds, 2) median deviation (mad) test and 3) skewness and kurtosis
 #'@param series timeseries that shall be despiked
-#'@param thresholds vector with two elements representing lower and upper bound for despiking (predefined thresholds), NA means not using the respective limit
-#'@param mad_factor factor for the mad test, default mad_factor = 10
-#'@param threshold_skewness threshold for skewness test, default threshold_skewness = 2
-#'@param threshold_kurtosis threshold for kurtosis test, default threshold_kurtosis = 8
+#'@param thresholds vector with two elements representing lower and upper bounds for despiking (pre-defined thresholds), 'NA' means that the respective bound is not used
+#'@param mad_factor factor for the mad test, default 'mad_factor = 10'
+#'@param threshold_skewness threshold for skewness test, default 'threshold_skewness = 2'
+#'@param threshold_kurtosis threshold for kurtosis test, default 'threshold_kurtosis = 8'
 #'
 #'@return despiked timeseries
 #'@export
@@ -97,9 +97,9 @@ rotate_planar = function(u,v,w) {
 
 #' Stationarity Flag
 #'
-#'@description Stationarity Flag according to Foken and Wichura, 1996 based on the assumption that the covariance of two variables (var1 and var2, one usually representing vertical velocity) calculated for blocks (of length nsub) do not differ to much from the total covariance
+#'@description Stationarity Flag according to Foken and Wichura, 1996 based on the assumption that the covariance of two variables ('var1' and 'var2', one usually representing vertical velocity) calculated for blocks (of length nsub) do not differ to much from the total covariance
 #'@param var1 variable 1 
-#'@param var2 variable 2 (same length as var1, usually either var1 or var2 represent vertical velocity)
+#'@param var2 variable 2 (same length as 'var1', usually either 'var1' or 'var2' represent vertical velocity)
 #'@param nsub number of elements used for subsampling (nsub < length(var1)) 
 #'
 #'@return 
@@ -150,11 +150,11 @@ flag_w = function(w) {
 
 #' Flow Distortion Flag and Wind Constancy Ratio
 #'
-#'@description Flow Distortion Flag according to Mauder et al., 2013: Wind coming from a (predefined) direction blocked by the measurement device is flaged with 2 (for wind speeds greater than 0.1 assuming that during calm wind the wind direction is not well-defined). The wind constancy ratio is calculated to quantify the variability of horizontal wind direction according to Mahrt, 1999.
+#'@description Flow Distortion Flag according to Mauder et al., 2013: Wind coming from (pre-defined) directions blocked by the measurement device is flaged with 2 (for wind speeds greater than 0.1 assuming that during calm wind the wind direction is not well-defined). The wind constancy ratio is calculated to quantify the variability of horizontal wind direction according to Mahrt, 1999.
 #'@param u u-wind (levelled sonic)
 #'@param v v-wind (levelled sonic)
-#'@param dir_blocked vector containing the lower and upper bound of the blocked wind sector in degrees (e.g., dir_blocked=c(30,60))
-#'@param threshold_cr threshold for constancy ratio (default threshold_cr=0.9, may be adapted to used data set)
+#'@param dir_blocked vector containing the lower and upper bound of the blocked wind sector in degrees (e.g., 'dir_blocked=c(30,60)')
+#'@param threshold_cr threshold for constancy ratio (default 'threshold_cr=0.9', may be adapted to used data set)
 #'
 #'@return 
 #'@export
@@ -206,8 +206,8 @@ flag_most = function(sigma_w,ustar,zeta) {
 #'@param w w-wind (levelled sonic)
 #'@param Ts temperature (sonic temperature or corrected temperature)
 #'@param q specific humidity (if measured, default NULL)
-#'@param A constant used in SND correction, default A = 7/8
-#'@param B constant used in SND correction, default B = 7/8
+#'@param A constant used in SND correction, default 'A = 7/8'
+#'@param B constant used in SND correction, default 'B = 7/8'
 #'
 #'@return 
 #'@export

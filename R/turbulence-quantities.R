@@ -1,5 +1,22 @@
 ### turbulence quantities ###
 
+#' Turbulent Kinetic Energy
+#'
+#'@description Calculates turbulent kinetic energy (TKE) from u_sd, v_sd and w_sd
+#'@param u_sd standard deviation of u-wind [m/s]
+#'@param v_sd standard deviation of v-wind [m/s]
+#'@param w_sd standard deviation of w-wind [m/s]
+#'
+#'@return turbulent kinetic energy TKE [m^2/s^2]
+#'@export
+#'
+#'@examples
+#'
+calc_tke = function(u_sd,v_sd,w_sd) {
+	return(1/2*(u_sd^2+v_sd^2+w_sd^2)) 
+}
+
+
 #' Friction Velocity
 #'
 #'@description Calculates friction velocity from the covariances cov(u,w) and cov(v,w)
@@ -46,6 +63,8 @@ calc_L = function(ustar,T_mean,covar_wT) {
 calc_zeta = function(z,L) {
 	return(z/L)
 }
+
+
 
 ### fluxes ###
 #calc_Hflux = function(covar_wT,w_mean,T_mean,rho=NULL) {

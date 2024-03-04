@@ -10,8 +10,8 @@ R-Package (under development) for analyzing turbulence data, e.g., from eddy-cov
 ## Scripts
 contains currently
 - `anisotropy.R`: invariant analysis of the Reynolds stress tensor, calculation of turbulence anisotropy and visualization in a barycentric map
-- `constants.R`: constant used for calculations
-- `ec-processing.R`: function for postprocessing of eddy-covariance measurements
+- `constants.R`: constant used for calculations (internal)
+- `ec-processing.R`: functions for post-processing of eddy-covariance measurements
 - `footprint.R`: calculation and visualization of 2D flux footprint (FFP, Kljun et al., 2015)
 - `multiresolution-decomposition.R`: calculation and visualization of multiresolution decomposition (MRD, Vickers and Mahrt, 2003)
 - `quadrant-analysis.R`: calculation and visualization of quadrant analysis
@@ -27,5 +27,5 @@ contains currently
 Prediction (FFP), Geoscie. Model Dev., 8, 3695-3713.
 - Vickers, D. and Mahrt, L. (2003). The Cospectral Gap and Turbulent Flux Calculations. Journal of Atmospheric and Oceanic Technology, 20:660-672.
 
-## other useful R-Packages for analyzing eddy-covariance data
+## other R-Packages for analyzing eddy-covariance data
 - REddyProc: Post Processing of (Half-)Hourly Eddy-Covariance Measurements
