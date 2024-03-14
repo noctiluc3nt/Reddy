@@ -63,13 +63,15 @@ despiking = function(series,thresholds=c(NA,NA),mad_factor=10,threshold_skewness
 rotate_double = function(u,v,w) {
 	#horizontal
 	theta=atan2(mean(v),mean(u))
-	rot1=matrix(c(cos(theta),-sin(theta),0,sin(theta),cos(theta),0,0,0,1), nrow=3,ncol=3,byrow=TRUE) #B bzw. M^T
-	wind1=c(u,v,w)%*%rot1
+	u1=u*cos(theta) + v*cos(theta)
+    v1=-u*sin(theta) + v*cos(theta)
+    w1=w
 	#vertical
 	phi=atan2(mean(w),mean(u))
-	rot2=matrix(c(cos(phi),0,-sin(phi),0,1,0,sin(phi),0,cos(phi)),nrow=3,ncol=3,byrow=TRUE) #D^T
-	wind2=wind1%*%rot2
-	return(list("wind"=wind2,"theta"=theta*180/pi,"phi"=phi*180/pi))
+	u2=u1*cos(phi) + w1*sin(phi)
+    v2=v1
+    w2=-u1*sin(phi)+w1*cos(phi)
+	return(list("u"=u2,"v"=v2,"w"=w2,"theta"=theta*180/pi,"phi"=phi*180/pi))
 }
 
 
