@@ -81,6 +81,7 @@ rotate_double = function(u,v,w) {
 #'@param u u-wind (levelled sonic)
 #'@param v v-wind (levelled sonic)
 #'@param w w-wind (levelled sonic)
+#'@param c a three-dimensional vector containing the offset of u-, v-, w-wind
 #'
 #'@return 
 #'@export
@@ -88,7 +89,7 @@ rotate_double = function(u,v,w) {
 #'@examples
 #'
 #'
-rotate_planar = function(u,v,w) {
+rotate_planar = function(u,v,w,c=c(0,0,0)) {
 	#TODO
 	theta=atan2(mean(v),mean(u))
 	rot1=matrix(c(cos(theta),-sin(theta),0,sin(theta),cos(theta),0,0,0,1), nrow=3,ncol=3,byrow=TRUE) #B bzw. M^T

@@ -4,14 +4,14 @@
 \alias{calc_L}
 \title{Obukhov length}
 \usage{
-calc_L(ustar, T_mean, covar_wT)
+calc_L(ustar, T_mean, cov_wT)
 }
 \arguments{
 \item{ustar}{friction velocity (e.g., from calc_frictionVelocity) [m/s]}
 
 \item{T_mean}{mean temperature [K]}
 
-\item{covar_wT}{covariance cov(w,T) [m/s K]}
+\item{cov_wT}{covariance cov(w,T) [m/s K]}
 }
 \value{
 Obukhov length [m]

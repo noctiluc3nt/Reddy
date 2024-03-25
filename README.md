@@ -5,7 +5,7 @@
 [![License](https://eddelbuettel.github.io/badges/GPL2+.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
 <!-- badges: end -->
 
-R-Package (under development) for analyzing turbulence data, e.g., from eddy-covariance measurements. 
+R-Package (under development) to automatize standard analyses of turbulence data, e.g., from eddy-covariance measurements. 
 
 ## Scripts
 contains currently
@@ -29,3 +29,8 @@ Prediction (FFP), Geoscie. Model Dev., 8, 3695-3713.
 
 ## other R-Packages for analyzing eddy-covariance data
 - REddyProc: Post Processing of (Half-)Hourly Eddy-Covariance Measurements
+- openeddy
+- ONEFlux
+
+
+TODO: directional shear, velocity aspect ratio, turbulence intensities

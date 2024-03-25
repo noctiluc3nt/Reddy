@@ -17,19 +17,37 @@ calc_tke = function(u_sd,v_sd,w_sd) {
 }
 
 
+#' Turbulent Kinetic Energy Velocity Scale
+#'
+#'@description Calculates the velocity scale of turbulent kinetic energy (TKE): Vtke := sqrt(TKE)
+#'@param u_sd standard deviation of u-wind [m/s]
+#'@param v_sd standard deviation of v-wind [m/s]
+#'@param w_sd standard deviation of w-wind [m/s]
+#'
+#'@return turbulent kinetic energy TKE [m^2/s^2]
+#'@export
+#'
+#'@examples
+#'
+calc_vtke = function(u_sd,v_sd,w_sd) {
+	tke=calc_tke(u_sd,v_sd,w_sd)
+	return(sqrt(tke)) 
+}
+
+
 #' Friction Velocity
 #'
 #'@description Calculates friction velocity from the covariances cov(u,w) and cov(v,w)
-#'@param covar_uw covariance cov(u,w) [m^2/s^2]
-#'@param covar_vw covariance cov(v,w) [m^2/s^2]
+#'@param cov_uw covariance cov(u,w) [m^2/s^2]
+#'@param cov_vw covariance cov(v,w) [m^2/s^2]
 #'
 #'@return friction velocity [m/s]
 #'@export
 #'
 #'@examples
 #'
-calc_frictionVelocity = function(covar_uw,covar_vw) {
-	return((covar_uw^2+covar_vw^2)^(1/4)) 
+calc_ustar = function(cov_uw,cov_vw) {
+	return((cov_uw^2+cov_vw^2)^(1/4)) 
 }
 
 #' Obukhov length
@@ -37,15 +55,15 @@ calc_frictionVelocity = function(covar_uw,covar_vw) {
 #'@description Calculates Obukhov length from friction velocity, mean temperature and cov(T,w)
 #'@param ustar friction velocity (e.g., from calc_frictionVelocity) [m/s]
 #'@param T_mean mean temperature [K]
-#'@param covar_wT covariance cov(w,T) [m/s K]
+#'@param cov_wT covariance cov(w,T) [m/s K]
 #'
 #'@return Obukhov length [m]
 #'@export
 #'
 #'@examples
 #'
-calc_L = function(ustar,T_mean,covar_wT) {
-	return(-abs(ustar^3)*T_mean/(kap()*g()*covar_wT))
+calc_L = function(ustar,T_mean,cov_wT) {
+	return(-abs(ustar^3)*T_mean/(kap()*g()*cov_wT))
 }
 
 
@@ -65,6 +83,70 @@ calc_zeta = function(z,L) {
 }
 
 
+#' Horizontal Turbulence Intensity TI
+#'
+#'@description Calculates horizontal turbulence intensity TI := sqrt(u_sd^2+v_sd^2)/ws_mean
+#'@param u_sd standard deviation of streamwise wind (u-wind)
+#'@param v_sd standard deviation of crosswise wind (v-wind)
+#'@param ws_mean horizontal wind speed
+#'
+#'@return horizontal turbulence intensity [-]
+#'@export
+#'
+#'@examples
+#'
+calc_ti = function(u_sd,v_sd,ws_mean) {
+	return(sqrt(u_sd^2+v_sd^2)/ws_mean)
+}
+
+#' Vertical Turbulence Intensity TI
+#'
+#'@description Calculates vertical turbulence intensity Iw := w_sd/ws_mean
+#'@param w_sd standard deviation of vertical wind (w-wind)
+#'@param ws_mean horizontal wind speed
+#'
+#'@return vertical turbulence intensity [-]
+#'@export
+#'
+#'@examples
+#'
+calc_ti = function(w_sd,ws_mean) {
+	return(w_sd/ws_mean)
+}
+
+#' Velocity Aspect Ratio (VAR)
+#'
+#'@description Calculates the velocity aspect ratio: VAR := sqrt(2)*w_sd/sqrt(u_sd^2+v_sd^2)
+#'@param u_sd standard deviation of streamwise wind (u-wind)
+#'@param v_sd standard deviation of crosswise wind (v-wind)
+#'@param w_sd standard deviation of vertical wind (w-wind)
+#'
+#'@return velocity aspect ratio [-]
+#'@export
+#'
+#'@examples
+#'
+calc_var = function(u_sd,v_sd,w_sd) {
+	return(sqrt(2)*w_sd/sqrt(u_sd^2+v_sd^2))
+}
+
+#' Directional Shear
+#'
+#'@description Calculates a measure for directional shear alpha_uw = arctan(cov(v,w)/cov(u,w))
+#'@param cov_uw covariance cov(u,w)
+#'@param cov_vw covariance cov(v,w)
+#'
+#'@return angle that describes the impact of directional shear [deg]
+#'@export
+#'
+#'@examples
+#'calc_dshear(-0.5,0) #no shear
+#'calc_dshear(-0.5,-0.1)
+#'
+calc_dshear = function(cov_uw,cov_vw) {
+	return(atan2(cov_vw,cov_uw)*180/pi)
+}
+
 
 ### fluxes ###
 #calc_Hflux = function(covar_wT,w_mean,T_mean,rho=NULL) {
@@ -82,7 +164,7 @@ calc_zeta = function(z,L) {
 #	return(rho*covar_wq)
 #}
 
-### wind basic ###
+### wind basics ###
 
 #' Wind Direction
 #'
@@ -128,4 +210,19 @@ calc_windSpeed2D = function(u,v) {
 #'
 calc_windSpeed3D = function(u,v,w) {
 	return(sqrt(u^2+v^2+w^2))
+}
+
+#' Gust Factor
+#'
+#'@description Calculates gust factor G := ws_max/ws_mean
+#'@param ws_max wind speed [m/s]
+#'@param ws_mean wind speed maximum [m/s]
+#'
+#'@return gust factor [-]
+#'@export
+#'
+#'@examples
+#'
+calc_gustfactor = function(ws_max,ws_mean) {
+	return(ws_max/ws_mean)
 }
