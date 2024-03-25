@@ -11,15 +11,15 @@ flag_distortion(u, v, dir_blocked = c(30, 60), threshold_cr = 0.9)
 
 \item{v}{v-wind (levelled sonic)}
 
-\item{dir_blocked}{vector containing the lower and upper bound of the blocked wind sector in degrees (e.g., dir_blocked=c(30,60))}
+\item{dir_blocked}{vector containing the lower and upper bound of the blocked wind sector in degrees (e.g., 'dir_blocked=c(30,60)')}
 
-\item{threshold_cr}{threshold for constancy ratio (default threshold_cr=0.9, may be adapted to used data set)}
+\item{threshold_cr}{threshold for constancy ratio (default 'threshold_cr=0.9', may be adapted to used data set)}
 }
 \value{
 
 }
 \description{
-Flow Distortion Flag according to Mauder et al., 2013: Wind coming from a (predefined) direction blocked by the measurement device is flaged with 2 (for wind speeds greater than 0.1 assuming that during calm wind the wind direction is not well-defined). The wind constancy ratio is calculated to quantify the variability of horizontal wind direction according to Mahrt, 1999.
+Flow Distortion Flag according to Mauder et al., 2013: Wind coming from (pre-defined) directions blocked by the measurement device is flaged with 2 (for wind speeds greater than 0.1 assuming that during calm wind the wind direction is not well-defined). The wind constancy ratio is calculated to quantify the variability of horizontal wind direction according to Mahrt, 1999.
 }
 \examples{
 

@@ -15,19 +15,19 @@ despiking(
 \arguments{
 \item{series}{timeseries that shall be despiked}
 
-\item{thresholds}{vector with two elements representing lower and upper bound for despiking (predefined thresholds), NA means not using the respective limit}
+\item{thresholds}{vector with two elements representing lower and upper bounds for despiking (pre-defined thresholds), 'NA' means that the respective bound is not used}
 
-\item{mad_factor}{factor for the mad test, default mad_factor = 10}
+\item{mad_factor}{factor for the mad test, default 'mad_factor = 10'}
 
-\item{threshold_skewness}{threshold for skewness test, default threshold_skewness = 2}
+\item{threshold_skewness}{threshold for skewness test, default 'threshold_skewness = 2'}
 
-\item{threshold_kurtosis}{threshold for kurtosis test, default threshold_kurtosis = 8}
+\item{threshold_kurtosis}{threshold for kurtosis test, default 'threshold_kurtosis = 8'}
 }
 \value{
 despiked timeseries
 }
 \description{
-Three despiking method based on 1) predefined thresholds, 2) median deviation (mad) test and 3) skewness and kurtosis
+Three despiking method based on 1) pre-defined thresholds, 2) median deviation (mad) test and 3) skewness and kurtosis
 }
 \examples{
 set.seed(5)

@@ -9,7 +9,7 @@ flag_stationarity(var1, var2, nsub = 6)
 \arguments{
 \item{var1}{variable 1}
 
-\item{var2}{variable 2 (same length as var1, usually either var1 or var2 represent vertical velocity)}
+\item{var2}{variable 2 (same length as 'var1', usually either 'var1' or 'var2' represent vertical velocity)}
 
 \item{nsub}{number of elements used for subsampling (nsub < length(var1))}
 }
@@ -17,7 +17,7 @@ flag_stationarity(var1, var2, nsub = 6)
 
 }
 \description{
-Stationarity Flag according to Foken and Wichura, 1996 based on the assumption that the covariance of two variables (var1 and var2, one usually representing vertical velocity) calculated for blocks (of length nsub) do not differ to much from the total covariance
+Stationarity Flag according to Foken and Wichura, 1996 based on the assumption that the covariance of two variables ('var1' and 'var2', one usually representing vertical velocity) calculated for blocks (of length nsub) do not differ to much from the total covariance
 }
 \examples{
 set.seed(5)

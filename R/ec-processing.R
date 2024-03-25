@@ -62,12 +62,12 @@ despiking = function(series,thresholds=c(NA,NA),mad_factor=10,threshold_skewness
 #'
 rotate_double = function(u,v,w) {
 	#horizontal
-	theta=atan2(mean(v),mean(u))
-	u1=u*cos(theta) + v*cos(theta)
+	theta=atan2(mean(v,na.rm=T),mean(u,na.rm=T))
+	u1=u*cos(theta) + v*sin(theta)
     v1=-u*sin(theta) + v*cos(theta)
     w1=w
 	#vertical
-	phi=atan2(mean(w),mean(u))
+	phi=atan2(mean(w1,na.rm=T),mean(u1,na.rm=T))
 	u2=u1*cos(phi) + w1*sin(phi)
     v2=v1
     w2=-u1*sin(phi)+w1*cos(phi)
@@ -122,10 +122,10 @@ flag_stationarity = function(var1,var2,nsub=6) {
         print("WARNING: nsub is chosen to large.")
     }
     rnfs=array(NA,dim=nint)
-    cov_complete=cov(var1,var2)
+    cov_complete=cov(var1,var2,use="pairwise.complete.obs")
     for (i in 1:nint) {
         isub=((i-1)*nsub+1):(i*nsub)
-        cov_sub=cov(var1[isub],var2[isub])
+        cov_sub=cov(var1[isub],var2[isub],use="pairwise.complete.obs")
         rnfs[i]=abs((cov_complete-cov_sub)/cov_complete)
     }
     rnf=mean(rnfs,na.rm=T)
@@ -168,16 +168,20 @@ flag_distortion = function(u,v,dir_blocked=c(30,60),threshold_cr=0.9) {
         print("ERROR: u and v have to be of equal length.")
     }
     #horizontal wind speed
-    ws=sqrt(mean(u)^2+mean(v)^2)
+    ws=sqrt(mean(u,na.rm=T)^2+mean(v,na.rm=T)^2)
     #constancy ratio cr
-    cr=sqrt(sum(u^2)+sum(v^2))/(ws)
+    cr=sqrt(sum(u^2,na.rm=T)+sum(v^2,na.rm=T))/(ws)
     #flow distortion flag considering cr
-    if (ws>0.1 & cr>threshold_cr) {
-        wd=atan2(mean(v),mean(u))
-        flag=ifelse(wd>=dir_blocked[1] & wd<=dir_blocked[2],2,0)
+    if (!is.na(ws) & !is.na(cr)) {
+        if (ws>0.1 & cr>threshold_cr) {
+            wd=atan2(mean(v),mean(u))
+            flag=ifelse(wd>=dir_blocked[1] & wd<=dir_blocked[2],2,0)
+        } else {
+            flag=0
+        }
     } else {
-        flag=0
-    }
+        flag=2
+    }   
     return(flag)
 }
 

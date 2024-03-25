@@ -17,9 +17,9 @@ SNDcorrection(u, v, w, Ts, q = NULL, A = 7/8, B = 7/8)
 
 \item{q}{specific humidity (if measured, default NULL)}
 
-\item{A}{constant used in SND correction, default A = 7/8}
+\item{A}{constant used in SND correction, default 'A = 7/8'}
 
-\item{B}{constant used in SND correction, default B = 7/8}
+\item{B}{constant used in SND correction, default 'B = 7/8'}
 }
 \value{
 
