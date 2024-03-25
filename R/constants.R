@@ -53,3 +53,11 @@ rhoAir = function() {
 Lv = function() {
 	return(2264.705)
 }
+
+#' M_H2O
+#'
+#' Molecular weight of water
+#' @keywords internal
+M_H2O = function() {
+	return(0.01802)
+}

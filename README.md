@@ -11,11 +11,11 @@ R-Package (under development) to automatize standard analyses of turbulence data
 contains currently
 - `anisotropy.R`: invariant analysis of the Reynolds stress tensor, calculation of turbulence anisotropy and visualization in a barycentric map
 - `constants.R`: constant used for calculations (internal)
+- `diagnostics-turbulence.R`: calculation of some standard diagnostic quantities to describe turbulence
 - `ec-processing.R`: functions for post-processing of eddy-covariance measurements
 - `footprint.R`: calculation and visualization of 2D flux footprint (FFP, Kljun et al., 2015)
 - `multiresolution-decomposition.R`: calculation and visualization of multiresolution decomposition (MRD, Vickers and Mahrt, 2003)
 - `quadrant-analysis.R`: calculation and visualization of quadrant analysis
-- `turbulence-quantities.R`: calculation of some standard turbulence quantities
 
 ## Workflow
 - create documentation (Rd files) with roxygen2: `roxygen2::roxygenize("./Reddy")` 
@@ -31,6 +31,3 @@ Prediction (FFP), Geoscie. Model Dev., 8, 3695-3713.
 - REddyProc: Post Processing of (Half-)Hourly Eddy-Covariance Measurements
 - openeddy
 - ONEFlux
-
-
-TODO: directional shear, velocity aspect ratio, turbulence intensities

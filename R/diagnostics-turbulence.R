@@ -99,7 +99,7 @@ calc_ti = function(u_sd,v_sd,ws_mean) {
 	return(sqrt(u_sd^2+v_sd^2)/ws_mean)
 }
 
-#' Vertical Turbulence Intensity TI
+#' Vertical Turbulence Intensity Iw
 #'
 #'@description Calculates vertical turbulence intensity Iw := w_sd/ws_mean
 #'@param w_sd standard deviation of vertical wind (w-wind)
@@ -110,7 +110,7 @@ calc_ti = function(u_sd,v_sd,ws_mean) {
 #'
 #'@examples
 #'
-calc_ti = function(w_sd,ws_mean) {
+calc_iw = function(w_sd,ws_mean) {
 	return(w_sd/ws_mean)
 }
 

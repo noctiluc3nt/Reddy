@@ -8,16 +8,7 @@ calc_quadrant_analysis(
   xval,
   yval,
   do_normalization = TRUE,
-  hole_sizes = seq(0, 10),
-  ...
-)
-
-calc_quadrant_analysis(
-  xval,
-  yval,
-  do_normalization = TRUE,
-  hole_sizes = seq(0, 10),
-  ...
+  hole_sizes = seq(0, 10)
 )
 }
 \arguments{
@@ -28,22 +19,16 @@ calc_quadrant_analysis(
 \item{do_normalization}{should the values be normalized? i.e. (x-mean(x))/sd(x)}
 
 \item{hole_sizes}{vector containing desired hole sizes (integers >= 0)}
-
-\item{...}{arguments passed to plot function}
 }
 \value{
 list containing occurrence fraction and strength (calculated based on product and covariance) for all four quadrants (mathematical orientation)
-
-
 }
 \description{
-Calculates Occurrence Fraction and Strength of the four Quadrants
-
 Calculates Occurrence Fraction and Strength of the four Quadrants
 }
 \examples{
 a=rnorm(100)
-
-#TODO
+b=rnorm(100)
+qa_ab=calc_quadrant_analysis(a,b)
 
 }
