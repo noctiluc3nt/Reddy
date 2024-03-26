@@ -4,17 +4,19 @@
 \alias{plot_barycentric_map}
 \title{Plot in barycentric map}
 \usage{
-plot_barycentric_map(xb, yb, ...)
+plot_barycentric_map(xb, yb, contours = c(5, 10, 20), ...)
 }
 \arguments{
 \item{xb}{xb coordinate (e.g., from calc_anisotropy)}
 
 \item{yb}{yb coordinate (e.g., from calc_anisotropy)}
 
+\item{contours}{vector containing levels of contour lines for 2d kernel densoty estimation, default: contours=c(5,10,20)}
+
 \item{...}{parameters passed to plot function}
 }
 \value{
-plots (xb, yb) in barycentric map (no return)
+plots (xb, yb) in barycentric map with 2d kernel density estimation (no return)
 }
 \description{
 Plots (xb, yb) from invariant analysis of Reynolds stress tensor (calc_anisotropy) in barycentric map

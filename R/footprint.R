@@ -2,12 +2,12 @@
 #'
 #'@description Calculates Flux-Footprint Parametrization (FFP) according to Kljun et al., 2015
 #'@param zm measurement height [m]
-#'@param umean mean horizontal wind speed [m/s] (alternatively you can also use z0)
+#'@param u_mean mean horizontal wind speed [m/s] (alternatively you can also use z0)
 #'@param h boundary-layer height [m]
 #'@param L Obukhov length [m]
 #'@param v_sd standard deviation of crosswind [m/s]
 #'@param ustar friction velocity [m/s]
-#'@param z0 roughness length [m] (either umean or z0 have to be given)
+#'@param z0 roughness length [m] (either u_mean or z0 have to be given)
 #'@param nres resolution (default is nres=1000)
 #'
 #'@return 
@@ -16,7 +16,7 @@
 #'@examples
 #'ffp=calc_flux_footprint(zm=20,z0=0.01,h=200,L=-100,v_sd=0.6,ustar=0.4,contours=0.8)
 #'
-calc_flux_footprint = function(zm, umean=NA, h, L, v_sd, ustar, z0=NA,contours=seq(0.9,0.1,-0.1),nres=1000,do_plot=TRUE) {
+calc_flux_footprint = function(zm, u_mean=NA, h, L, v_sd, ustar, z0=NA,contours=seq(0.9,0.1,-0.1),nres=1000) {
     #fitting parameters for crosswind-integrated footprint, see (Kljun et al., 2015) eq. 17
     a=1.452
     b=-1.991
@@ -34,8 +34,8 @@ calc_flux_footprint = function(zm, umean=NA, h, L, v_sd, ustar, z0=NA,contours=s
     #calculate standard deviation of crosswind distance
     sigmay_star=ac*sqrt(bc*xstar^2/(1+cc*xstar)) #eq. 18
     #calculate real scale footprint and maximum location
-    if (!is.na(umean)) { #use umean if given
-        aux1=zm/(1-zm/h)*umean/ustar*karman()
+    if (!is.na(u_mean)) { #use u_mean if given
+        aux1=zm/(1-zm/h)*u_mean/ustar*karman()
         x=xstar*aux1 #eq. 21 for all xstar
         fy_mean=fstar/aux1 #eq. 8 inverted
         xmax=xstarmax*aux1
@@ -56,7 +56,7 @@ calc_flux_footprint = function(zm, umean=NA, h, L, v_sd, ustar, z0=NA,contours=s
             error = -1
         }
     } else {
-        print("ERROR: You have to know either umean or z0.")
+        print("ERROR: You have to know either u_mean or z0.")
     }
     #calculate real scale sigmay
     ps1=min(1,abs(1/(zm/L))*1E-5 + ifelse(L<=0,0.8,0.55))
@@ -104,9 +104,7 @@ calc_flux_footprint = function(zm, umean=NA, h, L, v_sd, ustar, z0=NA,contours=s
     ffp$f2d=fmat
     ffp$xcontour=ffp_cont$xcont
     ffp$ycontour=ffp_cont$ycont
-    if (do_plot==TRUE) {
-        plot_flux_footprint(ffp)
-    }
+    ffp$contour_levels=contours
     return(ffp)
 }
 
@@ -125,16 +123,24 @@ calc_flux_footprint = function(zm, umean=NA, h, L, v_sd, ustar, z0=NA,contours=s
 #'ffp=calc_flux_footprint(zm=20,z0=0.01,h=200,L=-100,v_sd=0.6,ustar=0.4,contours=seq(0.1,0.9,0.1))
 #'plot(ffp)
 #' 
-plot_flux_footprint = function(ffp) {
-    par(mfrow=c(2,2))
+plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1)),...) {
+    if (!exists("xlim")) xlim=c(0,400)
+    if (!exists("ylim")) ylim=c(-250,250)
     #plot crosswind-integrated footprint
-    plot(ffp$x,ffp$fy_mean,type="l",lwd=2,xlab="x [m]",ylab="crosswind-integrated footprint",main="crosswind-integrated footprint")
-    abline(v=ffp$xmax,col=2)
-    #image plot with contour lines
-    quilt.plot(c(ffp$x2d),c(ffp$y2d),c(ffp$f2d),xlab="x [m]",ylab="y [m]",main="2D plot: flux footprint")
+    plot(ffp$x,ffp$fy_mean,type="l",xlim=xlim,lwd=2,xlab="x [m]",ylab="crosswind-integrated footprint",main="crosswind-integrated footprint")
+    abline(v=ffp$xmax,col=2,lwd=2,lty=2)
+    legend("topright",legend="footprint peak location",col=2,lwd=2,lty=2)
+    #filled contour plot with contour lines
+    lab=colorRampPalette(c("blue3","blue","yellow","orange","red3"), space = "Lab")
+    nlev=length(levels)
+    plot(NA,xlim=xlim,ylim=ylim,main="2d flux footprint",xlab="x [m]",ylab="y [m]",...)
+    .filled.contour(ffp$x2d[1,],ffp$y2d[,1],ffp$f2d,levels=levels,col=lab(nlev))
     for (i in 1:length(ffp$xcontour)) {
-        lines(ffp$xcontour,ffp$ycontour,type="l",lwd=2)
+        lines(ffp$xcontour[[i]],ffp$ycontour[[i]],type="l",lwd=1)
     }
-    persp(ffp$x2d[1,],ffp$y2d[,1],ffp$f2d,main="3D plot: flux footprint",xlab="x [m]",ylab="y [m]",zlab="footprint")
+    #3d perspective plot
+    #nmid=as.integer(length(ffp$x2d[,1])/2)
+    #xselect=(nmid-200):(nmid+200)
+    #persp(ffp$x2d[1,xselect],ffp$y2d[xselect,1],ffp$f2d[xselect,xselect],main="2d flux footprint as 3d plot",xlab=xlab,ylab=ylab,zlab="footprint",theta = 30, phi = 30, expand = 0.5, col = "lightblue",ltheta = 120, shade = 0.2,nticks=5)
 }
 
