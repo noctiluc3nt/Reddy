@@ -14,6 +14,8 @@
 #'qa_ab=calc_quadrant_analysis(a,b)
 #'
 calc_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=seq(0,10)) {
+    covariance_total=cov(xval,yval,use="pairwise.complete.obs")
+    correlation_total=cor(xval,yval,use="pairwise.complete.obs")
     if (do_normalization==TRUE) {
         xval = (xval-mean(xval,na.rm=T))/sd(xval,na.rm=T)
         yval = (yval-mean(yval,na.rm=T))/sd(yval,na.rm=T)
@@ -48,6 +50,8 @@ calc_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=seq(0
             "occurrence"=occurrence,
             "product"=product,
             "covariance"=covariance,
+            "covariance_total"=covariance_total,
+            "correlation_total"=correlation_total,
             "meta"="Output format: rows represent the quadrants Q1, Q2, Q3, Q4 -- columns: selected hole sizes"))
 }
 
