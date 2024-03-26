@@ -20,7 +20,7 @@ calc_anisotropy(a11, a12, a13, a22, a23, a33)
 \item{a33}{R33 element of Reynolds stress tensor (scalar or vector)}
 }
 \value{
-list containing eta, xi, xb, yb (eta,xi are the coordinates of the Lumley triangle and xb,yb the coordinates of the barycentric map)
+list containing xb, yb, eta, xi, all eigenvalues and eigenvectors (eta,xi are the coordinates of the Lumley triangle and xb,yb the coordinates of the barycentric map)
 }
 \description{
 Invariant analysis of Reynolds stress tensor, calculation of anisotropy
