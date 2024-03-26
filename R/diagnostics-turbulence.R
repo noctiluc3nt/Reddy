@@ -149,23 +149,39 @@ calc_dshear = function(cov_uw,cov_vw) {
 
 
 ### fluxes ###
-#calc_Hflux = function(covar_wT,w_mean,T_mean,rho=NULL) {
-#	if (is.null(rho)) {
-#		rho = rhoAir()
-#	}
-	#return(rho*cp()*covar_wT+w_mean*T_mean)
-#	return(rho*cp()*covar_wT)
-#}
+#' Converts cov(w,T) to sensible heat flux SH
+#'
+#'@description Converts cov(T,w) to sensible heat flux SH
+#'@param cov_wT covariance cov(w,T) [K m/s]
+#'@param rho density of air [kg/m^3] (optional)
+#'
+#'@return sensible heat flux [W/m^2]
+#'@export
+#'
+cov2sh = function(covar_wT,rho=NULL) {
+	if (is.null(rho)) {
+		rho = rhoAir()
+	}
+	return(rho*cp()*covar_wT)
+}
 
-#calc_Eflux = function(covar_wq,w_mean,T_mean,rho=NULL) {
-#	if (is.null(rho)) {
-#		rho = rhoAir()
-#	}
-#	return(rho*covar_wq)
-#}
+#' Converts cov(w,q) to latent heat flux LH
+#'
+#'@description Converts cov(q,w) to latent heat flux LH
+#'@param cov_wT covariance cov(w,q) [m/s]
+#'@param rho density of air [kg/m^3] (optional)
+#'
+#'@return latent heat flux [W/m^2]
+#'@export
+#'
+cov2lh = function(covar_wq,rho=NULL) {
+	if (is.null(rho)) {
+		rho = rhoAir()
+	}
+	return(rho*covar_wq)
+}
 
 ### wind basics ###
-
 #' Wind Direction
 #'
 #'@description Calculates (horizontal) wind direction
