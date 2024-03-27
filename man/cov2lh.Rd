@@ -4,12 +4,12 @@
 \alias{cov2lh}
 \title{Converts cov(w,q) to latent heat flux LH}
 \usage{
-cov2lh(covar_wq, rho = NULL)
+cov2lh(cov_wq, rho = NULL)
 }
 \arguments{
-\item{rho}{density of air [kg/m^3] (optional)}
+\item{cov_wq}{covariance cov(w,q) [m/s]}
 
-\item{cov_wT}{covariance cov(w,q) [m/s]}
+\item{rho}{density of air [kg/m^3] (optional)}
 }
 \value{
 latent heat flux [W/m^2]

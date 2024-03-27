@@ -31,6 +31,8 @@ calc_flux_footprint(
 
 \item{z0}{roughness length [m] (either u_mean or z0 have to be given)}
 
+\item{contours}{which contour lines should be calculated? default: contours=seq(0.9,0.1,-0.1)}
+
 \item{nres}{resolution (default is nres=1000)}
 }
 \value{
@@ -40,6 +42,6 @@ calc_flux_footprint(
 Calculates Flux-Footprint Parametrization (FFP) according to Kljun et al., 2015
 }
 \examples{
-ffp=calc_flux_footprint(zm=20,z0=0.01,h=200,L=-100,v_sd=0.6,ustar=0.4,contours=0.8)
+ffp=calc_flux_footprint(zm=20,u_mean=2,h=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
 
 }

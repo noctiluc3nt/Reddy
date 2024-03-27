@@ -22,7 +22,8 @@ plots (xb, yb) in barycentric map with 2d kernel density estimation (no return)
 Plots (xb, yb) from invariant analysis of Reynolds stress tensor (calc_anisotropy) in barycentric map
 }
 \examples{
-example1=calc_anisotropy(rep(1,100),rep(0,100),rnorm(100,0,1),rep(1,100),rep(0,100),rep(1,100))
+nm=100
+example1=calc_anisotropy(rep(1,nm),rep(0,nm),runif(nm,0,1),rep(1,nm),rep(0,nm),runif(nm,1,1.5))
 plot_barycentric_map(example1$xb,example1$yb)
 
 }

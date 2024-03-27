@@ -8,13 +8,14 @@
 #'@param v_sd standard deviation of crosswind [m/s]
 #'@param ustar friction velocity [m/s]
 #'@param z0 roughness length [m] (either u_mean or z0 have to be given)
+#'@param contours which contour lines should be calculated? default: contours=seq(0.9,0.1,-0.1)
 #'@param nres resolution (default is nres=1000)
 #'
 #'@return 
 #'@export
 #'
 #'@examples
-#'ffp=calc_flux_footprint(zm=20,z0=0.01,h=200,L=-100,v_sd=0.6,ustar=0.4,contours=0.8)
+#'ffp=calc_flux_footprint(zm=20,u_mean=2,h=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
 #'
 calc_flux_footprint = function(zm, u_mean=NA, h, L, v_sd, ustar, z0=NA,contours=seq(0.9,0.1,-0.1),nres=1000) {
     #fitting parameters for crosswind-integrated footprint, see (Kljun et al., 2015) eq. 17
@@ -115,13 +116,15 @@ calc_flux_footprint = function(zm, u_mean=NA, h, L, v_sd, ustar, z0=NA,contours=
 #'
 #'@description Plots Flux-Footprint Parametrization (FFP) according to Kljun et al., 2015
 #'@param ffp an object returned from calc_flux_footprint
+#'@param levels levels used for filled.contour plot of footprint, default levels=c(0,10^seq(-6,-3,0.1))
+#'@param ... optional plot parameters
 #' 
 #'@return 
 #'@export
 #'
 #'@examples
-#'ffp=calc_flux_footprint(zm=20,z0=0.01,h=200,L=-100,v_sd=0.6,ustar=0.4,contours=seq(0.1,0.9,0.1))
-#'plot(ffp)
+#'ffp=calc_flux_footprint(zm=5,u_mean=5,h=700,L=-1.3,v_sd=1.2,ustar=0.35)
+#'plot_flux_footprint(ffp)
 #' 
 plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1)),...) {
     if (!exists("xlim")) xlim=c(0,400)
@@ -143,4 +146,3 @@ plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1)),...) {
     #xselect=(nmid-200):(nmid+200)
     #persp(ffp$x2d[1,xselect],ffp$y2d[xselect,1],ffp$f2d[xselect,xselect],main="2d flux footprint as 3d plot",xlab=xlab,ylab=ylab,zlab="footprint",theta = 30, phi = 30, expand = 0.5, col = "lightblue",ltheta = 120, shade = 0.2,nticks=5)
 }
-

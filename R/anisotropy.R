@@ -69,9 +69,12 @@ calc_anisotropy = function(a11,a12,a13,a22,a23,a33) {
 #'@param ... parameters passed to plot function
 #'@return plots (xb, yb) in barycentric map with 2d kernel density estimation (no return)
 #'@export
+#' 
+#'@importFrom MASS kde2d
 #'
 #'@examples
-#'example1=calc_anisotropy(rep(1,100),rep(0,100),rnorm(100,0,1),rep(1,100),rep(0,100),rep(1,100))
+#'nm=100
+#'example1=calc_anisotropy(rep(1,nm),rep(0,nm),runif(nm,0,1),rep(1,nm),rep(0,nm),runif(nm,1,1.5))
 #'plot_barycentric_map(example1$xb,example1$yb)
 #'
 plot_barycentric_map = function(xb,yb,contours=c(5,10,20),...) {

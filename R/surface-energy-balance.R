@@ -1,7 +1,8 @@
 #' Plottting of surface energy balance and calculate surface energy balance unclosure
 #'
 #'@description Plottting of surface energy balance and calculate surface energy balance unclosure as residual flux and closure ratio
-#'@param sw_out outcomin shortwave radiation [W/m^2] (as vector of time)
+#'@param sw_in incoming shortwave radiation [W/m^2] (as vector of time)
+#'@param sw_out outgoing shortwave radiation [W/m^2] (as vector of time)
 #'@param lw_in incoming longwave radiation [W/m^2] (as vector of time)
 #'@param lw_out outgoing longwave radiation [W/m^2] (as vector of time)
 #'@param sh sensible heat flux [W/m^2] (as vector of time) -- if measured
@@ -9,7 +10,8 @@
 #'@param gh ground heat flux [W/m^2] (as vector of time) -- if measured
 #'@param time_vector times used as x-axis labels (optional)
 #'@param print_fit should the fit summary be printed? default: TRUE
-#'
+#'@param ... optional plot parameters
+#' 
 #'@return no return
 #'@export
 #'

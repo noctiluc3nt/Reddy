@@ -23,6 +23,14 @@ g=function(){
 	return(9.8062)
 }
 
+#' clight
+#'
+#' speed of light [m/s]
+#' @keywords internal
+clight=function(){
+	return(299792458)
+}
+
 #' von Karman constant
 #'
 #' @keywords internal
@@ -48,16 +56,33 @@ rhoAir = function() {
 
 #' Lv
 #'
-#' latent heat of vaporization
+#' latent heat of vaporization [J/kg]
 #' @keywords internal
 Lv = function() {
-	return(2264.705)
+	return(2264.705*1000)
 }
 
 #' M_H2O
 #'
-#' Molecular weight of water
+#' Molar mass of water
 #' @keywords internal
 M_H2O = function() {
 	return(0.01802)
+}
+
+
+#' M_CO2
+#'
+#' Molar mass of carbon dioxide
+#' @keywords internal
+M_CO2 = function() {
+	return(0.044)
+}
+
+#' M_CH4
+#'
+#' Molar mass of methane
+#' @keywords internal
+M_CH4 = function() {
+	return(0.01604)
 }

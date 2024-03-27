@@ -18,7 +18,9 @@ plot_seb(
 )
 }
 \arguments{
-\item{sw_out}{outcomin shortwave radiation [W/m^2] (as vector of time)}
+\item{sw_in}{incoming shortwave radiation [W/m^2] (as vector of time)}
+
+\item{sw_out}{outgoing shortwave radiation [W/m^2] (as vector of time)}
 
 \item{lw_in}{incoming longwave radiation [W/m^2] (as vector of time)}
 
@@ -33,6 +35,8 @@ plot_seb(
 \item{time_vector}{times used as x-axis labels (optional)}
 
 \item{print_fit}{should the fit summary be printed? default: TRUE}
+
+\item{...}{optional plot parameters}
 }
 \value{
 no return

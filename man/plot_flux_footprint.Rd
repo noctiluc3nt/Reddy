@@ -8,6 +8,10 @@ plot_flux_footprint(ffp, levels = c(0, 10^seq(-6, -3, 0.1)), ...)
 }
 \arguments{
 \item{ffp}{an object returned from calc_flux_footprint}
+
+\item{levels}{levels used for filled.contour plot of footprint, default levels=c(0,10^seq(-6,-3,0.1))}
+
+\item{...}{optional plot parameters}
 }
 \value{
 
@@ -16,7 +20,7 @@ plot_flux_footprint(ffp, levels = c(0, 10^seq(-6, -3, 0.1)), ...)
 Plots Flux-Footprint Parametrization (FFP) according to Kljun et al., 2015
 }
 \examples{
-ffp=calc_flux_footprint(zm=20,z0=0.01,h=200,L=-100,v_sd=0.6,ustar=0.4,contours=seq(0.1,0.9,0.1))
-plot(ffp)
+ffp=calc_flux_footprint(zm=5,u_mean=5,h=700,L=-1.3,v_sd=1.2,ustar=0.35)
+plot_flux_footprint(ffp)
 
 }

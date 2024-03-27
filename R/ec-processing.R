@@ -224,20 +224,45 @@ flag_most = function(sigma_w,ustar,zeta) {
 SNDcorrection = function(u,v,w,Ts,q=NULL,A=7/8,B=7/8) {
     #calculation of respective covariances
 	not_na=!is.na(w)&!is.na(Ts)
-	covar_wTs = cov(w[not_na],Ts[not_na]) 
+	cov_wTs = cov(w[not_na],Ts[not_na]) 
 	not_na=!is.na(w)&!is.na(u)
-	covar_uw = cov(u[not_na],w[not_na]) 
+	cov_uw = cov(u[not_na],w[not_na]) 
 	not_na=!is.na(w)&!is.na(v)
-	covar_vw = cov(v[not_na],w[not_na])
+	cov_vw = cov(v[not_na],w[not_na])
 	ubar=mean(u,na.rm=TRUE)
 	vbar=mean(v,na.rm=TRUE)
 	Tsbar=mean(Ts,na.rm=TRUE)
 	if (!is.null(q)) { #considering q
 		not_na=!is.na(w)&!is.na(q)
-		covar_qw=covar(q[not_na],w[not_na])
-		return(covar_wTs - 0.51*covar_qw + 2*Tsbar/clight()^2*(A*ubar*covar_uw + B*vbar*covar_vw))
+		cov_qw=cov(q[not_na],w[not_na])
+		return(cov_wTs - 0.51*cov_qw + 2*Tsbar/clight()^2*(A*ubar*cov_uw + B*vbar*cov_vw))
 	}
     #without q
-	return(covar_wTs + 2*Tsbar/clight()^2*(A*ubar*covar_uw + B*vbar*covar_vw))
+	return(cov_wTs + 2*Tsbar/clight()^2*(A*ubar*cov_uw + B*vbar*cov_vw))
 }
 
+#' Conversion of parts-per unit to density (for closed-path gas analyzer)
+#'
+#'@description Conversion of parts-per unit to density (for closed-path gas analyzer)
+#'@param ppt measurement in part per thousand [ppt]
+#'@param T_mean temperatur [K]
+#'@param pres pressure [Pa]
+#'@param e water vapor pressure [Pa]
+#'@param gas which gas? can be either "H2O" or "CO2" (if CO2 is selected, make sure that it's still in ppt and not ppm as usual)
+#'
+#'@return density of the gas [kg/m^3]
+#'@export
+#'
+#'@examples
+#'
+ppt2rho = function(ppt,T_mean=288.15, pres = 101325, e = 0, gas="H2O") {
+    Vd=Runiversal()*T_mean/(pres-e) #volume of dry air [m^3/mol]
+    if (gas == "H2O") {
+        return(ppt/1000*M_H2O()/Vd)
+    } else if (gas == "CO2") {
+        return(ppt/1000*M_CO2()/Vd)
+    } else {
+        print("WARNING: You selected a gas which is not available for the conversion here.")
+    }
+    
+}

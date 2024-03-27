@@ -7,6 +7,6 @@
 Lv()
 }
 \description{
-latent heat of vaporization
+latent heat of vaporization [J/kg]
 }
 \keyword{internal}

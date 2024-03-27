@@ -4,12 +4,12 @@
 \alias{cov2sh}
 \title{Converts cov(w,T) to sensible heat flux SH}
 \usage{
-cov2sh(covar_wT, rho = NULL)
+cov2sh(cov_wT, rho = NULL)
 }
 \arguments{
-\item{rho}{density of air [kg/m^3] (optional)}
-
 \item{cov_wT}{covariance cov(w,T) [K m/s]}
+
+\item{rho}{density of air [kg/m^3] (optional)}
 }
 \value{
 sensible heat flux [W/m^2]

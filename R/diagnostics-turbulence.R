@@ -63,7 +63,7 @@ calc_ustar = function(cov_uw,cov_vw) {
 #'@examples
 #'
 calc_L = function(ustar,T_mean,cov_wT) {
-	return(-abs(ustar^3)*T_mean/(kap()*g()*cov_wT))
+	return(-abs(ustar^3)*T_mean/(karman()*g()*cov_wT))
 }
 
 
@@ -158,27 +158,27 @@ calc_dshear = function(cov_uw,cov_vw) {
 #'@return sensible heat flux [W/m^2]
 #'@export
 #'
-cov2sh = function(covar_wT,rho=NULL) {
+cov2sh = function(cov_wT,rho=NULL) {
 	if (is.null(rho)) {
 		rho = rhoAir()
 	}
-	return(rho*cp()*covar_wT)
+	return(rho*cp()*cov_wT)
 }
 
 #' Converts cov(w,q) to latent heat flux LH
 #'
 #'@description Converts cov(q,w) to latent heat flux LH
-#'@param cov_wT covariance cov(w,q) [m/s]
+#'@param cov_wq covariance cov(w,q) [m/s]
 #'@param rho density of air [kg/m^3] (optional)
 #'
 #'@return latent heat flux [W/m^2]
 #'@export
 #'
-cov2lh = function(covar_wq,rho=NULL) {
+cov2lh = function(cov_wq,rho=NULL) {
 	if (is.null(rho)) {
 		rho = rhoAir()
 	}
-	return(rho*covar_wq)
+	return(rho*Lv()*cov_wq)
 }
 
 ### wind basics ###
