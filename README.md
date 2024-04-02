@@ -5,17 +5,18 @@
 [![License](https://eddelbuettel.github.io/badges/GPL2+.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
 <!-- badges: end -->
 
-R-Package (under development) to automatize standard analyses of turbulence data, e.g., from eddy-covariance measurements. 
+R-Package (under development) to automatize standard analyses of turbulence data (e.g., from eddy-covariance measurements). 
 
 ## Scripts
-contains currently
 - `anisotropy.R`: invariant analysis of the Reynolds stress tensor, calculation of turbulence anisotropy and visualization in a barycentric map
-- `constants.R`: constant used for calculations (internal)
-- `diagnostics-turbulence.R`: calculation of some standard diagnostic quantities to describe turbulence
-- `ec-processing.R`: functions for post-processing of eddy-covariance measurements
+- `constants.R`: constants used for calculations (internal)
+- `diagnostics-meteorology.R`: calculation of "background-meteorology" quantities (e.g., clear-sky index)
+- `diagnostics-turbulence.R`: calculation of some standard turbulence diagnostics (e.g., friction velocity, TKE, turbulence intensity, stability parameter)
+- `ec-processing.R`: collection of functions for post-processing and quality control of eddy-covariance measurements
 - `footprint.R`: calculation and visualization of 2D flux footprint (FFP, Kljun et al., 2015)
 - `multiresolution-decomposition.R`: calculation and visualization of multiresolution decomposition (MRD, Vickers and Mahrt, 2003)
 - `quadrant-analysis.R`: calculation and visualization of quadrant analysis
+- `surface-energy-balance.R`: visualization of surface energy balance, residual flux and closure ratio
 
 ## Workflow
 - create documentation (Rd files) with roxygen2: `roxygen2::roxygenize("./Reddy")` 
@@ -27,7 +28,11 @@ contains currently
 Prediction (FFP), Geoscie. Model Dev., 8, 3695-3713.
 - Vickers, D. and Mahrt, L. (2003). The Cospectral Gap and Turbulent Flux Calculations. Journal of Atmospheric and Oceanic Technology, 20:660-672.
 
-## other R-Packages for analyzing eddy-covariance data
-- REddyProc: Post Processing of (Half-)Hourly Eddy-Covariance Measurements
-- openeddy
-- ONEFlux
+## Other packages for processing of eddy-covariance data
+- [EddyPro®](https://github.com/LI-COR-Environmental/eddypro-engine): Post-processing of eddy-covariance data (LI-COR Biosciences)
+- [REddyProc](https://cran.r-project.org/web/packages/REddyProc/index.html): Post-processing of (half-)hourly eddy-covariance measurements
+- [openeddy](https://github.com/lsigut/openeddy): Post-processing of eddy-covariance data, aligned with REddyProc
+- [RFlux](https://github.com/domvit81/RFlux/): GUI for post-processing of eddy-covariance raw data by calling [EddyPro®](https://github.com/LI-COR-Environmental/eddypro-engine) (LI-COR Biosciences, 2019)
+- [ONEFlux](https://github.com/fluxnet/ONEFlux) ("Open Network-Enabled Flux processing pipeline"): Post-processing of (half-)hourly eddy-covariance data used to create the [FLUXNET2015 dataset](https://fluxnet.org/data/fluxnet2015-dataset/)
+- [icoscp](https://pypi.org/project/icoscp/): accessing data from [ICOS](https://www.icos-cp.eu/) (Integrated Carbon Observing System) [data portal](https://data.icos-cp.eu/portal/#%7B%22filterCategories%22:%7B%22project%22:%5B%22icos%22%5D,%22level%22:%5B1,2%5D,%22stationclass%22:%5B%22ICOS%22%5D%7D%7D)
+- something missing: please create an issue
