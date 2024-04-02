@@ -181,6 +181,48 @@ cov2lh = function(cov_wq,rho=NULL) {
 	return(rho*Lv()*cov_wq)
 }
 
+#' Converts cov(w,co2) to CO2 flux
+#'
+#'@description Converts cov(co2,w) to CO2 flux
+#'@param cov_co2w covariance cov(co2,w) [m/s]
+#'@param rho density of air [kg/m^3] (optional)
+#'
+#'@return latent heat flux [W/m^2]
+#'@export
+#'
+cov2cf = function(cov_co2w,rho=NULL) {
+	if (is.null(rho)) {
+		rho = rhoAir()
+	}
+	return(rho*cov_co2w)
+}
+
+#' Bowen ratio BR
+#'
+#'@description Calculates Bowen ratio BR := SH/LH
+#'@param sh sensible heat flux [W/m^2]
+#'@param lh latent heat flux [W/m^2]
+#'
+#'@return Bowen ratio [-]
+#'@export
+#'
+calc_br = function(sh,lh) {
+	return(sh/abs(lh))
+}
+
+#' Evaporative fraction
+#'
+#'@description Calculates the evaporative fraction EF := LH/(SH+LH)
+#'@param sh sensible heat flux [W/m^2]
+#'@param lh latent heat flux [W/m^2]
+#'
+#'@return evaporative fraction [-]
+#'@export
+#'
+calc_ef = function(sh,lh) {
+	return(lh/(sh+lh))
+}
+
 ### wind basics ###
 #' Wind Direction
 #'

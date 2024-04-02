@@ -7,25 +7,25 @@
 SNDcorrection(u, v, w, Ts, q = NULL, A = 7/8, B = 7/8)
 }
 \arguments{
-\item{u}{u-wind (levelled sonic)}
+\item{u}{u-wind [m/s] (levelled sonic)}
 
-\item{v}{v-wind (levelled sonic)}
+\item{v}{v-wind [m/s] (levelled sonic)}
 
-\item{w}{w-wind (levelled sonic)}
+\item{w}{w-wind [m/s] (levelled sonic)}
 
-\item{Ts}{temperature (sonic temperature or corrected temperature)}
+\item{Ts}{temperature [K] (sonic temperature or corrected temperature)}
 
-\item{q}{specific humidity (if measured, default NULL)}
+\item{q}{specific humidity [kg/kg] (if measured, default NULL)}
 
-\item{A}{constant used in SND correction, default 'A = 7/8'}
+\item{A}{constant used in SND correction, default 'A = 7/8' for CSAT3}
 
-\item{B}{constant used in SND correction, default 'B = 7/8'}
+\item{B}{constant used in SND correction, default 'B = 7/8' for CSAT3}
 }
 \value{
-
+SND correction of sensible heat flux
 }
 \description{
-SND correction of sensible heat flux
+SND correction of sensible heat flux: converts the buoyancy flux cov(w,Ts) (based on sonic temperature Ts) to sensible heat flux
 }
 \examples{
 
