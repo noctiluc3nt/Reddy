@@ -80,7 +80,7 @@ calc_anisotropy = function(a11,a12,a13,a22,a23,a33) {
 plot_barycentric_map = function(xb,yb,contours=c(5,10,20),...) {
 	if (!exists("pch")) pch = 20
     if (typeof(col)=="closure") col = rgb(0,0,0,0.4)
-    plot(xb,yb,pch=pch,col=col,xlim=c(0,1),ylim=c(0,sqrt(3)/2),asp=1)
+    plot(xb,yb,pch=pch,col=col,xlim=c(0,1),ylim=c(0,sqrt(3)/2),asp=1,xlab="x",ylab="x",main="Barycentric Map",...)
     segments(0,0,1,0,lwd=2)
 	segments(0,0,0.5,sqrt(3)/2,lwd=2)
 	segments(1,0,0.5,sqrt(3)/2,lwd=2)

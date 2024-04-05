@@ -7,8 +7,27 @@
 
 R-Package (under development) to automatize standard analyses of turbulence data (e.g., from eddy-covariance measurements). 
 
-## Scripts
+
+## How to use the package
+
+### Installation
+The package Reddy can be installed from CRAN with
+```
+    install.packages("Reddy")
+```
+or directly from github (current developing version)
+```
+    devtools::install_git("https://github.com/noctiluc3nt/Reddy")
+```
+
+### Usage
+A detailed tutorial containing several jupyter notebooks showcasing the most important features of Reddy as well as some theoretical background information can be found [here](https://github.com/noctiluc3nt/ec_analyze).<br><br>
+**Plot examples:**<br>
+<image src="./inst/figures/reddy_showcase.png">
+
+## List of scripts
 - `anisotropy.R`: invariant analysis of the Reynolds stress tensor, calculation of turbulence anisotropy and visualization in a barycentric map
+- `auxilliary.R`: collection of some useful generic functions for the evaluation (e.g., discrete binning, cross-correlation maximization)
 - `constants.R`: constants used for calculations (internal)
 - `diagnostics-meteorology.R`: calculation of "background-meteorology" quantities (e.g., clear-sky index)
 - `diagnostics-turbulence.R`: calculation of some standard turbulence diagnostics (e.g., friction velocity, TKE, turbulence intensity, stability parameter)
@@ -18,12 +37,13 @@ R-Package (under development) to automatize standard analyses of turbulence data
 - `quadrant-analysis.R`: calculation and visualization of quadrant analysis
 - `surface-energy-balance.R`: visualization of surface energy balance, residual flux and closure ratio
 
-## Workflow
+## Workflow for package building
 - create documentation (Rd files) with roxygen2: `roxygen2::roxygenize("./Reddy")` 
 - build package: `devtools::build("./Reddy")` or via terminal `R CMD build Reddy`
 - check package: `devtools::check("./Reddy")` or via terminal `R CMD check Reddy`
 
 ## Literature
+- Foken, T. (2017). Micrometeorology, Springer-Verlag Berlin Heidelberg, doi: 10.1007/978-3-642-25440-6.
 - Kljun, N. and Calanca, P. and Rotach, M. W. and Schmid, H. P. (2015). A simple two-dimensional parameterisation for Flux Footprint
 Prediction (FFP), Geoscie. Model Dev., 8, 3695-3713.
 - Vickers, D. and Mahrt, L. (2003). The Cospectral Gap and Turbulent Flux Calculations. Journal of Atmospheric and Oceanic Technology, 20:660-672.

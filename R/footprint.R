@@ -130,13 +130,13 @@ plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1)),...) {
     if (!exists("xlim")) xlim=c(0,400)
     if (!exists("ylim")) ylim=c(-250,250)
     #plot crosswind-integrated footprint
-    plot(ffp$x,ffp$fy_mean,type="l",xlim=xlim,lwd=2,xlab="x [m]",ylab="crosswind-integrated footprint",main="crosswind-integrated footprint")
+    plot(ffp$x,ffp$fy_mean,type="l",xlim=xlim,lwd=2,xlab="x [m]",ylab="Crosswind-integrated footprint",main="crosswind-integrated footprint")
     abline(v=ffp$xmax,col=2,lwd=2,lty=2)
     legend("topright",legend="footprint peak location",col=2,lwd=2,lty=2)
     #filled contour plot with contour lines
     lab=colorRampPalette(c("blue3","blue","yellow","orange","red3"), space = "Lab")
     nlev=length(levels)
-    plot(NA,xlim=xlim,ylim=ylim,main="2d flux footprint",xlab="x [m]",ylab="y [m]",...)
+    plot(NA,xlim=xlim,ylim=ylim,main="Flux footprint (2d)",xlab="x [m]",ylab="y [m]",...)
     .filled.contour(ffp$x2d[1,],ffp$y2d[,1],ffp$f2d,levels=levels,col=lab(nlev))
     for (i in 1:length(ffp$xcontour)) {
         lines(ffp$xcontour[[i]],ffp$ycontour[[i]],type="l",lwd=1)

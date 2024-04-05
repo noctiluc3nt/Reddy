@@ -2,3 +2,4 @@
 ^\.Rproj\.user$
 run_tests.r
 ./R/dev
+*.Rcheck
