@@ -21,5 +21,4 @@ Double rotation
 }
 \examples{
 
-
 }

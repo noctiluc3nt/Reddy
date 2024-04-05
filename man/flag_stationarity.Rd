@@ -4,7 +4,7 @@
 \alias{flag_stationarity}
 \title{Stationarity Flag}
 \usage{
-flag_stationarity(var1, var2, nsub = 6)
+flag_stationarity(var1, var2, nsub = 3000)
 }
 \arguments{
 \item{var1}{variable 1}
@@ -23,6 +23,6 @@ Stationarity Flag according to Foken and Wichura, 1996 based on the assumption t
 set.seed(5)
 ts1=rnorm(30)
 ts2=rnorm(30)
-flag_stationarity(ts1,ts2)
+flag_stationarity(ts1,ts2,nsub=6)
 
 }

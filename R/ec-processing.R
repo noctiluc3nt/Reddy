@@ -59,7 +59,6 @@ despiking = function(series,thresholds=c(NA,NA),mad_factor=10,threshold_skewness
 #'
 #'@examples
 #'
-#'
 rotate_double = function(u,v,w) {
 	#horizontal
 	theta=atan2(mean(v,na.rm=T),mean(u,na.rm=T))
@@ -88,7 +87,6 @@ rotate_double = function(u,v,w) {
 #'
 #'@examples
 #'
-#'
 rotate_planar = function(u,v,w,c=c(0,0,0)) {
 	#TODO
 	theta=atan2(mean(v),mean(u))
@@ -112,9 +110,9 @@ rotate_planar = function(u,v,w,c=c(0,0,0)) {
 #'set.seed(5)
 #'ts1=rnorm(30)
 #'ts2=rnorm(30)
-#'flag_stationarity(ts1,ts2)
+#'flag_stationarity(ts1,ts2,nsub=6)
 #'
-flag_stationarity = function(var1,var2,nsub=6) {
+flag_stationarity = function(var1,var2,nsub=3000) {
     if (length(var1) != length(var2)) {
         print("ERROR: var1 and var2 have to be of equal length.")
     }
@@ -205,21 +203,19 @@ flag_most = function(sigma_w,ustar,zeta) {
     return(flag)
 }
 
-#' SND correction
+#' SND and cross-wind correction of sensible heat flux
 #'
-#'@description SND correction of sensible heat flux: converts the buoyancy flux cov(w,Ts) (based on sonic temperature Ts) to sensible heat flux
+#'@description SND and cross-wind correction of sensible heat flux: converts the buoyancy flux cov(w,Ts) (based on sonic temperature Ts) to sensible heat flux
 #'@param u u-wind [m/s] (levelled sonic)
 #'@param v v-wind [m/s] (levelled sonic)
 #'@param w w-wind [m/s] (levelled sonic)
 #'@param Ts temperature [K] (sonic temperature or corrected temperature)
-#'@param q specific humidity [kg/kg] (if measured, default NULL)
-#'@param A constant used in SND correction, default 'A = 7/8' for CSAT3
-#'@param B constant used in SND correction, default 'B = 7/8' for CSAT3
+#'@param q specific humidity [kg/kg] (if measured by the sonic, default NULL)
+#'@param A constant used in cross-wind correction, default 'A = 7/8' for CSAT3
+#'@param B constant used in cross-wind correction, default 'B = 7/8' for CSAT3
 #'
 #'@return SND correction of sensible heat flux
 #'@export
-#'
-#'@examples
 #'
 SNDcorrection = function(u,v,w,Ts,q=NULL,A=7/8,B=7/8) {
     #calculation of respective covariances
@@ -235,15 +231,16 @@ SNDcorrection = function(u,v,w,Ts,q=NULL,A=7/8,B=7/8) {
 	if (!is.null(q)) { #considering q
 		not_na=!is.na(w)&!is.na(q)
 		cov_qw=cov(q[not_na],w[not_na])
+        #second term: SND correction, third term: cross-wind correction
 		return(cov_wTs - 0.51*cov_qw + 2*Tsbar/clight()^2*(A*ubar*cov_uw + B*vbar*cov_vw))
 	}
-    #without q
+    #without q: only cross-wind correction
 	return(cov_wTs + 2*Tsbar/clight()^2*(A*ubar*cov_uw + B*vbar*cov_vw))
 }
 
 #' WPL correction
 #'
-#'@description WPL correction: density correction (i.e. converts volume- to mass-related quantity) for trace gases
+#'@description WPL correction: density correction for trace gas fluxes (i.e., converts volume- to mass-related quantity)
 #'@param rho_w measured water vapor density [kg/m^3]
 #'@param rho_c measured trace gas density [kg/m^3] (only if WPL-correction should be applied to another flux, e.g. CO2 flux, default NULL)
 #'@param w w-wind [m/s] (levelled sonic)
@@ -252,8 +249,6 @@ SNDcorrection = function(u,v,w,Ts,q=NULL,A=7/8,B=7/8) {
 #'
 #'@return WPL correction of respective flux
 #'@export
-#'
-#'@examples
 #'
 WPLcorrection = function(rho_w,rho_c=NULL,w,Ts,q) {
     #calculation of respective covariances
@@ -270,19 +265,19 @@ WPLcorrection = function(rho_w,rho_c=NULL,w,Ts,q) {
         not_na=!is.na(w)&!is.na(rho_c)
 	    cov_wrhoc = cov(w[not_na],rho_c[not_na]) 
         rho_c_bar=mean(rho_c,na.rm=T)
-        return(cov_wrhoc+1.61*rho_c_bar/rho_w_bar*cov_wrhow+(1+161*q_bar)*rho_c_bar/Ts_bar*cov_wTs)
+        return(cov_wrhoc+1.61*rho_c_bar/rho_w_bar*cov_wrhow+(1+1.61*q_bar)*rho_c_bar/Ts_bar*cov_wTs)
     }
 }
 
 
-#' Conversion of parts-per unit to density (for closed-path gas analyzer)
+#' Unit conversion of "parts-per" to density (for closed-path gas analyzer)
 #'
-#'@description Conversion of parts-per unit to density (for closed-path gas analyzer)
-#'@param ppt measurement in part per thousand [ppt]
-#'@param T_mean temperatur [K]
+#'@description Unit conversion of "parts-per" to density (for closed-path gas analyzer)
+#'@param ppt measurement in parts per thousand [ppt]
+#'@param T_mean temperature [K]
 #'@param pres pressure [Pa]
 #'@param e water vapor pressure [Pa]
-#'@param gas which gas? can be either "H2O" or "CO2" (if CO2 is selected, make sure that it's still in ppt and not ppm as usual)
+#'@param gas which gas? can be either "H2O", "CO2", "CH4" (if CO2/CH4 is selected, make sure that it's still in ppt and not ppm as usual)
 #'
 #'@return density of the gas [kg/m^3]
 #'@export
@@ -295,6 +290,8 @@ ppt2rho = function(ppt,T_mean=288.15, pres = 101325, e = 0, gas="H2O") {
         return(ppt/1000*M_H2O()/Vd)
     } else if (gas == "CO2") {
         return(ppt/1000*M_CO2()/Vd)
+    } else if (gas == "CH4") {
+        return(ppt/1000*M_CH4()/Vd)
     } else {
         print("WARNING: You selected a gas which is not available for the conversion here.")
     }

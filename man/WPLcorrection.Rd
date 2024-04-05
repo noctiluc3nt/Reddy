@@ -21,8 +21,5 @@ WPLcorrection(rho_w, rho_c = NULL, w, Ts, q)
 WPL correction of respective flux
 }
 \description{
-WPL correction: density correction (i.e. converts volume- to mass-related quantity) for trace gases
-}
-\examples{
-
+WPL correction: density correction for trace gas fluxes (i.e., converts volume- to mass-related quantity)
 }

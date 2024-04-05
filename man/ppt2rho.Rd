@@ -2,26 +2,26 @@
 % Please edit documentation in R/ec-processing.R
 \name{ppt2rho}
 \alias{ppt2rho}
-\title{Conversion of parts-per unit to density (for closed-path gas analyzer)}
+\title{Unit conversion of "parts-per" to density (for closed-path gas analyzer)}
 \usage{
 ppt2rho(ppt, T_mean = 288.15, pres = 101325, e = 0, gas = "H2O")
 }
 \arguments{
-\item{ppt}{measurement in part per thousand [ppt]}
+\item{ppt}{measurement in parts per thousand [ppt]}
 
-\item{T_mean}{temperatur [K]}
+\item{T_mean}{temperature [K]}
 
 \item{pres}{pressure [Pa]}
 
 \item{e}{water vapor pressure [Pa]}
 
-\item{gas}{which gas? can be either "H2O" or "CO2" (if CO2 is selected, make sure that it's still in ppt and not ppm as usual)}
+\item{gas}{which gas? can be either "H2O", "CO2", "CH4" (if CO2/CH4 is selected, make sure that it's still in ppt and not ppm as usual)}
 }
 \value{
 density of the gas [kg/m^3]
 }
 \description{
-Conversion of parts-per unit to density (for closed-path gas analyzer)
+Unit conversion of "parts-per" to density (for closed-path gas analyzer)
 }
 \examples{
 

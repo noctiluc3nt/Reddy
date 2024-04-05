@@ -23,5 +23,4 @@ Planar fit rotation
 }
 \examples{
 
-
 }

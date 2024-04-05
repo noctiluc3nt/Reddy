@@ -2,7 +2,7 @@
 % Please edit documentation in R/ec-processing.R
 \name{SNDcorrection}
 \alias{SNDcorrection}
-\title{SND correction}
+\title{SND and cross-wind correction of sensible heat flux}
 \usage{
 SNDcorrection(u, v, w, Ts, q = NULL, A = 7/8, B = 7/8)
 }
@@ -15,18 +15,15 @@ SNDcorrection(u, v, w, Ts, q = NULL, A = 7/8, B = 7/8)
 
 \item{Ts}{temperature [K] (sonic temperature or corrected temperature)}
 
-\item{q}{specific humidity [kg/kg] (if measured, default NULL)}
+\item{q}{specific humidity [kg/kg] (if measured by the sonic, default NULL)}
 
-\item{A}{constant used in SND correction, default 'A = 7/8' for CSAT3}
+\item{A}{constant used in cross-wind correction, default 'A = 7/8' for CSAT3}
 
-\item{B}{constant used in SND correction, default 'B = 7/8' for CSAT3}
+\item{B}{constant used in cross-wind correction, default 'B = 7/8' for CSAT3}
 }
 \value{
 SND correction of sensible heat flux
 }
 \description{
-SND correction of sensible heat flux: converts the buoyancy flux cov(w,Ts) (based on sonic temperature Ts) to sensible heat flux
-}
-\examples{
-
+SND and cross-wind correction of sensible heat flux: converts the buoyancy flux cov(w,Ts) (based on sonic temperature Ts) to sensible heat flux
 }

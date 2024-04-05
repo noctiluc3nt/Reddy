@@ -2,6 +2,7 @@
 
 export(SNDcorrection)
 export(WPLcorrection)
+export(binning)
 export(calc_L)
 export(calc_anisotropy)
 export(calc_br)
