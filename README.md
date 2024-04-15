@@ -11,21 +11,18 @@ R-Package (under development) to automatize standard analyses of turbulence data
 ## How to use the package
 
 ### Installation
-The package Reddy can be installed from CRAN with
-```
-    install.packages("Reddy")
-```
-or directly from github (current developing version)
+The package Reddy can be installed directly from github (current developing version):
 ```
     devtools::install_git("https://github.com/noctiluc3nt/Reddy")
 ```
 
 ### Usage
-A detailed tutorial containing several jupyter notebooks showcasing the most important features of Reddy as well as some theoretical background information can be found [here](https://github.com/noctiluc3nt/ec_analyze).<br><br>
+A detailed tutorial containing several jupyter notebooks showcasing the most important features of Reddy along with some theoretical background information can be found [here](https://github.com/noctiluc3nt/ec_analyze).<br><br>
 **Plot examples:**<br>
 <image src="./inst/figures/reddy_showcase.png">
 
 ## List of scripts
+All functions that are contained in the Reddy package are described in the [manual](https://github.com/noctiluc3nt/Reddy/tree/main/inst/figures/reddy-manual.pdf) and are divided into the following scripts:
 - `anisotropy.R`: invariant analysis of the Reynolds stress tensor, calculation of turbulence anisotropy and visualization in a barycentric map
 - `auxilliary.R`: collection of some useful generic functions for the evaluation (e.g., discrete binning, cross-correlation maximization)
 - `constants.R`: constants used for calculations (internal)

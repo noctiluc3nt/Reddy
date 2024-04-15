@@ -7,11 +7,11 @@
 plot_barycentric_map(xb, yb, contours = c(5, 10, 20))
 }
 \arguments{
-\item{xb}{xb coordinate (e.g., from calc_anisotropy)}
+\item{xb}{xb coordinate (e.g., from \code{calc_anisotropy})}
 
-\item{yb}{yb coordinate (e.g., from calc_anisotropy)}
+\item{yb}{yb coordinate (e.g., from \code{calc_anisotropy})}
 
-\item{contours}{vector containing levels of contour lines for 2d kernel densoty estimation, default: contours=c(5,10,20)}
+\item{contours}{vector containing levels of contour lines for 2d kernel densoty estimation, default: \code{contours=c(5,10,20)}}
 }
 \value{
 plots (xb, yb) in barycentric map with 2d kernel density estimation (no return)
