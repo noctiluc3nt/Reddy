@@ -80,19 +80,36 @@ rotate_double = function(u,v,w) {
 #'@param u u-wind (levelled sonic)
 #'@param v v-wind (levelled sonic)
 #'@param w w-wind (levelled sonic)
-#'@param c a three-dimensional vector containing the offset of u-, v-, w-wind
+#'@param bias a three-dimensional correction vector containing the offset of u-, v-, w-wind
 #'
-#'@return 
+#'@return list containing u, v, w after rotation as well as the rotation angles alpha, beta and gamma and the fitted offset c3
 #'@export
 #'
 #'@examples
 #'
-rotate_planar = function(u,v,w,c=c(0,0,0)) {
-	#TODO
-	theta=atan2(mean(v),mean(u))
-	rot1=matrix(c(cos(theta),-sin(theta),0,sin(theta),cos(theta),0,0,0,1), nrow=3,ncol=3,byrow=TRUE) #B bzw. M^T
-	wind1=c(u,v,w)%*%rot1
-	return(list("wind"=wind1,"theta"=theta*180/pi))
+rotate_planar = function(u,v,w,bias=c(0,0,0)) {
+	#linear regression
+    fit=lm(w ~ u + v)
+    c3=fit$coefficients[1]
+    b1=fit$coefficients[2]
+    b2=fit$coefficients[3]
+    #angles
+    alpha=atan(-b1)
+    beta=atan(b2)
+    sin_alpha=-b1/(sqrt(1+b1^2))
+    cos_alpha=1/(sqrt(1+b1^2))
+    sin_beta=b2/(sqrt(1+b2))
+    cos_beta=1/(sqrt(1+b2^2))
+    #rotation matrix P
+    P=matrix(c(cos_alpha,sin_alpha*sin_beta,-sin_alpha*cos_beta,0,cos_beta,sin_beta,sin_alpha,-sin_beta*cos_alpha,cos_alpha*cos_beta),nrow=3,byrow=T)
+    upf=P[1,1]*(u-bias[1]) + P[1,2]*(v-bias[2]) + P[1,3]*(w-bias[3])
+    vpf=P[2,1]*(u-bias[1]) + P[2,2]*(v-bias[2]) + P[2,3]*(w-bias[3])
+    wpf=P[3,1]*(u-bias[1]) + P[3,2]*(v-bias[2]) + P[3,3]*(w-bias[3])
+    #gamma angle for rotation around z-axis
+    gamma=atan2(mean(vpf,na.rm=T),mean(upf,na.rm=T))
+    ur=upf*cos(gamma) + vpf*sin(gamma)
+    vr=-upf*sin(gamma) + vpf*cos(gamma)
+	return(list("u"=ur,"v"=vr,"w"=wpf,"alpha"=alpha*180/pi,"beta"=beta*180/pi,"gamma"=gamma,"c3"=c3))
 }
 
 

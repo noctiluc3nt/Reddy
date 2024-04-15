@@ -4,7 +4,7 @@
 \alias{rotate_planar}
 \title{Planar fit rotation}
 \usage{
-rotate_planar(u, v, w, c = c(0, 0, 0))
+rotate_planar(u, v, w, bias = c(0, 0, 0))
 }
 \arguments{
 \item{u}{u-wind (levelled sonic)}
@@ -13,10 +13,10 @@ rotate_planar(u, v, w, c = c(0, 0, 0))
 
 \item{w}{w-wind (levelled sonic)}
 
-\item{c}{a three-dimensional vector containing the offset of u-, v-, w-wind}
+\item{bias}{a three-dimensional correction vector containing the offset of u-, v-, w-wind}
 }
 \value{
-
+list containing u, v, w after rotation as well as the rotation angles alpha, beta and gamma and the fitted offset c3
 }
 \description{
 Planar fit rotation
