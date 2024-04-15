@@ -19,3 +19,9 @@ a matrix cotaining timeseries var1 and var2 as columns after shifting to the max
 \description{
 shifts two timeseries to match their maximum cross-correlation
 }
+\examples{
+ts1=runif(10)
+ts2=c(1,1,ts1)
+shifted=shift2maxccf(ts1,ts2)
+
+}

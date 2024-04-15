@@ -9,7 +9,7 @@ sigma=function(){
 
 #' cp
 #'
-#' heat capacity for constant pressure [J/(kg*K)]
+#' heat capacity, constant pressure [J/(kg*K)]
 #' @keywords internal
 cp=function(){
 	return(1005.7)
@@ -69,7 +69,6 @@ Lv = function() {
 M_H2O = function() {
 	return(0.01802)
 }
-
 
 #' M_CO2
 #'

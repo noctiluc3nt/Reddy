@@ -17,6 +17,3 @@ wind speed [m/s]
 \description{
 Calculates horizontal wind speed
 }
-\examples{
-
-}

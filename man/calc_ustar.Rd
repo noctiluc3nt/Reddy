@@ -17,6 +17,3 @@ friction velocity [m/s]
 \description{
 Calculates friction velocity from the covariances cov(u,w) and cov(v,w)
 }
-\examples{
-
-}

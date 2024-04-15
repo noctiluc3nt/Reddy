@@ -1,13 +1,13 @@
 #' Invariant analysis of Reynolds stress tensor
 #'
-#'@description Invariant analysis of Reynolds stress tensor, calculation of anisotropy
-#'@param a11 R11 element of Reynolds stress tensor (scalar or vector)
-#'@param a12 R12 element of Reynolds stress tensor (scalar or vector)
-#'@param a13 R13 element of Reynolds stress tensor (scalar or vector)
-#'@param a22 R22 element of Reynolds stress tensor (scalar or vector)
-#'@param a23 R23 element of Reynolds stress tensor (scalar or vector)
-#'@param a33 R33 element of Reynolds stress tensor (scalar or vector)
-#'@return list containing xb, yb, eta, xi, all eigenvalues and eigenvectors (eta,xi are the coordinates of the Lumley triangle and xb,yb the coordinates of the barycentric map)
+#'@description Invariant analysis of Reynolds stress tensor, calculation of Lumley and barycentric map coordinates and anisotropy
+#'@param a11 R11 element of Reynolds stress tensor: u_sd^2   (scalar or vector)
+#'@param a12 R12 element of Reynolds stress tensor: cov(u,v) (scalar or vector)
+#'@param a13 R13 element of Reynolds stress tensor: cov(u,w) (scalar or vector)
+#'@param a22 R22 element of Reynolds stress tensor: v_sd^2   (scalar or vector)
+#'@param a23 R23 element of Reynolds stress tensor: cov(v,w) (scalar or vector)
+#'@param a33 R33 element of Reynolds stress tensor: w_sd^2   (scalar or vector)
+#'@return list containing xb, yb, eta, xi, all eigenvalues and eigenvectors (eta, xi are the coordinates of the Lumley triangle and xb, yb the coordinates of the barycentric map)
 #'@export
 #'
 #'@examples
@@ -66,7 +66,7 @@ calc_anisotropy = function(a11,a12,a13,a22,a23,a33) {
 #'@param xb xb coordinate (e.g., from calc_anisotropy)
 #'@param yb yb coordinate (e.g., from calc_anisotropy)
 #'@param contours vector containing levels of contour lines for 2d kernel densoty estimation, default: contours=c(5,10,20)
-#'@param ... parameters passed to plot function
+#'
 #'@return plots (xb, yb) in barycentric map with 2d kernel density estimation (no return)
 #'@export
 #' 
@@ -77,10 +77,10 @@ calc_anisotropy = function(a11,a12,a13,a22,a23,a33) {
 #'example1=calc_anisotropy(rep(1,nm),rep(0,nm),runif(nm,0,1),rep(1,nm),rep(0,nm),runif(nm,1,1.5))
 #'plot_barycentric_map(example1$xb,example1$yb)
 #'
-plot_barycentric_map = function(xb,yb,contours=c(5,10,20),...) {
+plot_barycentric_map = function(xb,yb,contours=c(5,10,20)) {
 	if (!exists("pch")) pch = 20
     if (typeof(col)=="closure") col = rgb(0,0,0,0.4)
-    plot(xb,yb,pch=pch,col=col,xlim=c(0,1),ylim=c(0,sqrt(3)/2),asp=1,xlab="x",ylab="x",main="Barycentric Map",...)
+    plot(xb,yb,pch=pch,col=col,xlim=c(0,1),ylim=c(0,sqrt(3)/2),asp=1,xlab="x",ylab="x",main="Barycentric Map")
     segments(0,0,1,0,lwd=2)
 	segments(0,0,0.5,sqrt(3)/2,lwd=2)
 	segments(1,0,0.5,sqrt(3)/2,lwd=2)

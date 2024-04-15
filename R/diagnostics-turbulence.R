@@ -1,6 +1,6 @@
 ### turbulence quantities ###
 
-#' Turbulent Kinetic Energy
+#' Turbulent Kinetic Energy TKE
 #'
 #'@description Calculates turbulent kinetic energy (TKE) from u_sd, v_sd and w_sd
 #'@param u_sd standard deviation of u-wind [m/s]
@@ -9,8 +9,6 @@
 #'
 #'@return turbulent kinetic energy TKE [m^2/s^2]
 #'@export
-#'
-#'@examples
 #'
 calc_tke = function(u_sd,v_sd,w_sd) {
 	return(1/2*(u_sd^2+v_sd^2+w_sd^2)) 
@@ -24,10 +22,8 @@ calc_tke = function(u_sd,v_sd,w_sd) {
 #'@param v_sd standard deviation of v-wind [m/s]
 #'@param w_sd standard deviation of w-wind [m/s]
 #'
-#'@return turbulent kinetic energy TKE [m^2/s^2]
+#'@return turbulent kinetic energy velocity scale [m/s]
 #'@export
-#'
-#'@examples
 #'
 calc_vtke = function(u_sd,v_sd,w_sd) {
 	tke=calc_tke(u_sd,v_sd,w_sd)
@@ -44,8 +40,6 @@ calc_vtke = function(u_sd,v_sd,w_sd) {
 #'@return friction velocity [m/s]
 #'@export
 #'
-#'@examples
-#'
 calc_ustar = function(cov_uw,cov_vw) {
 	return((cov_uw^2+cov_vw^2)^(1/4)) 
 }
@@ -53,14 +47,12 @@ calc_ustar = function(cov_uw,cov_vw) {
 #' Obukhov length
 #'
 #'@description Calculates Obukhov length from friction velocity, mean temperature and cov(T,w)
-#'@param ustar friction velocity (e.g., from calc_frictionVelocity) [m/s]
+#'@param ustar friction velocity (e.g., from \code{calc_ustar}) [m/s]
 #'@param T_mean mean temperature [K]
 #'@param cov_wT covariance cov(w,T) [m/s K]
 #'
 #'@return Obukhov length [m]
 #'@export
-#'
-#'@examples
 #'
 calc_L = function(ustar,T_mean,cov_wT) {
 	return(-abs(ustar^3)*T_mean/(karman()*g()*cov_wT))
@@ -71,12 +63,10 @@ calc_L = function(ustar,T_mean,cov_wT) {
 #'
 #'@description Calculates dimensionless stability parameter from Obukhov length and measurement height, i.e. zeta = z/L
 #'@param z measurement height [m]
-#'@param L Obukhov length [m], e.g. from calc_L
+#'@param L Obukhov length [m] (e.g., from \code{calc_L})
 #'
 #'@return stability parameter [-]
 #'@export
-#'
-#'@examples
 #'
 calc_zeta = function(z,L) {
 	return(z/L)
@@ -93,8 +83,6 @@ calc_zeta = function(z,L) {
 #'@return horizontal turbulence intensity [-]
 #'@export
 #'
-#'@examples
-#'
 calc_ti = function(u_sd,v_sd,ws_mean) {
 	return(sqrt(u_sd^2+v_sd^2)/ws_mean)
 }
@@ -107,8 +95,6 @@ calc_ti = function(u_sd,v_sd,ws_mean) {
 #'
 #'@return vertical turbulence intensity [-]
 #'@export
-#'
-#'@examples
 #'
 calc_iw = function(w_sd,ws_mean) {
 	return(w_sd/ws_mean)
@@ -123,8 +109,6 @@ calc_iw = function(w_sd,ws_mean) {
 #'
 #'@return velocity aspect ratio [-]
 #'@export
-#'
-#'@examples
 #'
 calc_var = function(u_sd,v_sd,w_sd) {
 	return(sqrt(2)*w_sd/sqrt(u_sd^2+v_sd^2))
@@ -167,7 +151,7 @@ cov2sh = function(cov_wT,rho=NULL) {
 
 #' Converts cov(w,q) to latent heat flux LH
 #'
-#'@description Converts cov(q,w) to latent heat flux LH
+#'@description Converts cov(w,q) to latent heat flux LH
 #'@param cov_wq covariance cov(w,q) [m/s]
 #'@param rho density of air [kg/m^3] (optional)
 #'
@@ -181,7 +165,7 @@ cov2lh = function(cov_wq,rho=NULL) {
 	return(rho*Lv()*cov_wq)
 }
 
-#' Converts cov(w,co2) to CO2 flux
+#' Converts cov(co2,w) to CO2 flux
 #'
 #'@description Converts cov(co2,w) to CO2 flux
 #'@param cov_co2w covariance cov(co2,w) [m/s]
@@ -233,8 +217,6 @@ calc_ef = function(sh,lh) {
 #'@return wind direction [deg]
 #'@export
 #'
-#'@examples
-#'
 calc_windDirection = function(u,v) {
 	return(atan2(-u,-v)*180/pi)
 }
@@ -247,8 +229,6 @@ calc_windDirection = function(u,v) {
 #'
 #'@return wind speed [m/s]
 #'@export
-#'
-#'@examples
 #'
 calc_windSpeed2D = function(u,v) {
 	return(sqrt(u^2+v^2))
@@ -264,8 +244,6 @@ calc_windSpeed2D = function(u,v) {
 #'@return wind speed (3D) [m/s]
 #'@export
 #'
-#'@examples
-#'
 calc_windSpeed3D = function(u,v,w) {
 	return(sqrt(u^2+v^2+w^2))
 }
@@ -278,8 +256,6 @@ calc_windSpeed3D = function(u,v,w) {
 #'
 #'@return gust factor [-]
 #'@export
-#'
-#'@examples
 #'
 calc_gustfactor = function(ws_max,ws_mean) {
 	return(ws_max/ws_mean)

@@ -7,7 +7,7 @@
 calc_L(ustar, T_mean, cov_wT)
 }
 \arguments{
-\item{ustar}{friction velocity (e.g., from calc_frictionVelocity) [m/s]}
+\item{ustar}{friction velocity (e.g., from \code{calc_ustar}) [m/s]}
 
 \item{T_mean}{mean temperature [K]}
 
@@ -18,7 +18,4 @@ Obukhov length [m]
 }
 \description{
 Calculates Obukhov length from friction velocity, mean temperature and cov(T,w)
-}
-\examples{
-
 }

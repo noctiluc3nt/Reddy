@@ -58,6 +58,7 @@ despiking = function(series,thresholds=c(NA,NA),mad_factor=10,threshold_skewness
 #'@export
 #'
 #'@examples
+#'wind_rotated=rotate_double(4,3,1) #double rotation can be applied instantenously
 #'
 rotate_double = function(u,v,w) {
 	#horizontal
@@ -86,6 +87,10 @@ rotate_double = function(u,v,w) {
 #'@export
 #'
 #'@examples
+#'u=rnorm(1000)
+#'v=rnorm(1000)
+#'w=rnorm(1000)
+#'wind_rotated=rotate_planar(u,v,w) #for planar fit a timeseries is required
 #'
 rotate_planar = function(u,v,w,bias=c(0,0,0)) {
 	#linear regression
@@ -117,8 +122,8 @@ rotate_planar = function(u,v,w,bias=c(0,0,0)) {
 #'
 #'@description Stationarity Flag according to Foken and Wichura, 1996 based on the assumption that the covariance of two variables ('var1' and 'var2', one usually representing vertical velocity) calculated for blocks (of length nsub) do not differ to much from the total covariance
 #'@param var1 variable 1 
-#'@param var2 variable 2 (same length as 'var1', usually either 'var1' or 'var2' represent vertical velocity)
-#'@param nsub number of elements used for subsampling (nsub < length(var1)) 
+#'@param var2 variable 2 (same length as \code{var1}, usually either \code{var1} or \code{var2} represent vertical velocity)
+#'@param nsub number of elements used for subsampling (\code{nsub < length(var1)}) 
 #'
 #'@return 
 #'@export
@@ -152,13 +157,11 @@ flag_stationarity = function(var1,var2,nsub=3000) {
 
 #' Vertical Velocity Flag
 #'
-#'@description Vertical Velocity Flag according to Mauder et al., 2013: After (planar fit) rotation the vertical velocity should vanish, this flag flags high remaining vertical velocities.
+#'@description Vertical Velocity Flag according to Mauder et al., 2013: After rotation the vertical velocity should vanish, this flag flags high remaining vertical velocities.
 #'@param w vertical velocity 
 #'
 #'@return 
 #'@export
-#'
-#'@examples
 #'
 flag_w = function(w) {
     w=abs(w)
@@ -171,13 +174,11 @@ flag_w = function(w) {
 #'@description Flow Distortion Flag according to Mauder et al., 2013: Wind coming from (pre-defined) directions blocked by the measurement device is flaged with 2 (for wind speeds greater than 0.1 assuming that during calm wind the wind direction is not well-defined). The wind constancy ratio is calculated to quantify the variability of horizontal wind direction according to Mahrt, 1999.
 #'@param u u-wind (levelled sonic)
 #'@param v v-wind (levelled sonic)
-#'@param dir_blocked vector containing the lower and upper bound of the blocked wind sector in degrees (e.g., 'dir_blocked=c(30,60)')
-#'@param threshold_cr threshold for constancy ratio (default 'threshold_cr=0.9', may be adapted to used data set)
+#'@param dir_blocked vector containing the lower and upper bound of the blocked wind sector in degrees (e.g., \code{dir_blocked = c(30,60)})
+#'@param threshold_cr threshold for constancy ratio (default \code{threshold_cr = 0.9}, may be adapted to used data set)
 #'
 #'@return 
 #'@export
-#'
-#'@examples
 #'
 flag_distortion = function(u,v,dir_blocked=c(30,60),threshold_cr=0.9) {
     if (length(u) != length(v)) {
@@ -211,7 +212,8 @@ flag_distortion = function(u,v,dir_blocked=c(30,60),threshold_cr=0.9) {
 #'@return 
 #'@export
 #'
-#'@examples
+#'@example
+#'itc_flag=flag_most(0.2,0.4,-0.3)
 #'
 flag_most = function(sigma_w,ustar,zeta) {
     parameterized=1.3*(1+2*abs(zeta))^(1/3) #sigma_w/ustar parametrized according to scaling function based on zeta
@@ -228,8 +230,8 @@ flag_most = function(sigma_w,ustar,zeta) {
 #'@param w w-wind [m/s] (levelled sonic)
 #'@param Ts temperature [K] (sonic temperature or corrected temperature)
 #'@param q specific humidity [kg/kg] (if measured by the sonic, default NULL)
-#'@param A constant used in cross-wind correction, default 'A = 7/8' for CSAT3
-#'@param B constant used in cross-wind correction, default 'B = 7/8' for CSAT3
+#'@param A constant used in cross-wind correction, default \code{A = 7/8} for CSAT3
+#'@param B constant used in cross-wind correction, default \code{B = 7/8} for CSAT3
 #'
 #'@return SND correction of sensible heat flux
 #'@export
@@ -259,10 +261,10 @@ SNDcorrection = function(u,v,w,Ts,q=NULL,A=7/8,B=7/8) {
 #'
 #'@description WPL correction: density correction for trace gas fluxes (i.e., converts volume- to mass-related quantity)
 #'@param rho_w measured water vapor density [kg/m^3]
-#'@param rho_c measured trace gas density [kg/m^3] (only if WPL-correction should be applied to another flux, e.g. CO2 flux, default NULL)
+#'@param rho_c measured trace gas density [kg/m^3] (only if WPL-correction should be applied to another flux, e.g. CO2 flux, default \code{NULL})
 #'@param w w-wind [m/s] (levelled sonic)
 #'@param Ts temperature [K] (sonic temperature or corrected temperature)
-#'@param q specific humidity [kg/kg] (if measured, default NULL)
+#'@param q specific humidity [kg/kg] (if measured, default \code{NULL})
 #'
 #'@return WPL correction of respective flux
 #'@export
@@ -298,8 +300,6 @@ WPLcorrection = function(rho_w,rho_c=NULL,w,Ts,q) {
 #'
 #'@return density of the gas [kg/m^3]
 #'@export
-#'
-#'@examples
 #'
 ppt2rho = function(ppt,T_mean=288.15, pres = 101325, e = 0, gas="H2O") {
     Vd=Runiversal()*T_mean/(pres-e) #volume of dry air [m^3/mol]

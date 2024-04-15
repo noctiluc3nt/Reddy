@@ -14,8 +14,15 @@ binning(var1, var2, bins)
 \item{bins}{vector, providing the intervals of the bins of var2}
 }
 \value{
-matrix of dimension (length(bins)-1,4) with columns representing mean, median, 25%-quantile, 74%-quantile
+matrix of dimension (\code{length(bins)-1,4}) with columns representing mean, median, 25%-quantile, 74%-quantile
 }
 \description{
 discrete binning of a variable var1 based on another variable var2 (e.g., the stability parameter zeta)
+}
+\examples{
+zeta_bins=c(-10^(3:-3),10^(-3:3))
+zeta_vals=rnorm(1000)
+vals=runif(1000)
+binned=binning(vals,zeta_vals,zeta_bins)
+
 }

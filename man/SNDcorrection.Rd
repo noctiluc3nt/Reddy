@@ -17,9 +17,9 @@ SNDcorrection(u, v, w, Ts, q = NULL, A = 7/8, B = 7/8)
 
 \item{q}{specific humidity [kg/kg] (if measured by the sonic, default NULL)}
 
-\item{A}{constant used in cross-wind correction, default 'A = 7/8' for CSAT3}
+\item{A}{constant used in cross-wind correction, default \code{A = 7/8} for CSAT3}
 
-\item{B}{constant used in cross-wind correction, default 'B = 7/8' for CSAT3}
+\item{B}{constant used in cross-wind correction, default \code{B = 7/8} for CSAT3}
 }
 \value{
 SND correction of sensible heat flux

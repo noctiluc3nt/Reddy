@@ -19,6 +19,3 @@ wind speed (3D) [m/s]
 \description{
 Calculates wind speed (3D)
 }
-\examples{
-
-}

@@ -9,13 +9,13 @@ WPLcorrection(rho_w, rho_c = NULL, w, Ts, q)
 \arguments{
 \item{rho_w}{measured water vapor density [kg/m^3]}
 
-\item{rho_c}{measured trace gas density [kg/m^3] (only if WPL-correction should be applied to another flux, e.g. CO2 flux, default NULL)}
+\item{rho_c}{measured trace gas density [kg/m^3] (only if WPL-correction should be applied to another flux, e.g. CO2 flux, default \code{NULL})}
 
 \item{w}{w-wind [m/s] (levelled sonic)}
 
 \item{Ts}{temperature [K] (sonic temperature or corrected temperature)}
 
-\item{q}{specific humidity [kg/kg] (if measured, default NULL)}
+\item{q}{specific humidity [kg/kg] (if measured, default \code{NULL})}
 }
 \value{
 WPL correction of respective flux

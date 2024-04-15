@@ -23,6 +23,3 @@ density of the gas [kg/m^3]
 \description{
 Unit conversion of "parts-per" to density (for closed-path gas analyzer)
 }
-\examples{
-
-}

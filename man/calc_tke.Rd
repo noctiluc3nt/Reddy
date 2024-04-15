@@ -2,7 +2,7 @@
 % Please edit documentation in R/diagnostics-turbulence.R
 \name{calc_tke}
 \alias{calc_tke}
-\title{Turbulent Kinetic Energy}
+\title{Turbulent Kinetic Energy TKE}
 \usage{
 calc_tke(u_sd, v_sd, w_sd)
 }
@@ -18,7 +18,4 @@ turbulent kinetic energy TKE [m^2/s^2]
 }
 \description{
 Calculates turbulent kinetic energy (TKE) from u_sd, v_sd and w_sd
-}
-\examples{
-
 }

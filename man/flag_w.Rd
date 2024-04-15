@@ -13,8 +13,5 @@ flag_w(w)
 
 }
 \description{
-Vertical Velocity Flag according to Mauder et al., 2013: After (planar fit) rotation the vertical velocity should vanish, this flag flags high remaining vertical velocities.
-}
-\examples{
-
+Vertical Velocity Flag according to Mauder et al., 2013: After rotation the vertical velocity should vanish, this flag flags high remaining vertical velocities.
 }

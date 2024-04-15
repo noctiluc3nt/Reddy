@@ -14,7 +14,7 @@
 #'@return 
 #'@export
 #'
-#'@examples
+#'@example
 #'ffp=calc_flux_footprint(zm=20,u_mean=2,h=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
 #'
 calc_flux_footprint = function(zm, u_mean=NA, h, L, v_sd, ustar, z0=NA,contours=seq(0.9,0.1,-0.1),nres=1000) {
@@ -110,33 +110,33 @@ calc_flux_footprint = function(zm, u_mean=NA, h, L, v_sd, ustar, z0=NA,contours=
 }
 
 
-
-
 #' Plot Flux-Footprint
 #'
 #'@description Plots Flux-Footprint Parametrization (FFP) according to Kljun et al., 2015
 #'@param ffp an object returned from calc_flux_footprint
 #'@param levels levels used for filled.contour plot of footprint, default levels=c(0,10^seq(-6,-3,0.1))
-#'@param ... optional plot parameters
 #' 
-#'@return 
+#'@return
+#'@importFrom grDevices colorRampPalette contourLines rgb
+#'@importFrom graphics .filled.contour abline arrows axis
+#'@importFrom stats approx ccf cor cov lm median quantile sd
 #'@export
 #'
 #'@examples
 #'ffp=calc_flux_footprint(zm=5,u_mean=5,h=700,L=-1.3,v_sd=1.2,ustar=0.35)
 #'plot_flux_footprint(ffp)
 #' 
-plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1)),...) {
+plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1))) {
     if (!exists("xlim")) xlim=c(0,400)
     if (!exists("ylim")) ylim=c(-250,250)
     #plot crosswind-integrated footprint
-    plot(ffp$x,ffp$fy_mean,type="l",xlim=xlim,lwd=2,xlab="x [m]",ylab="Crosswind-integrated footprint",main="crosswind-integrated footprint")
+    plot(ffp$x,ffp$fy_mean,type="l",xlim=xlim,lwd=2,xlab="x [m]",ylab="crosswind-integrated footprint",main="Crosswind-Integrated Flux Footprint")
     abline(v=ffp$xmax,col=2,lwd=2,lty=2)
     legend("topright",legend="footprint peak location",col=2,lwd=2,lty=2)
     #filled contour plot with contour lines
     lab=colorRampPalette(c("white","blue3","yellow","orange","red3"), space = "Lab")
     nlev=length(levels)
-    plot(NA,xlim=xlim,ylim=ylim,main="Flux footprint (2d)",xlab="x [m]",ylab="y [m]",...)
+    plot(NA,xlim=xlim,ylim=ylim,main="2D Flux Footprint",xlab="x [m]",ylab="y [m]")
     .filled.contour(ffp$x2d[1,],ffp$y2d[,1],ffp$f2d,levels=levels,col=lab(nlev))
     for (i in 1:length(ffp$xcontour)) {
         lines(ffp$xcontour[[i]],ffp$ycontour[[i]],type="l",lwd=1)

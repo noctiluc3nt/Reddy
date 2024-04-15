@@ -22,5 +22,9 @@ list containing u, v, w after rotation as well as the rotation angles alpha, bet
 Planar fit rotation
 }
 \examples{
+u=rnorm(1000)
+v=rnorm(1000)
+w=rnorm(1000)
+wind_rotated=rotate_planar(u,v,w) #for planar fit a timeseries is required
 
 }

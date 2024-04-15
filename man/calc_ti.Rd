@@ -19,6 +19,3 @@ horizontal turbulence intensity [-]
 \description{
 Calculates horizontal turbulence intensity TI := sqrt(u_sd^2+v_sd^2)/ws_mean
 }
-\examples{
-
-}

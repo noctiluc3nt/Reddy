@@ -57,13 +57,13 @@ calc_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=seq(0
 
 #' Plotting Quadrant Analysis
 #'
-#'@description Calculates occurrence fraction and strength of the four quadrants
+#'@description Plots quadrant analysis
 #'@param xval values of x variable (vector)
 #'@param yval values of y variable (vector)
-#'@param do_normalization should the values be normalized, i.e. (x-mean(x))/sd(x)? default: TRUE
-#'@param hole_sizes vector containing desired hole sizes (integers >= 0), default: c(1,2)
-#'@param contours vector containing levels of contour lines for 2d kernel densoty estimation, default: contours=10^(-3:3)
-#'@param print_fit should the fit summary from the linear regression be printed? default: TRUE
+#'@param do_normalization should the values be normalized, i.e. (x-mean(x))/sd(x)? default: \code{TRUE}
+#'@param hole_sizes vector containing desired hole sizes (integers >= 0), default: \code{c(1,2)}
+#'@param contours vector containing levels of contour lines for 2d kernel densoty estimation, default: \code{contours=10^(-3:3)}
+#'@param print_fit should the fit summary from the linear regression be printed? default: \code{TRUE}
 #'@param ... arguments passed to plot function
 #'@return 
 #'@export

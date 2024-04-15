@@ -2,7 +2,7 @@
 % Please edit documentation in R/diagnostics-turbulence.R
 \name{cov2cf}
 \alias{cov2cf}
-\title{Converts cov(w,co2) to CO2 flux}
+\title{Converts cov(co2,w) to CO2 flux}
 \usage{
 cov2cf(cov_co2w, rho = NULL)
 }

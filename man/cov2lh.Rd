@@ -15,5 +15,5 @@ cov2lh(cov_wq, rho = NULL)
 latent heat flux [W/m^2]
 }
 \description{
-Converts cov(q,w) to latent heat flux LH
+Converts cov(w,q) to latent heat flux LH
 }

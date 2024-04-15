@@ -19,6 +19,3 @@ velocity aspect ratio [-]
 \description{
 Calculates the velocity aspect ratio: VAR := sqrt(2)*w_sd/sqrt(u_sd^2+v_sd^2)
 }
-\examples{
-
-}

@@ -14,11 +14,8 @@ calc_vtke(u_sd, v_sd, w_sd)
 \item{w_sd}{standard deviation of w-wind [m/s]}
 }
 \value{
-turbulent kinetic energy TKE [m^2/s^2]
+turbulent kinetic energy velocity scale [m/s]
 }
 \description{
 Calculates the velocity scale of turbulent kinetic energy (TKE): Vtke := sqrt(TKE)
-}
-\examples{
-
 }

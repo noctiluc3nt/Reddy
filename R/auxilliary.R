@@ -4,8 +4,14 @@
 #'@param var1 vector, variable that should be binned
 #'@param var2 vector, variable used for the binning
 #'@param bins vector, providing the intervals of the bins of var2
-#'@return matrix of dimension (length(bins)-1,4) with columns representing mean, median, 25%-quantile, 74%-quantile
+#'@return matrix of dimension (\code{length(bins)-1,4}) with columns representing mean, median, 25%-quantile, 74%-quantile
 #'@export
+#'
+#'@examples
+#'zeta_bins=c(-10^(3:-3),10^(-3:3))
+#'zeta_vals=rnorm(1000)
+#'vals=runif(1000)
+#'binned=binning(vals,zeta_vals,zeta_bins)
 #'
 binning=function(var1,var2,bins) {
     if (length(var1)!=length(var2)) {
@@ -19,7 +25,7 @@ binning=function(var1,var2,bins) {
 			    out[i-1,1]=mean(sub,na.rm=T)
 			    out[i-1,2]=median(sub,na.rm=T)
 			    #nm=length(sub)
-			    #out[i-1,3]=median(sub,na.rm=T)+sd(sub,na.rm=T)/sqrt(nm) #using the estimator uncertainty
+			    #out[i-1,3]=median(sub,na.rm=T)+sd(sub,na.rm=T)/sqrt(nm) #using the estimation uncertainty
 			    #out[i-1,4]=median(sub,na.rm=T)-sd(sub,na.rm=T)/sqrt(nm)
 			    out[i-1,3]=quantile(sub,0.25,na.rm=T)
 			    out[i-1,4]=quantile(sub,0.75,na.rm=T)
@@ -37,6 +43,11 @@ binning=function(var1,var2,bins) {
 #'@param plot logical, should the cross-correlation be plotted? default \code{plot = TRUE}
 #'@return a matrix cotaining timeseries var1 and var2 as columns after shifting to the maximum cross-correlation
 #'@export
+#'
+#'@examples
+#'ts1=runif(10)
+#'ts2=c(1,1,ts1)
+#'shifted=shift2maxccf(ts1,ts2)
 #'
 shift2maxccf=function(var1,var2,plot=TRUE) {
 	#equalize lengths of timeseries

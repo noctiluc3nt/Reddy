@@ -7,6 +7,6 @@
 cp()
 }
 \description{
-heat capacity for constant pressure [J/(kg*K)]
+heat capacity, constant pressure [J/(kg*K)]
 }
 \keyword{internal}

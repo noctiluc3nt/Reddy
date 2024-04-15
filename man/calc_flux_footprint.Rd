@@ -41,7 +41,3 @@ calc_flux_footprint(
 \description{
 Calculates Flux-Footprint Parametrization (FFP) according to Kljun et al., 2015
 }
-\examples{
-ffp=calc_flux_footprint(zm=20,u_mean=2,h=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
-
-}

@@ -17,6 +17,3 @@ vertical turbulence intensity [-]
 \description{
 Calculates vertical turbulence intensity Iw := w_sd/ws_mean
 }
-\examples{
-
-}

@@ -20,5 +20,6 @@ list containing the wind in a natural coordinate system (streamwise, crosswise, 
 Double rotation
 }
 \examples{
+wind_rotated=rotate_double(4,3,1) #double rotation can be applied instantenously
 
 }

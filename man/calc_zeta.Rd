@@ -9,14 +9,11 @@ calc_zeta(z, L)
 \arguments{
 \item{z}{measurement height [m]}
 
-\item{L}{Obukhov length [m], e.g. from calc_L}
+\item{L}{Obukhov length [m] (e.g., from \code{calc_L})}
 }
 \value{
 stability parameter [-]
 }
 \description{
 Calculates dimensionless stability parameter from Obukhov length and measurement height, i.e. zeta = z/L
-}
-\examples{
-
 }

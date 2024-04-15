@@ -9,9 +9,9 @@ flag_stationarity(var1, var2, nsub = 3000)
 \arguments{
 \item{var1}{variable 1}
 
-\item{var2}{variable 2 (same length as 'var1', usually either 'var1' or 'var2' represent vertical velocity)}
+\item{var2}{variable 2 (same length as \code{var1}, usually either \code{var1} or \code{var2} represent vertical velocity)}
 
-\item{nsub}{number of elements used for subsampling (nsub < length(var1))}
+\item{nsub}{number of elements used for subsampling (\code{nsub < length(var1)})}
 }
 \value{
 

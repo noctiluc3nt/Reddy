@@ -4,14 +4,12 @@
 \alias{plot_flux_footprint}
 \title{Plot Flux-Footprint}
 \usage{
-plot_flux_footprint(ffp, levels = c(0, 10^seq(-6, -3, 0.1)), ...)
+plot_flux_footprint(ffp, levels = c(0, 10^seq(-6, -3, 0.1)))
 }
 \arguments{
 \item{ffp}{an object returned from calc_flux_footprint}
 
 \item{levels}{levels used for filled.contour plot of footprint, default levels=c(0,10^seq(-6,-3,0.1))}
-
-\item{...}{optional plot parameters}
 }
 \value{
 

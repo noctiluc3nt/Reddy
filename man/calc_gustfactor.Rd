@@ -17,6 +17,3 @@ gust factor [-]
 \description{
 Calculates gust factor G := ws_max/ws_mean
 }
-\examples{
-
-}

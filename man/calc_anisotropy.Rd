@@ -7,23 +7,23 @@
 calc_anisotropy(a11, a12, a13, a22, a23, a33)
 }
 \arguments{
-\item{a11}{R11 element of Reynolds stress tensor (scalar or vector)}
+\item{a11}{R11 element of Reynolds stress tensor: u_sd^2   (scalar or vector)}
 
-\item{a12}{R12 element of Reynolds stress tensor (scalar or vector)}
+\item{a12}{R12 element of Reynolds stress tensor: cov(u,v) (scalar or vector)}
 
-\item{a13}{R13 element of Reynolds stress tensor (scalar or vector)}
+\item{a13}{R13 element of Reynolds stress tensor: cov(u,w) (scalar or vector)}
 
-\item{a22}{R22 element of Reynolds stress tensor (scalar or vector)}
+\item{a22}{R22 element of Reynolds stress tensor: v_sd^2   (scalar or vector)}
 
-\item{a23}{R23 element of Reynolds stress tensor (scalar or vector)}
+\item{a23}{R23 element of Reynolds stress tensor: cov(v,w) (scalar or vector)}
 
-\item{a33}{R33 element of Reynolds stress tensor (scalar or vector)}
+\item{a33}{R33 element of Reynolds stress tensor: w_sd^2   (scalar or vector)}
 }
 \value{
-list containing xb, yb, eta, xi, all eigenvalues and eigenvectors (eta,xi are the coordinates of the Lumley triangle and xb,yb the coordinates of the barycentric map)
+list containing xb, yb, eta, xi, all eigenvalues and eigenvectors (eta, xi are the coordinates of the Lumley triangle and xb, yb the coordinates of the barycentric map)
 }
 \description{
-Invariant analysis of Reynolds stress tensor, calculation of anisotropy
+Invariant analysis of Reynolds stress tensor, calculation of Lumley and barycentric map coordinates and anisotropy
 }
 \examples{
 calc_anisotropy(1,0,0,1,0,1) #isotropic

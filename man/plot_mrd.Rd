@@ -7,7 +7,7 @@
 plot_mrd(mrd_out, ...)
 }
 \arguments{
-\item{mrd_out}{an output object from calc_mrd}
+\item{mrd_out}{an output object from \code{calc_mrd}}
 
 \item{...}{parameters passed to plot function}
 }
