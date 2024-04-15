@@ -134,7 +134,7 @@ plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1)),...) {
     abline(v=ffp$xmax,col=2,lwd=2,lty=2)
     legend("topright",legend="footprint peak location",col=2,lwd=2,lty=2)
     #filled contour plot with contour lines
-    lab=colorRampPalette(c("blue3","blue","yellow","orange","red3"), space = "Lab")
+    lab=colorRampPalette(c("white","blue3","yellow","orange","red3"), space = "Lab")
     nlev=length(levels)
     plot(NA,xlim=xlim,ylim=ylim,main="Flux footprint (2d)",xlab="x [m]",ylab="y [m]",...)
     .filled.contour(ffp$x2d[1,],ffp$y2d[,1],ffp$f2d,levels=levels,col=lab(nlev))

@@ -28,3 +28,44 @@ binning=function(var1,var2,bins) {
 	    return(out)
     }
 }
+
+#' shifting two timeseries to match maximum cross-correlation
+#'
+#'@description shifts two timeseries to match their maximum cross-correlation
+#'@param var1 vector, first timeseries
+#'@param var2 vector, second timeseries
+#'@param plot logical, should the cross-correlation be plotted? default \code{plot = TRUE}
+#'@return a matrix cotaining timeseries var1 and var2 as columns after shifting to the maximum cross-correlation
+#'@export
+#'
+shift2maxccf=function(var1,var2,plot=TRUE) {
+	#equalize lengths of timeseries
+	n1=length(var1)
+	n2=length(var2)
+	if (n1<n2) {
+		var1=c(var1,rep(NA,n2-n1))
+	} else if (n2<n1) {
+		var2=c(var2,rep(NA,n1-n2))
+	}
+	n=max(n1,n2)
+	#calc cross-correlation
+	notna=(!is.na(var1) & !is.na(var2))
+    cc=ccf(var1[notna],var2[notna])
+	maxcc=max(cc$acf) #max positive cross-correlation
+	lag=cc$lag[which(cc$acf==max(cc$acf))] #respective time lag
+	if (plot == TRUE) {
+		plot(cc)
+		points(lag,maxcc,col=2,lwd=2,cex=2)
+		print(paste("lag:",lag,"\n maximum cross-correlation:",maxcc))
+	}
+	#shift timeseries
+	mat=array(NA,dim=c(n+abs(lag),2))
+	if (lag>0) { #positive lag = var1 leads var2
+		mat[,1]=c(var1,rep(NA,lag))
+		mat[,2]=c(rep(NA,lag),var2[1:n])
+	} else { #negative lag = var2 leads var1
+		mat[,1]=c(rep(NA,abs(lag)),var1[1:n])
+		mat[,2]=c(var2,rep(NA,abs(lag)))
+	}
+	return(mat)
+}
