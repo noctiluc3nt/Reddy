@@ -19,7 +19,7 @@ calc_flux_footprint(
 \arguments{
 \item{zm}{measurement height [m]}
 
-\item{u_mean}{mean horizontal wind speed [m/s] (alternatively you can also use z0)}
+\item{u_mean}{mean horizontal wind speed [m/s] (alternatively you can also use \code{z0})}
 
 \item{h}{boundary-layer height [m]}
 
@@ -29,15 +29,19 @@ calc_flux_footprint(
 
 \item{ustar}{friction velocity [m/s]}
 
-\item{z0}{roughness length [m] (either u_mean or z0 have to be given)}
+\item{z0}{roughness length [m] (either \code{u_mean} or \code{z0} have to be given)}
 
-\item{contours}{which contour lines should be calculated? default: contours=seq(0.9,0.1,-0.1)}
+\item{contours}{which contour lines should be calculated? default: \code{contours=seq(0.9,0.1,-0.1)}}
 
-\item{nres}{resolution (default is nres=1000)}
+\item{nres}{resolution (default: \code{nres=1000})}
 }
 \value{
 
 }
 \description{
 Calculates Flux-Footprint Parametrization (FFP) according to Kljun et al., 2015
+}
+\examples{
+ffp=calc_flux_footprint(zm=20,u_mean=2,h=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
+
 }

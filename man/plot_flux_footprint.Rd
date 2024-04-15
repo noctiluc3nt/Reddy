@@ -7,9 +7,9 @@
 plot_flux_footprint(ffp, levels = c(0, 10^seq(-6, -3, 0.1)))
 }
 \arguments{
-\item{ffp}{an object returned from calc_flux_footprint}
+\item{ffp}{an object returned from \code{calc_flux_footprint}}
 
-\item{levels}{levels used for filled.contour plot of footprint, default levels=c(0,10^seq(-6,-3,0.1))}
+\item{levels}{levels used for filled.contour plot of footprint, default \code{levels=c(0,10^seq(-6,-3,0.1))}}
 }
 \value{
 

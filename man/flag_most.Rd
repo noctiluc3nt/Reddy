@@ -19,3 +19,7 @@ flag_most(sigma_w, ustar, zeta)
 \description{
 Integral Turbulence Characteristics Flag: Tests the consistency with Monin-Obukhov similarity theory using the scaling functions from Panofsky and Dutton, 1984
 }
+\examples{
+itc_flag=flag_most(0.2,0.4,-0.3)
+
+}

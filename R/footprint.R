@@ -2,19 +2,19 @@
 #'
 #'@description Calculates Flux-Footprint Parametrization (FFP) according to Kljun et al., 2015
 #'@param zm measurement height [m]
-#'@param u_mean mean horizontal wind speed [m/s] (alternatively you can also use z0)
+#'@param u_mean mean horizontal wind speed [m/s] (alternatively you can also use \code{z0})
 #'@param h boundary-layer height [m]
 #'@param L Obukhov length [m]
 #'@param v_sd standard deviation of crosswind [m/s]
 #'@param ustar friction velocity [m/s]
-#'@param z0 roughness length [m] (either u_mean or z0 have to be given)
-#'@param contours which contour lines should be calculated? default: contours=seq(0.9,0.1,-0.1)
-#'@param nres resolution (default is nres=1000)
+#'@param z0 roughness length [m] (either \code{u_mean} or \code{z0} have to be given)
+#'@param contours which contour lines should be calculated? default: \code{contours=seq(0.9,0.1,-0.1)}
+#'@param nres resolution (default: \code{nres=1000})
 #'
 #'@return 
 #'@export
 #'
-#'@example
+#'@examples
 #'ffp=calc_flux_footprint(zm=20,u_mean=2,h=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
 #'
 calc_flux_footprint = function(zm, u_mean=NA, h, L, v_sd, ustar, z0=NA,contours=seq(0.9,0.1,-0.1),nres=1000) {
@@ -113,8 +113,8 @@ calc_flux_footprint = function(zm, u_mean=NA, h, L, v_sd, ustar, z0=NA,contours=
 #' Plot Flux-Footprint
 #'
 #'@description Plots Flux-Footprint Parametrization (FFP) according to Kljun et al., 2015
-#'@param ffp an object returned from calc_flux_footprint
-#'@param levels levels used for filled.contour plot of footprint, default levels=c(0,10^seq(-6,-3,0.1))
+#'@param ffp an object returned from \code{calc_flux_footprint}
+#'@param levels levels used for filled.contour plot of footprint, default \code{levels=c(0,10^seq(-6,-3,0.1))}
 #' 
 #'@return
 #'@importFrom grDevices colorRampPalette contourLines rgb

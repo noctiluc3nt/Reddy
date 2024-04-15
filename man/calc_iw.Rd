@@ -15,5 +15,5 @@ calc_iw(w_sd, ws_mean)
 vertical turbulence intensity [-]
 }
 \description{
-Calculates vertical turbulence intensity Iw := w_sd/ws_mean
+Calculates vertical turbulence intensity \code{Iw = w_sd/ws_mean}
 }

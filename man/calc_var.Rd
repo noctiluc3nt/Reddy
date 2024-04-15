@@ -17,5 +17,5 @@ calc_var(u_sd, v_sd, w_sd)
 velocity aspect ratio [-]
 }
 \description{
-Calculates the velocity aspect ratio: VAR := sqrt(2)*w_sd/sqrt(u_sd^2+v_sd^2)
+Calculates the velocity aspect ratio: \code{VAR = sqrt(2)*w_sd/sqrt(u_sd^2+v_sd^2)}
 }

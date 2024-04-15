@@ -17,5 +17,5 @@ calc_vtke(u_sd, v_sd, w_sd)
 turbulent kinetic energy velocity scale [m/s]
 }
 \description{
-Calculates the velocity scale of turbulent kinetic energy (TKE): Vtke := sqrt(TKE)
+Calculates the velocity scale of turbulent kinetic energy (TKE): \code{Vtke = sqrt(TKE)}
 }

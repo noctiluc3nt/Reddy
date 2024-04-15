@@ -17,5 +17,5 @@ calc_tke(u_sd, v_sd, w_sd)
 turbulent kinetic energy TKE [m^2/s^2]
 }
 \description{
-Calculates turbulent kinetic energy (TKE) from u_sd, v_sd and w_sd
+Calculates turbulent kinetic energy (TKE) from \code{u_sd}, \code{v_sd} and \code{w_sd}
 }

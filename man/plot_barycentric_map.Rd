@@ -21,7 +21,8 @@ Plots (xb, yb) from invariant analysis of Reynolds stress tensor (calc_anisotrop
 }
 \examples{
 nm=100
-example1=calc_anisotropy(rep(1,nm),rep(0,nm),runif(nm,0,1),rep(1,nm),rep(0,nm),runif(nm,1,1.5))
+example1=calc_anisotropy(rep(1,nm),rep(0,nm),runif(nm,0,1),
+	rep(1,nm),rep(0,nm),runif(nm,1,1.5))
 plot_barycentric_map(example1$xb,example1$yb)
 
 }

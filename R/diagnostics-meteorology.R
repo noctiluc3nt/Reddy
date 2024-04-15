@@ -1,7 +1,7 @@
 #' Saturation vapor pressure over water
 #'
 #'@description Calculates the saturation vapor pressure over water for given temperature and pressure
-#'@param temp scalar or vector, temperature [°C]
+#'@param temp scalar or vector, temperature [deg C]
 #'@return E_s, saturation vapor pressure over water [hPa]
 #'@export
 #'
@@ -35,4 +35,59 @@ calc_csi = function(temp,lw_in,rh=NULL,e=NULL) {
     epsilon_A = lw_in/(sigma*temp^4) #actual atmospheric emissivity
     epsilon = 0.23 + 0.47*(100*e/temp)^(1/8) #(theoretical) clear sky emissivity, Marty and Philiponna, 2002
     return(epsilon_A/epsilon)
+}
+
+
+### wind basics ###
+#' Wind Direction
+#'
+#'@description Calculates (horizontal) wind direction
+#'@param u u-wind [m/s]
+#'@param v v-wind [m/s]
+#'
+#'@return wind direction [deg]
+#'@export
+#'
+calc_windDirection = function(u,v) {
+	return(atan2(-u,-v)*180/pi)
+}
+
+#' Horizontal Wind Speed
+#'
+#'@description Calculates horizontal wind speed
+#'@param u u-wind [m/s]
+#'@param v v-wind [m/s]
+#'
+#'@return wind speed [m/s]
+#'@export
+#'
+calc_windSpeed2D = function(u,v) {
+	return(sqrt(u^2+v^2))
+}
+
+#' Wind Speed (3D)
+#'
+#'@description Calculates wind speed (3D)
+#'@param u u-wind [m/s]
+#'@param v v-wind [m/s]
+#'@param w w-wind [m/s]
+#'
+#'@return wind speed (3D) [m/s]
+#'@export
+#'
+calc_windSpeed3D = function(u,v,w) {
+	return(sqrt(u^2+v^2+w^2))
+}
+
+#' Gust Factor
+#'
+#'@description Calculates gust factor G := ws_max/ws_mean
+#'@param ws_max wind speed [m/s]
+#'@param ws_mean wind speed maximum [m/s]
+#'
+#'@return gust factor [-]
+#'@export
+#'
+calc_gustfactor = function(ws_max,ws_mean) {
+	return(ws_max/ws_mean)
 }

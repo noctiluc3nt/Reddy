@@ -22,7 +22,7 @@ A detailed tutorial containing several jupyter notebooks showcasing the most imp
 <image src="./inst/figures/reddy_showcase.png">
 
 ## List of scripts
-All functions that are contained in the Reddy package are described in the [manual](https://github.com/noctiluc3nt/Reddy/tree/main/inst/figures/reddy-manual.pdf) and are divided into the following scripts:
+All functions that are contained in the Reddy package are described in the [manual](https://github.com/noctiluc3nt/Reddy/tree/main/inst/figures/Reddy-manual.pdf) and are divided into the following scripts:
 - `anisotropy.R`: invariant analysis of the Reynolds stress tensor, calculation of turbulence anisotropy and visualization in a barycentric map
 - `auxilliary.R`: collection of some useful generic functions for the evaluation (e.g., discrete binning, cross-correlation maximization)
 - `constants.R`: constants used for calculations (internal)

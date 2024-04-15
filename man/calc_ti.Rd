@@ -17,5 +17,5 @@ calc_ti(u_sd, v_sd, ws_mean)
 horizontal turbulence intensity [-]
 }
 \description{
-Calculates horizontal turbulence intensity TI := sqrt(u_sd^2+v_sd^2)/ws_mean
+Calculates horizontal turbulence intensity \code{TI = sqrt(u_sd^2+v_sd^2)/ws_mean}
 }

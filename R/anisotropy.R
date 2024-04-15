@@ -1,13 +1,13 @@
 #' Invariant analysis of Reynolds stress tensor
 #'
 #'@description Invariant analysis of Reynolds stress tensor, calculation of Lumley and barycentric map coordinates and anisotropy
-#'@param a11 R11 element of Reynolds stress tensor: u_sd^2   (scalar or vector)
-#'@param a12 R12 element of Reynolds stress tensor: cov(u,v) (scalar or vector)
-#'@param a13 R13 element of Reynolds stress tensor: cov(u,w) (scalar or vector)
-#'@param a22 R22 element of Reynolds stress tensor: v_sd^2   (scalar or vector)
-#'@param a23 R23 element of Reynolds stress tensor: cov(v,w) (scalar or vector)
-#'@param a33 R33 element of Reynolds stress tensor: w_sd^2   (scalar or vector)
-#'@return list containing xb, yb, eta, xi, all eigenvalues and eigenvectors (eta, xi are the coordinates of the Lumley triangle and xb, yb the coordinates of the barycentric map)
+#'@param a11 R11 element of Reynolds stress tensor: \code{u_sd^2}   (scalar or vector)
+#'@param a12 R12 element of Reynolds stress tensor: \code{cov(u,v)} (scalar or vector)
+#'@param a13 R13 element of Reynolds stress tensor: \code{cov(u,w)} (scalar or vector)
+#'@param a22 R22 element of Reynolds stress tensor: \code{v_sd^2}   (scalar or vector)
+#'@param a23 R23 element of Reynolds stress tensor: \code{cov(v,w)} (scalar or vector)
+#'@param a33 R33 element of Reynolds stress tensor: \code{w_sd^2}   (scalar or vector)
+#'@return list containing \code{xb}, \code{yb}, \code{eta}, \code{xi}, all eigenvalues and eigenvectors (\code{eta}, code{xi} are the coordinates of the Lumley triangle and \code{xb}, \code{yb} the coordinates of the barycentric map)
 #'@export
 #'
 #'@examples
@@ -74,7 +74,8 @@ calc_anisotropy = function(a11,a12,a13,a22,a23,a33) {
 #'
 #'@examples
 #'nm=100
-#'example1=calc_anisotropy(rep(1,nm),rep(0,nm),runif(nm,0,1),rep(1,nm),rep(0,nm),runif(nm,1,1.5))
+#'example1=calc_anisotropy(rep(1,nm),rep(0,nm),runif(nm,0,1),
+#'		rep(1,nm),rep(0,nm),runif(nm,1,1.5))
 #'plot_barycentric_map(example1$xb,example1$yb)
 #'
 plot_barycentric_map = function(xb,yb,contours=c(5,10,20)) {

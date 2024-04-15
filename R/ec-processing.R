@@ -34,15 +34,15 @@ despiking = function(series,thresholds=c(NA,NA),mad_factor=10,threshold_skewness
     }
     #despiking based on median deviation test
     med=median(series,na.rm=TRUE)
-	mad=median(abs(series-med),na.rm=TRUE)
-	pass=(abs(series-med) <= mad_factor*mad) #pass criterion
-	series[!pass] = NA
+    mad=median(abs(series-med),na.rm=TRUE)
+    pass=(abs(series-med) <= mad_factor*mad) #pass criterion
+    series[!pass] = NA
     #despiking based on skewness and kurtosis
     seriesLDT=pracma::detrend(series,tt="linear") #linear detrending to eliminate trends (departures from stationarity) -> would influnece higher moments
-	skewness=mean(seriesLDT^3)/sd(seriesLDT)^3
-	kurtosis=mean(seriesLDT^4)/sd(seriesLDT)^4
-	pass=(abs(skewness)<threshold_skewness & kurtosis<threshold_kurtosis)
-	series[!pass] = NA
+    skewness=mean(seriesLDT^3)/sd(seriesLDT)^3
+    kurtosis=mean(seriesLDT^4)/sd(seriesLDT)^4
+    pass=(abs(skewness)<threshold_skewness & kurtosis<threshold_kurtosis)
+    series[!pass] = NA
     return(series)
 }
 
@@ -61,17 +61,17 @@ despiking = function(series,thresholds=c(NA,NA),mad_factor=10,threshold_skewness
 #'wind_rotated=rotate_double(4,3,1) #double rotation can be applied instantenously
 #'
 rotate_double = function(u,v,w) {
-	#horizontal
-	theta=atan2(mean(v,na.rm=T),mean(u,na.rm=T))
-	u1=u*cos(theta) + v*sin(theta)
+    #horizontal
+    theta=atan2(mean(v,na.rm=T),mean(u,na.rm=T))
+    u1=u*cos(theta) + v*sin(theta)
     v1=-u*sin(theta) + v*cos(theta)
     w1=w
-	#vertical
-	phi=atan2(mean(w1,na.rm=T),mean(u1,na.rm=T))
-	u2=u1*cos(phi) + w1*sin(phi)
+    #vertical
+    phi=atan2(mean(w1,na.rm=T),mean(u1,na.rm=T))
+    u2=u1*cos(phi) + w1*sin(phi)
     v2=v1
     w2=-u1*sin(phi)+w1*cos(phi)
-	return(list("u"=u2,"v"=v2,"w"=w2,"theta"=theta*180/pi,"phi"=phi*180/pi))
+    return(list("u"=u2,"v"=v2,"w"=w2,"theta"=theta*180/pi,"phi"=phi*180/pi))
 }
 
 
@@ -93,7 +93,7 @@ rotate_double = function(u,v,w) {
 #'wind_rotated=rotate_planar(u,v,w) #for planar fit a timeseries is required
 #'
 rotate_planar = function(u,v,w,bias=c(0,0,0)) {
-	#linear regression
+    #linear regression
     fit=lm(w ~ u + v)
     c3=fit$coefficients[1]
     b1=fit$coefficients[2]
@@ -114,7 +114,7 @@ rotate_planar = function(u,v,w,bias=c(0,0,0)) {
     gamma=atan2(mean(vpf,na.rm=T),mean(upf,na.rm=T))
     ur=upf*cos(gamma) + vpf*sin(gamma)
     vr=-upf*sin(gamma) + vpf*cos(gamma)
-	return(list("u"=ur,"v"=vr,"w"=wpf,"alpha"=alpha*180/pi,"beta"=beta*180/pi,"gamma"=gamma,"c3"=c3))
+    return(list("u"=ur,"v"=vr,"w"=wpf,"alpha"=alpha*180/pi,"beta"=beta*180/pi,"gamma"=gamma,"c3"=c3))
 }
 
 
@@ -212,7 +212,7 @@ flag_distortion = function(u,v,dir_blocked=c(30,60),threshold_cr=0.9) {
 #'@return 
 #'@export
 #'
-#'@example
+#'@examples
 #'itc_flag=flag_most(0.2,0.4,-0.3)
 #'
 flag_most = function(sigma_w,ustar,zeta) {
@@ -238,23 +238,23 @@ flag_most = function(sigma_w,ustar,zeta) {
 #'
 SNDcorrection = function(u,v,w,Ts,q=NULL,A=7/8,B=7/8) {
     #calculation of respective covariances
-	not_na=!is.na(w)&!is.na(Ts)
-	cov_wTs = cov(w[not_na],Ts[not_na]) 
-	not_na=!is.na(w)&!is.na(u)
-	cov_uw = cov(u[not_na],w[not_na]) 
-	not_na=!is.na(w)&!is.na(v)
-	cov_vw = cov(v[not_na],w[not_na])
-	ubar=mean(u,na.rm=TRUE)
-	vbar=mean(v,na.rm=TRUE)
-	Tsbar=mean(Ts,na.rm=TRUE)
-	if (!is.null(q)) { #considering q
-		not_na=!is.na(w)&!is.na(q)
-		cov_qw=cov(q[not_na],w[not_na])
+    not_na=!is.na(w)&!is.na(Ts)
+    cov_wTs = cov(w[not_na],Ts[not_na]) 
+    not_na=!is.na(w)&!is.na(u)
+    cov_uw = cov(u[not_na],w[not_na]) 
+    not_na=!is.na(w)&!is.na(v)
+    cov_vw = cov(v[not_na],w[not_na])
+    ubar=mean(u,na.rm=TRUE)
+    vbar=mean(v,na.rm=TRUE)
+    Tsbar=mean(Ts,na.rm=TRUE)
+    if (!is.null(q)) { #considering q
+        not_na=!is.na(w)&!is.na(q)
+        cov_qw=cov(q[not_na],w[not_na])
         #second term: SND correction, third term: cross-wind correction
-		return(cov_wTs - 0.51*cov_qw + 2*Tsbar/clight()^2*(A*ubar*cov_uw + B*vbar*cov_vw))
-	}
+        return(cov_wTs - 0.51*cov_qw + 2*Tsbar/clight()^2*(A*ubar*cov_uw + B*vbar*cov_vw))
+    }
     #without q: only cross-wind correction
-	return(cov_wTs + 2*Tsbar/clight()^2*(A*ubar*cov_uw + B*vbar*cov_vw))
+    return(cov_wTs + 2*Tsbar/clight()^2*(A*ubar*cov_uw + B*vbar*cov_vw))
 }
 
 #' WPL correction
@@ -271,10 +271,10 @@ SNDcorrection = function(u,v,w,Ts,q=NULL,A=7/8,B=7/8) {
 #'
 WPLcorrection = function(rho_w,rho_c=NULL,w,Ts,q) {
     #calculation of respective covariances
-	not_na=!is.na(w)&!is.na(Ts)
-	cov_wTs = cov(w[not_na],Ts[not_na]) 
-	not_na=!is.na(w)&!is.na(rho_w)
-	cov_wrhow = cov(w[not_na],rho_w[not_na]) 
+    not_na=!is.na(w)&!is.na(Ts)
+    cov_wTs = cov(w[not_na],Ts[not_na]) 
+    not_na=!is.na(w)&!is.na(rho_w)
+    cov_wrhow = cov(w[not_na],rho_w[not_na]) 
     Ts_bar=mean(Ts,na.rm=T)
     q_bar=mean(q,na.rm=T)
     rho_w_bar=mean(rho_w,na.rm=T)
@@ -282,7 +282,7 @@ WPLcorrection = function(rho_w,rho_c=NULL,w,Ts,q) {
         return(1+1.61*q_bar)*(cov_wrhow+rho_w_bar/Ts_bar*cov_wTs) #with M_L/M_w = 1.61
     } else { #other trace gas flux
         not_na=!is.na(w)&!is.na(rho_c)
-	    cov_wrhoc = cov(w[not_na],rho_c[not_na]) 
+        cov_wrhoc = cov(w[not_na],rho_c[not_na]) 
         rho_c_bar=mean(rho_c,na.rm=T)
         return(cov_wrhoc+1.61*rho_c_bar/rho_w_bar*cov_wrhow+(1+1.61*q_bar)*rho_c_bar/Ts_bar*cov_wTs)
     }
@@ -296,7 +296,7 @@ WPLcorrection = function(rho_w,rho_c=NULL,w,Ts,q) {
 #'@param T_mean temperature [K]
 #'@param pres pressure [Pa]
 #'@param e water vapor pressure [Pa]
-#'@param gas which gas? can be either "H2O", "CO2", "CH4" (if CO2/CH4 is selected, make sure that it's still in ppt and not ppm as usual)
+#'@param gas which gas? can be either \code{H2O}, \code{CO2}, \code{CH4} (if \code{CO2}/\code{CH4} is selected, make sure that it's still in ppt and not ppm as usual)
 #'
 #'@return density of the gas [kg/m^3]
 #'@export

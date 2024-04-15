@@ -2,7 +2,7 @@
 
 #' Turbulent Kinetic Energy TKE
 #'
-#'@description Calculates turbulent kinetic energy (TKE) from u_sd, v_sd and w_sd
+#'@description Calculates turbulent kinetic energy (TKE) from \code{u_sd}, \code{v_sd} and \code{w_sd}
 #'@param u_sd standard deviation of u-wind [m/s]
 #'@param v_sd standard deviation of v-wind [m/s]
 #'@param w_sd standard deviation of w-wind [m/s]
@@ -17,7 +17,7 @@ calc_tke = function(u_sd,v_sd,w_sd) {
 
 #' Turbulent Kinetic Energy Velocity Scale
 #'
-#'@description Calculates the velocity scale of turbulent kinetic energy (TKE): Vtke := sqrt(TKE)
+#'@description Calculates the velocity scale of turbulent kinetic energy (TKE): \code{Vtke = sqrt(TKE)}
 #'@param u_sd standard deviation of u-wind [m/s]
 #'@param v_sd standard deviation of v-wind [m/s]
 #'@param w_sd standard deviation of w-wind [m/s]
@@ -61,7 +61,7 @@ calc_L = function(ustar,T_mean,cov_wT) {
 
 #' Stability Parameter
 #'
-#'@description Calculates dimensionless stability parameter from Obukhov length and measurement height, i.e. zeta = z/L
+#'@description Calculates dimensionless stability parameter from Obukhov length and measurement height, i.e. \code{zeta = z/L}
 #'@param z measurement height [m]
 #'@param L Obukhov length [m] (e.g., from \code{calc_L})
 #'
@@ -75,7 +75,7 @@ calc_zeta = function(z,L) {
 
 #' Horizontal Turbulence Intensity TI
 #'
-#'@description Calculates horizontal turbulence intensity TI := sqrt(u_sd^2+v_sd^2)/ws_mean
+#'@description Calculates horizontal turbulence intensity \code{TI = sqrt(u_sd^2+v_sd^2)/ws_mean}
 #'@param u_sd standard deviation of streamwise wind (u-wind)
 #'@param v_sd standard deviation of crosswise wind (v-wind)
 #'@param ws_mean horizontal wind speed
@@ -89,7 +89,7 @@ calc_ti = function(u_sd,v_sd,ws_mean) {
 
 #' Vertical Turbulence Intensity Iw
 #'
-#'@description Calculates vertical turbulence intensity Iw := w_sd/ws_mean
+#'@description Calculates vertical turbulence intensity \code{Iw = w_sd/ws_mean}
 #'@param w_sd standard deviation of vertical wind (w-wind)
 #'@param ws_mean horizontal wind speed
 #'
@@ -102,7 +102,7 @@ calc_iw = function(w_sd,ws_mean) {
 
 #' Velocity Aspect Ratio (VAR)
 #'
-#'@description Calculates the velocity aspect ratio: VAR := sqrt(2)*w_sd/sqrt(u_sd^2+v_sd^2)
+#'@description Calculates the velocity aspect ratio: \code{VAR = sqrt(2)*w_sd/sqrt(u_sd^2+v_sd^2)}
 #'@param u_sd standard deviation of streamwise wind (u-wind)
 #'@param v_sd standard deviation of crosswise wind (v-wind)
 #'@param w_sd standard deviation of vertical wind (w-wind)
@@ -205,58 +205,4 @@ calc_br = function(sh,lh) {
 #'
 calc_ef = function(sh,lh) {
 	return(lh/(sh+lh))
-}
-
-### wind basics ###
-#' Wind Direction
-#'
-#'@description Calculates (horizontal) wind direction
-#'@param u u-wind [m/s]
-#'@param v v-wind [m/s]
-#'
-#'@return wind direction [deg]
-#'@export
-#'
-calc_windDirection = function(u,v) {
-	return(atan2(-u,-v)*180/pi)
-}
-
-#' Horizontal Wind Speed
-#'
-#'@description Calculates horizontal wind speed
-#'@param u u-wind [m/s]
-#'@param v v-wind [m/s]
-#'
-#'@return wind speed [m/s]
-#'@export
-#'
-calc_windSpeed2D = function(u,v) {
-	return(sqrt(u^2+v^2))
-}
-
-#' Wind Speed (3D)
-#'
-#'@description Calculates wind speed (3D)
-#'@param u u-wind [m/s]
-#'@param v v-wind [m/s]
-#'@param w w-wind [m/s]
-#'
-#'@return wind speed (3D) [m/s]
-#'@export
-#'
-calc_windSpeed3D = function(u,v,w) {
-	return(sqrt(u^2+v^2+w^2))
-}
-
-#' Gust Factor
-#'
-#'@description Calculates gust factor G := ws_max/ws_mean
-#'@param ws_max wind speed [m/s]
-#'@param ws_mean wind speed maximum [m/s]
-#'
-#'@return gust factor [-]
-#'@export
-#'
-calc_gustfactor = function(ws_max,ws_mean) {
-	return(ws_max/ws_mean)
 }

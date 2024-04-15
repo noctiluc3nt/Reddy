@@ -7,7 +7,7 @@
 calc_satvaporpressure(temp)
 }
 \arguments{
-\item{temp}{scalar or vector, temperature [°C]}
+\item{temp}{scalar or vector, temperature [deg C]}
 }
 \value{
 E_s, saturation vapor pressure over water [hPa]

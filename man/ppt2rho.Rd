@@ -15,7 +15,7 @@ ppt2rho(ppt, T_mean = 288.15, pres = 101325, e = 0, gas = "H2O")
 
 \item{e}{water vapor pressure [Pa]}
 
-\item{gas}{which gas? can be either "H2O", "CO2", "CH4" (if CO2/CH4 is selected, make sure that it's still in ppt and not ppm as usual)}
+\item{gas}{which gas? can be either \code{H2O}, \code{CO2}, \code{CH4} (if \code{CO2}/\code{CH4} is selected, make sure that it's still in ppt and not ppm as usual)}
 }
 \value{
 density of the gas [kg/m^3]
