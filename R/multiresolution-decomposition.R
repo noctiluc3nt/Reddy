@@ -90,4 +90,5 @@ plot_mrd=function(mrd_out,...) {
 	legend("topleft",legend=c("mean","median"),col=c(1,4),lty=0,pch=c(1,3),lwd=2)
 	abline(v=log10(60),lty=3)
 	abline(v=log10(60*30),lty=3)
+    abline(h=0,lty=3)
 }

@@ -3,7 +3,7 @@
 #'@description Calculates Occurrence Fraction and Strength of the four Quadrants
 #'@param xval values of x variable (vector)
 #'@param yval values of y variable (vector)
-#'@param do_normalization should the values be normalized? i.e. (x-mean(x))/sd(x)
+#'@param do_normalization should the values be normalized? i.e. \code{(x-mean(x))/sd(x)}
 #'@param hole_sizes vector containing desired hole sizes (integers >= 0)
 #'@return list containing occurrence fraction and strength (calculated based on product and covariance) for all four quadrants (mathematical orientation)
 #'@export

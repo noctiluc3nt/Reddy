@@ -49,7 +49,7 @@ calc_csi = function(temp,lw_in,rh=NULL,e=NULL) {
 #'@export
 #'
 calc_windDirection = function(u,v) {
-	return(atan2(-u,-v)*180/pi)
+	return((180+180/pi*atan2(v,u))%%360) #from ERA5 doc: https://confluence.ecmwf.int/pages/viewpage.action?pageId=133262398
 }
 
 #' Horizontal Wind Speed
