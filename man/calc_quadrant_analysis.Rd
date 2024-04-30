@@ -16,7 +16,7 @@ calc_quadrant_analysis(
 
 \item{yval}{values of y variable (vector)}
 
-\item{do_normalization}{should the values be normalized? i.e. (x-mean(x))/sd(x)}
+\item{do_normalization}{should the values be normalized? i.e. \code{(x-mean(x))/sd(x)}}
 
 \item{hole_sizes}{vector containing desired hole sizes (integers >= 0)}
 }
