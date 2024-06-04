@@ -14,10 +14,10 @@ flag_stationarity(var1, var2, nsub = 3000)
 \item{nsub}{number of elements used for subsampling (\code{nsub < length(var1)})}
 }
 \value{
-
+stationarity flags (0: in full agreement with the criterion ... 2: does not fulfill the criterion)
 }
 \description{
-Stationarity Flag according to Foken and Wichura, 1996 based on the assumption that the covariance of two variables (\code{var1} and \code{var2}, one usually representing vertical velocity) calculated for blocks (of length nsub) does not differ to much from the total covariance
+Stationarity Flag according to Foken and Wichura, 1996 based on the assumption that the covariance of two variables (\code{var1} and \code{var2}, one usually representing vertical velocity) calculated for blocks (of length \code{nsub}) does not differ to much from the total covariance
 }
 \examples{
 set.seed(5)

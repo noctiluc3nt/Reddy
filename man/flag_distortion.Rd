@@ -16,7 +16,7 @@ flag_distortion(u, v, dir_blocked = c(30, 60), threshold_cr = 0.9)
 \item{threshold_cr}{threshold for constancy ratio (default \code{threshold_cr = 0.9}, may be adapted to used data set)}
 }
 \value{
-
+distortion flags (0: in full agreement with the criterion ... 2: does not fulfill the criterion)
 }
 \description{
 Flow Distortion Flag according to Mauder et al., 2013: Wind coming from (pre-defined) directions blocked by the measurement device is flaged with 2 (for wind speeds greater than 0.1 assuming that during calm wind the wind direction is not well-defined). The wind constancy ratio is calculated to quantify the variability of horizontal wind direction according to Mahrt, 1999.

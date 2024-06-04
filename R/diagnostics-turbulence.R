@@ -183,7 +183,7 @@ cov2cf = function(cov_co2w,rho=NULL) {
 
 #' Bowen ratio BR
 #'
-#'@description Calculates Bowen ratio BR := SH/LH
+#'@description Calculates the Bowen ratio as ratio of sensible and latent heat flux, i.e., BR := SH/LH
 #'@param sh sensible heat flux [W/m^2]
 #'@param lh latent heat flux [W/m^2]
 #'

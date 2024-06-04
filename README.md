@@ -29,7 +29,7 @@ All functions that are contained in the Reddy package are described in the [manu
 - `diagnostics-meteorology.R`: calculation of "background-meteorology" quantities (e.g., clear-sky index)
 - `diagnostics-turbulence.R`: calculation of some standard turbulence diagnostics (e.g., friction velocity, TKE, turbulence intensity, stability parameter)
 - `ec-processing.R`: collection of functions for post-processing and quality control of eddy-covariance measurements
-- `footprint.R`: calculation and visualization of 2D flux footprint (FFP, Kljun et al., 2015)
+- `flux-footprint.R`: calculation and visualization of 2D flux footprint (FFP, Kljun et al., 2015)
 - `multiresolution-decomposition.R`: calculation and visualization of multiresolution decomposition (MRD, Vickers and Mahrt, 2003)
 - `quadrant-analysis.R`: calculation and visualization of quadrant analysis
 - `surface-energy-balance.R`: visualization of surface energy balance, residual flux and closure ratio

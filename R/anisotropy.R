@@ -7,7 +7,7 @@
 #'@param a22 R22 element of Reynolds stress tensor: \code{v_sd^2}   (scalar or vector)
 #'@param a23 R23 element of Reynolds stress tensor: \code{cov(v,w)} (scalar or vector)
 #'@param a33 R33 element of Reynolds stress tensor: \code{w_sd^2}   (scalar or vector)
-#'@return list containing \code{xb}, \code{yb}, \code{eta}, \code{xi}, all eigenvalues and eigenvectors (\code{eta}, code{xi} are the coordinates of the Lumley triangle and \code{xb}, \code{yb} the coordinates of the barycentric map)
+#'@return list containing \code{xb}, \code{yb}, \code{eta}, \code{xi}, all eigenvalues and eigenvectors (\code{eta}, \code{xi} are the coordinates of the Lumley triangle and \code{xb}, \code{yb} the coordinates of the barycentric map)
 #'@export
 #'
 #'@examples

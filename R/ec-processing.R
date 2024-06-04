@@ -123,12 +123,12 @@ rotate_planar = function(u,v,w,bias=c(0,0,0)) {
 
 #' Stationarity Flag
 #'
-#'@description Stationarity Flag according to Foken and Wichura, 1996 based on the assumption that the covariance of two variables (\code{var1} and \code{var2}, one usually representing vertical velocity) calculated for blocks (of length nsub) does not differ to much from the total covariance
+#'@description Stationarity Flag according to Foken and Wichura, 1996 based on the assumption that the covariance of two variables (\code{var1} and \code{var2}, one usually representing vertical velocity) calculated for blocks (of length \code{nsub}) does not differ to much from the total covariance
 #'@param var1 variable 1 
 #'@param var2 variable 2 (same length as \code{var1}, usually either \code{var1} or \code{var2} represent vertical velocity)
 #'@param nsub number of elements used for subsampling (\code{nsub < length(var1)}) 
 #'
-#'@return 
+#'@return stationarity flags (0: in full agreement with the criterion ... 2: does not fulfill the criterion)
 #'@export
 #'
 #'@examples
@@ -163,7 +163,7 @@ flag_stationarity = function(var1,var2,nsub=3000) {
 #'@description Vertical Velocity Flag according to Mauder et al., 2013: After rotation the vertical velocity should vanish, this flag flags high remaining vertical velocities.
 #'@param w vertical velocity 
 #'
-#'@return 
+#'@return vertical velocity flags (0: in full agreement with the criterion ... 2: does not fulfill the criterion)
 #'@export
 #'
 flag_w = function(w) {
@@ -180,7 +180,7 @@ flag_w = function(w) {
 #'@param dir_blocked vector containing the lower and upper bound of the blocked wind sector in degrees (e.g., \code{dir_blocked = c(30,60)})
 #'@param threshold_cr threshold for constancy ratio (default \code{threshold_cr = 0.9}, may be adapted to used data set)
 #'
-#'@return 
+#'@return distortion flags (0: in full agreement with the criterion ... 2: does not fulfill the criterion)
 #'@export
 #'
 flag_distortion = function(u,v,dir_blocked=c(30,60),threshold_cr=0.9) {
@@ -212,7 +212,7 @@ flag_distortion = function(u,v,dir_blocked=c(30,60),threshold_cr=0.9) {
 #'@param ustar friction velocity
 #'@param zeta stability parameter \code{zeta = z/L}
 #'
-#'@return 
+#'@return integral turbulence characteristics flags (0: in full agreement with the criterion ... 2: does not fulfill the criterion)
 #'@export
 #'
 #'@examples

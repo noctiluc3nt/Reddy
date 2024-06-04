@@ -11,7 +11,7 @@
 #'@param contours which contour lines should be calculated? default: \code{contours=seq(0.9,0.1,-0.1)}
 #'@param nres resolution (default: \code{nres=1000})
 #'
-#'@return 
+#'@return list containing all relevant flux footprint information
 #'@export
 #'
 #'@examples

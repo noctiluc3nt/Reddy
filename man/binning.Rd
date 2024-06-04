@@ -14,7 +14,7 @@ binning(var1, var2, bins)
 \item{bins}{vector, providing the intervals of the bins of \code{var2}}
 }
 \value{
-matrix of dimension (\code{length(bins)-1,4}) with columns representing mean, median, 25%-quantile, 75%-quantile
+matrix of dimension (\code{length(bins)-1,4}) with columns representing mean, median, q25, q75
 }
 \description{
 discrete binning of a variable \code{var1} based on another variable \code{var2} (e.g., the stability parameter \code{zeta})

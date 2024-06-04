@@ -14,7 +14,7 @@ flag_most(sigma_w, ustar, zeta)
 \item{zeta}{stability parameter \code{zeta = z/L}}
 }
 \value{
-
+integral turbulence characteristics flags (0: in full agreement with the criterion ... 2: does not fulfill the criterion)
 }
 \description{
 Integral Turbulence Characteristics Flag: Tests the consistency with Monin-Obukhov similarity theory using the scaling functions from Panofsky and Dutton, 1984.

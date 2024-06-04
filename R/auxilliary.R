@@ -4,7 +4,7 @@
 #'@param var1 vector, variable that should be binned
 #'@param var2 vector, variable used for the binning
 #'@param bins vector, providing the intervals of the bins of \code{var2}
-#'@return matrix of dimension (\code{length(bins)-1,4}) with columns representing mean, median, 25%-quantile, 75%-quantile
+#'@return matrix of dimension (\code{length(bins)-1,4}) with columns representing mean, median, q25, q75
 #'@export
 #'
 #'@examples
@@ -37,7 +37,7 @@ binning=function(var1,var2,bins) {
 
 #' Shifting two timeseries to match maximum cross-correlation
 #'
-#'@description shifts two timeseries to match their maximum cross-correlation
+#'@description Shifts two timeseries to match their maximum cross-correlation
 #'@param var1 vector, first timeseries
 #'@param var2 vector, second timeseries
 #'@param plot logical, should the cross-correlation be plotted? default \code{plot = TRUE}

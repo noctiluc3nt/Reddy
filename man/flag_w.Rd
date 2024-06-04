@@ -10,7 +10,7 @@ flag_w(w)
 \item{w}{vertical velocity}
 }
 \value{
-
+vertical velocity flags (0: in full agreement with the criterion ... 2: does not fulfill the criterion)
 }
 \description{
 Vertical Velocity Flag according to Mauder et al., 2013: After rotation the vertical velocity should vanish, this flag flags high remaining vertical velocities.
