@@ -85,7 +85,7 @@ shift2maxccf=function(var1,var2,plot=TRUE) {
 #'
 #'@description hourly deaccumulation, e.g. for fluxes from model output
 #'@param dat vector (with dimension time) or array (with dimension x, y, time)
-#'@param factor factor for unit and sign conversion, default: \code{factor=-1/3600} for converting hour to second and adapting the sign conversion
+#'@param factor factor for unit and sign conversion, default: \code{factor = -1/3600} for converting hour to seconds and adapting the sign convention
 #'@return vector or array (same dimension as input), hourly deaccumulated
 #'@export
 #'

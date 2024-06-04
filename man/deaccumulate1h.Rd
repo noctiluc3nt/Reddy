@@ -9,7 +9,7 @@ deaccumulate1h(dat, factor = -1/3600)
 \arguments{
 \item{dat}{vector (with dimension time) or array (with dimension x, y, time)}
 
-\item{factor}{factor for unit and sign conversion, default: \code{factor=-1/3600} for converting hour to second and adapting the sign conversion}
+\item{factor}{factor for unit and sign conversion, default: \code{factor = -1/3600} for converting hour to seconds and adapting the sign convention}
 }
 \value{
 vector or array (same dimension as input), hourly deaccumulated

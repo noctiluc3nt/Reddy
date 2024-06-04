@@ -17,7 +17,7 @@ rotate_double(u, v, w)
 list containing the wind in a natural coordinate system (streamwise, crosswise, vertical) and the two rotation angles theta and phi
 }
 \description{
-Double rotation
+Double rotation (i.e., sonic coordinate system will be aligned with streamlines)
 }
 \examples{
 wind_rotated=rotate_double(4,3,1) #double rotation can be applied instantenously

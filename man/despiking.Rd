@@ -17,7 +17,7 @@ despiking(
 
 \item{thresholds}{vector with two elements representing lower and upper bounds for despiking (pre-defined thresholds), 'NA' means that the respective bound is not used}
 
-\item{mad_factor}{factor for the mad test, default 'mad_factor = 10'}
+\item{mad_factor}{factor for the MAD test, default 'mad_factor = 10'}
 
 \item{threshold_skewness}{threshold for skewness test, default 'threshold_skewness = 2'}
 
@@ -27,7 +27,7 @@ despiking(
 despiked timeseries
 }
 \description{
-Three despiking method based on 1) pre-defined thresholds, 2) median deviation (mad) test and 3) skewness and kurtosis
+Applies (up to) three despiking method based on 1) pre-defined thresholds, 2) median deviation (MAD) test and 3) skewness and kurtosis
 }
 \examples{
 set.seed(5)

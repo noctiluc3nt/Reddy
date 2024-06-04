@@ -11,7 +11,7 @@ R-Package (under development) to automatize standard analyses of turbulence data
 ## How to use the package
 
 ### Installation
-The package Reddy can be installed directly from github (current developing version):
+The package Reddy can be installed directly from github (current development version):
 ```
     devtools::install_git("https://github.com/noctiluc3nt/Reddy")
 ```

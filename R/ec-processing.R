@@ -1,9 +1,9 @@
 #' Despiking
 #'
-#'@description Three despiking method based on 1) pre-defined thresholds, 2) median deviation (mad) test and 3) skewness and kurtosis
+#'@description Applies (up to) three despiking method based on 1) pre-defined thresholds, 2) median deviation (MAD) test and 3) skewness and kurtosis
 #'@param series timeseries that shall be despiked
 #'@param thresholds vector with two elements representing lower and upper bounds for despiking (pre-defined thresholds), 'NA' means that the respective bound is not used
-#'@param mad_factor factor for the mad test, default 'mad_factor = 10'
+#'@param mad_factor factor for the MAD test, default 'mad_factor = 10'
 #'@param threshold_skewness threshold for skewness test, default 'threshold_skewness = 2'
 #'@param threshold_kurtosis threshold for kurtosis test, default 'threshold_kurtosis = 8'
 #'
@@ -49,7 +49,7 @@ despiking = function(series,thresholds=c(NA,NA),mad_factor=10,threshold_skewness
 
 #' Double rotation
 #'
-#'@description Double rotation
+#'@description Double rotation (i.e., sonic coordinate system will be aligned with streamlines)
 #'@param u u-wind (levelled sonic)
 #'@param v v-wind (levelled sonic)
 #'@param w w-wind (levelled sonic)
@@ -71,19 +71,19 @@ rotate_double = function(u,v,w) {
     u2=u1*cos(phi) + w1*sin(phi)
     v2=v1
     w2=-u1*sin(phi)+w1*cos(phi)
-    return(list("u"=u2,"v"=v2,"w"=w2,"theta"=theta*180/pi,"phi"=phi*180/pi))
+    return(list("u"=u2,"v"=v2,"w"=w2,"theta"=(theta*180/pi+360)%%360,"phi"=(phi*180/pi+360)%%360))
 }
 
 
 #' Planar fit rotation
 #'
-#'@description Planar fit rotation
+#'@description Planar fit rotation (i.e., sonic coordinate system will be aligned with the mean streamlines resulting in vanishing of w_mean) 
 #'@param u u-wind (levelled sonic)
 #'@param v v-wind (levelled sonic)
 #'@param w w-wind (levelled sonic)
-#'@param bias a three-dimensional correction vector containing the offset of u-, v-, w-wind
+#'@param bias a three-dimensional correction vector containing the offsets of u-, v-, w-wind
 #'
-#'@return list containing u, v, w after rotation as well as the rotation angles alpha, beta and gamma and the fitted offset c3
+#'@return list containing u, v, w after planar fit rotation as well as the rotation angles alpha, beta and gamma and the fitted offset c3
 #'@export
 #'
 #'@examples
@@ -114,7 +114,7 @@ rotate_planar = function(u,v,w,bias=c(0,0,0)) {
     gamma=atan2(mean(vpf,na.rm=T),mean(upf,na.rm=T))
     ur=upf*cos(gamma) + vpf*sin(gamma)
     vr=-upf*sin(gamma) + vpf*cos(gamma)
-    return(list("u"=ur,"v"=vr,"w"=wpf,"alpha"=alpha*180/pi,"beta"=beta*180/pi,"gamma"=gamma,"c3"=c3))
+    return(list("u"=ur,"v"=vr,"w"=wpf,"alpha"=(alpha*180/pi+360)%%360,"beta"=(beta*180/pi+360)%%360,"gamma"=(gamma*180/pi+360)%%360,"c3"=c3))
 }
 
 

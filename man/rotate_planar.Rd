@@ -13,13 +13,13 @@ rotate_planar(u, v, w, bias = c(0, 0, 0))
 
 \item{w}{w-wind (levelled sonic)}
 
-\item{bias}{a three-dimensional correction vector containing the offset of u-, v-, w-wind}
+\item{bias}{a three-dimensional correction vector containing the offsets of u-, v-, w-wind}
 }
 \value{
-list containing u, v, w after rotation as well as the rotation angles alpha, beta and gamma and the fitted offset c3
+list containing u, v, w after planar fit rotation as well as the rotation angles alpha, beta and gamma and the fitted offset c3
 }
 \description{
-Planar fit rotation
+Planar fit rotation (i.e., sonic coordinate system will be aligned with the mean streamlines resulting in vanishing of w_mean)
 }
 \examples{
 u=rnorm(1000)
