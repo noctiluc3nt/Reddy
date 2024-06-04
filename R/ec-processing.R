@@ -1,11 +1,11 @@
 #' Despiking
 #'
-#'@description Applies (up to) three despiking method based on 1) pre-defined thresholds, 2) median deviation (MAD) test and 3) skewness and kurtosis
+#'@description Applies (up to) three despiking methods based on (1) pre-defined thresholds, (2) median deviation (MAD) test and (3) skewness and kurtosis
 #'@param series timeseries that shall be despiked
-#'@param thresholds vector with two elements representing lower and upper bounds for despiking (pre-defined thresholds), 'NA' means that the respective bound is not used
-#'@param mad_factor factor for the MAD test, default 'mad_factor = 10'
-#'@param threshold_skewness threshold for skewness test, default 'threshold_skewness = 2'
-#'@param threshold_kurtosis threshold for kurtosis test, default 'threshold_kurtosis = 8'
+#'@param thresholds vector with two elements representing lower and upper bounds for despiking (pre-defined thresholds), \code{NA} means that the respective bound is not used
+#'@param mad_factor factor for the MAD test, default \code{mad_factor = 10}
+#'@param threshold_skewness threshold for skewness test, default \code{threshold_skewness = 2}
+#'@param threshold_kurtosis threshold for kurtosis test, default \code{threshold_kurtosis = 8}
 #'
 #'@return despiked timeseries
 #'@export
@@ -93,6 +93,9 @@ rotate_double = function(u,v,w) {
 #'wind_rotated=rotate_planar(u,v,w) #for planar fit a timeseries is required
 #'
 rotate_planar = function(u,v,w,bias=c(0,0,0)) {
+    if (!identical(length(u),length(v),length(w))) { 
+        stop("u, v, w have to be of same length.")
+    }
     #linear regression
     fit=lm(w ~ u + v)
     c3=fit$coefficients[1]
@@ -120,7 +123,7 @@ rotate_planar = function(u,v,w,bias=c(0,0,0)) {
 
 #' Stationarity Flag
 #'
-#'@description Stationarity Flag according to Foken and Wichura, 1996 based on the assumption that the covariance of two variables ('var1' and 'var2', one usually representing vertical velocity) calculated for blocks (of length nsub) do not differ to much from the total covariance
+#'@description Stationarity Flag according to Foken and Wichura, 1996 based on the assumption that the covariance of two variables (\code{var1} and \code{var2}, one usually representing vertical velocity) calculated for blocks (of length nsub) does not differ to much from the total covariance
 #'@param var1 variable 1 
 #'@param var2 variable 2 (same length as \code{var1}, usually either \code{var1} or \code{var2} represent vertical velocity)
 #'@param nsub number of elements used for subsampling (\code{nsub < length(var1)}) 
@@ -136,11 +139,11 @@ rotate_planar = function(u,v,w,bias=c(0,0,0)) {
 #'
 flag_stationarity = function(var1,var2,nsub=3000) {
     if (length(var1) != length(var2)) {
-        print("ERROR: var1 and var2 have to be of equal length.")
+        stop("var1 and var2 have to be of equal length.")
     }
     nint=length(var1)%/%nsub
     if (nint<=1) {
-        print("WARNING: nsub is chosen to large.")
+        warning("nsub is chosen to large.")
     }
     rnfs=array(NA,dim=nint)
     cov_complete=cov(var1,var2,use="pairwise.complete.obs")
@@ -182,7 +185,7 @@ flag_w = function(w) {
 #'
 flag_distortion = function(u,v,dir_blocked=c(30,60),threshold_cr=0.9) {
     if (length(u) != length(v)) {
-        print("ERROR: u and v have to be of equal length.")
+        stop("u and v have to be of equal length.")
     }
     #horizontal wind speed
     ws=sqrt(mean(u,na.rm=T)^2+mean(v,na.rm=T)^2)
@@ -191,7 +194,7 @@ flag_distortion = function(u,v,dir_blocked=c(30,60),threshold_cr=0.9) {
     #flow distortion flag considering cr
     if (!is.na(ws) & !is.na(cr)) {
         if (ws>0.1 & cr>threshold_cr) {
-            wd=atan2(mean(v),mean(u))
+            wd=(atan2(mean(v),mean(u))+360)%%360
             flag=ifelse(wd>=dir_blocked[1] & wd<=dir_blocked[2],2,0)
         } else {
             flag=0
@@ -204,10 +207,10 @@ flag_distortion = function(u,v,dir_blocked=c(30,60),threshold_cr=0.9) {
 
 #' Integral Turbulence Characteristics Flag 
 #'
-#'@description Integral Turbulence Characteristics Flag: Tests the consistency with Monin-Obukhov similarity theory using the scaling functions from Panofsky and Dutton, 1984
+#'@description Integral Turbulence Characteristics Flag: Tests the consistency with Monin-Obukhov similarity theory using the scaling functions from Panofsky and Dutton, 1984.
 #'@param sigma_w standard deviation of vertical velocity
 #'@param ustar friction velocity
-#'@param zeta stability parameter zeta = z/L
+#'@param zeta stability parameter \code{zeta = z/L}
 #'
 #'@return 
 #'@export
@@ -310,7 +313,7 @@ ppt2rho = function(ppt,T_mean=288.15, pres = 101325, e = 0, gas="H2O") {
     } else if (gas == "CH4") {
         return(ppt/1000*M_CH4()/Vd)
     } else {
-        print("WARNING: You selected a gas which is not available for the conversion here.")
+        warning("You selected a gas which is not available for the conversion here.")
     }
     
 }

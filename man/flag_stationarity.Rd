@@ -17,7 +17,7 @@ flag_stationarity(var1, var2, nsub = 3000)
 
 }
 \description{
-Stationarity Flag according to Foken and Wichura, 1996 based on the assumption that the covariance of two variables ('var1' and 'var2', one usually representing vertical velocity) calculated for blocks (of length nsub) do not differ to much from the total covariance
+Stationarity Flag according to Foken and Wichura, 1996 based on the assumption that the covariance of two variables (\code{var1} and \code{var2}, one usually representing vertical velocity) calculated for blocks (of length nsub) does not differ to much from the total covariance
 }
 \examples{
 set.seed(5)

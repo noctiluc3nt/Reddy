@@ -12,7 +12,7 @@ deaccumulate1h(dat, factor = -1/3600)
 \item{factor}{factor for unit and sign conversion, default: \code{factor = -1/3600} for converting hour to seconds and adapting the sign convention}
 }
 \value{
-vector or array (same dimension as input), hourly deaccumulated
+vector or array hourly deaccumulated (same dimension as input)
 }
 \description{
 hourly deaccumulation, e.g. for fluxes from model output

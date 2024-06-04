@@ -2,7 +2,7 @@
 % Please edit documentation in R/auxilliary.R
 \name{shift2maxccf}
 \alias{shift2maxccf}
-\title{shifting two timeseries to match maximum cross-correlation}
+\title{Shifting two timeseries to match maximum cross-correlation}
 \usage{
 shift2maxccf(var1, var2, plot = TRUE)
 }
@@ -14,7 +14,7 @@ shift2maxccf(var1, var2, plot = TRUE)
 \item{plot}{logical, should the cross-correlation be plotted? default \code{plot = TRUE}}
 }
 \value{
-a matrix cotaining timeseries var1 and var2 as columns after shifting to the maximum cross-correlation
+a matrix cotaining timeseries \code{var1} and \code{var2} as columns after shifting to the maximum cross-correlation
 }
 \description{
 shifts two timeseries to match their maximum cross-correlation

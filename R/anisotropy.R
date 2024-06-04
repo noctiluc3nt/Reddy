@@ -15,6 +15,9 @@
 #'calc_anisotropy(1,0,1,1,0,1) #some anisotropy
 #'
 calc_anisotropy = function(a11,a12,a13,a22,a23,a33) {
+	if (length(unique(sapply(list(a11,a12,a13,a22,a23,a33),length)))>1) {
+		warning("The given elements of the Reynolds stress tensor are not of equal length.")
+	}
 	n=length(a11)
 	#unit matrix / Kronecker delta
 	delta=matrix(c(1,0,0,0,1,0,0,0,1), ncol=3,nrow=3)
@@ -62,10 +65,10 @@ calc_anisotropy = function(a11,a12,a13,a22,a23,a33) {
 
 #' Plot in barycentric map
 #'
-#'@description Plots (xb, yb) from invariant analysis of Reynolds stress tensor (calc_anisotropy) in barycentric map
+#'@description Plots \code{(xb, yb)} from invariant analysis of Reynolds stress tensor (\code{calc_anisotropy}) in barycentric map
 #'@param xb xb coordinate (e.g., from \code{calc_anisotropy})
 #'@param yb yb coordinate (e.g., from \code{calc_anisotropy})
-#'@param contours vector containing levels of contour lines for 2d kernel densoty estimation, default: \code{contours=c(5,10,20)}
+#'@param contours vector containing levels of contour lines for 2d kernel density estimation, default: \code{contours=c(5,10,20)}
 #'
 #'@return plots (xb, yb) in barycentric map with 2d kernel density estimation (no return)
 #'@export

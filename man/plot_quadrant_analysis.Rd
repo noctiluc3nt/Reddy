@@ -19,13 +19,13 @@ plot_quadrant_analysis(
 
 \item{yval}{values of y variable (vector)}
 
-\item{do_normalization}{should the values be normalized, i.e. (x-mean(x))/sd(x)? default: TRUE}
+\item{do_normalization}{should the values be normalized? i.e. \code{(x-mean(x))/sd(x)}, default: \code{do_normalization=TRUE}}
 
-\item{hole_sizes}{vector containing desired hole sizes (integers >= 0), default: c(1,2)}
+\item{hole_sizes}{vector containing desired hole sizes (integers >= 0), default: \code{hole_sizes=c(1,2)}}
 
-\item{contours}{vector containing levels of contour lines for 2d kernel densoty estimation, default: contours=10^(-3:3)}
+\item{contours}{vector containing levels of contour lines for 2d kernel density estimation, default: \code{contours=10^(-3:3)}}
 
-\item{print_fit}{should the fit summary from the linear regression be printed? default: TRUE}
+\item{print_fit}{should the fit summary from the linear regression be printed? default: \code{print_fit=TRUE}}
 
 \item{...}{arguments passed to plot function}
 }
@@ -33,7 +33,7 @@ plot_quadrant_analysis(
 
 }
 \description{
-Calculates occurrence fraction and strength of the four quadrants
+Plots two vectors in the framework of quadrant analysis with 2d kernel density estimation
 }
 \examples{
 a=rnorm(100)

@@ -1,6 +1,6 @@
 #' Flux-Footprint Parametrization (FFP) according to Kljun et al., 2015
 #'
-#'@description Calculates Flux-Footprint Parametrization (FFP) according to Kljun et al., 2015
+#'@description Calculates the Flux-Footprint Parametrization (FFP) according to Kljun et al., 2015
 #'@param zm measurement height [m]
 #'@param u_mean mean horizontal wind speed [m/s] (alternatively you can also use \code{z0})
 #'@param h boundary-layer height [m]
@@ -57,7 +57,7 @@ calc_flux_footprint = function(zm, u_mean=NA, h, L, v_sd, ustar, z0=NA,contours=
             error = -1
         }
     } else {
-        print("ERROR: You have to know either u_mean or z0.")
+        stop("You have to know either u_mean or z0.")
     }
     #calculate real scale sigmay
     ps1=min(1,abs(1/(zm/L))*1E-5 + ifelse(L<=0,0.8,0.55))
@@ -114,7 +114,7 @@ calc_flux_footprint = function(zm, u_mean=NA, h, L, v_sd, ustar, z0=NA,contours=
 #'
 #'@description Plots Flux-Footprint Parametrization (FFP) according to Kljun et al., 2015
 #'@param ffp an object returned from \code{calc_flux_footprint}
-#'@param levels levels used for filled.contour plot of footprint, default \code{levels=c(0,10^seq(-6,-3,0.1))}
+#'@param levels levels used for filled contour plot of footprint, default \code{levels=c(0,10^seq(-6,-3,0.1))}
 #' 
 #'@return
 #'@importFrom grDevices colorRampPalette contourLines rgb

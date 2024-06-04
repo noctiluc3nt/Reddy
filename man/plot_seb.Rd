@@ -2,7 +2,7 @@
 % Please edit documentation in R/surface-energy-balance.R
 \name{plot_seb}
 \alias{plot_seb}
-\title{Plotting of surface energy balance and calculate surface energy balance unclosure}
+\title{Plotting of surface energy balance and calculation of surface energy balance unclosure}
 \usage{
 plot_seb(
   sw_in,
@@ -34,7 +34,7 @@ plot_seb(
 
 \item{time_vector}{times used as x-axis labels (optional)}
 
-\item{print_fit}{should the fit summary be printed? default: \code{TRUE}}
+\item{print_fit}{should the fit summary be printed? default: \code{print_fit=TRUE}}
 
 \item{...}{optional plot parameters}
 }
@@ -42,7 +42,7 @@ plot_seb(
 no return
 }
 \description{
-Plotting of surface energy balance and calculate surface energy balance unclosure as residual flux and closure ratio
+Plotting of surface energy balance and calculation of surface energy balance unclosure as residual flux and closure ratio
 }
 \examples{
 

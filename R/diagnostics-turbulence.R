@@ -128,7 +128,7 @@ calc_var = function(u_sd,v_sd,w_sd) {
 #'calc_dshear(-0.5,-0.1)
 #'
 calc_dshear = function(cov_uw,cov_vw) {
-	return(atan2(cov_vw,cov_uw)*180/pi)
+	return((atan2(cov_vw,cov_uw)*180/pi+360)%%360)
 }
 
 

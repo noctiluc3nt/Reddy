@@ -1,10 +1,10 @@
 #' discrete binning
 #'
-#'@description discrete binning of a variable var1 based on another variable var2 (e.g., the stability parameter zeta)
+#'@description discrete binning of a variable \code{var1} based on another variable \code{var2} (e.g., the stability parameter \code{zeta})
 #'@param var1 vector, variable that should be binned
 #'@param var2 vector, variable used for the binning
-#'@param bins vector, providing the intervals of the bins of var2
-#'@return matrix of dimension (\code{length(bins)-1,4}) with columns representing mean, median, 25%-quantile, 74%-quantile
+#'@param bins vector, providing the intervals of the bins of \code{var2}
+#'@return matrix of dimension (\code{length(bins)-1,4}) with columns representing mean, median, 25%-quantile, 75%-quantile
 #'@export
 #'
 #'@examples
@@ -35,13 +35,13 @@ binning=function(var1,var2,bins) {
     }
 }
 
-#' shifting two timeseries to match maximum cross-correlation
+#' Shifting two timeseries to match maximum cross-correlation
 #'
 #'@description shifts two timeseries to match their maximum cross-correlation
 #'@param var1 vector, first timeseries
 #'@param var2 vector, second timeseries
 #'@param plot logical, should the cross-correlation be plotted? default \code{plot = TRUE}
-#'@return a matrix cotaining timeseries var1 and var2 as columns after shifting to the maximum cross-correlation
+#'@return a matrix cotaining timeseries \code{var1} and \code{var2} as columns after shifting to the maximum cross-correlation
 #'@export
 #'
 #'@examples
@@ -86,7 +86,7 @@ shift2maxccf=function(var1,var2,plot=TRUE) {
 #'@description hourly deaccumulation, e.g. for fluxes from model output
 #'@param dat vector (with dimension time) or array (with dimension x, y, time)
 #'@param factor factor for unit and sign conversion, default: \code{factor = -1/3600} for converting hour to seconds and adapting the sign convention
-#'@return vector or array (same dimension as input), hourly deaccumulated
+#'@return vector or array hourly deaccumulated (same dimension as input)
 #'@export
 #'
 deaccumulate1h=function(dat,factor=-1/3600) {

@@ -11,13 +11,13 @@ binning(var1, var2, bins)
 
 \item{var2}{vector, variable used for the binning}
 
-\item{bins}{vector, providing the intervals of the bins of var2}
+\item{bins}{vector, providing the intervals of the bins of \code{var2}}
 }
 \value{
-matrix of dimension (\code{length(bins)-1,4}) with columns representing mean, median, 25%-quantile, 74%-quantile
+matrix of dimension (\code{length(bins)-1,4}) with columns representing mean, median, 25%-quantile, 75%-quantile
 }
 \description{
-discrete binning of a variable var1 based on another variable var2 (e.g., the stability parameter zeta)
+discrete binning of a variable \code{var1} based on another variable \code{var2} (e.g., the stability parameter \code{zeta})
 }
 \examples{
 zeta_bins=c(-10^(3:-3),10^(-3:3))

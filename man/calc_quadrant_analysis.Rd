@@ -16,7 +16,7 @@ calc_quadrant_analysis(
 
 \item{yval}{values of y variable (vector)}
 
-\item{do_normalization}{should the values be normalized? i.e. \code{(x-mean(x))/sd(x)}}
+\item{do_normalization}{should the values be normalized? i.e. \code{(x-mean(x))/sd(x)}, default: \code{do_normalization=TRUE}}
 
 \item{hole_sizes}{vector containing desired hole sizes (integers >= 0)}
 }
@@ -24,7 +24,7 @@ calc_quadrant_analysis(
 list containing occurrence fraction and strength (calculated based on product and covariance) for all four quadrants (mathematical orientation)
 }
 \description{
-Calculates Occurrence Fraction and Strength of the four Quadrants
+Calculates occurrence fraction and strength of the four quadrants in the framework of quadrant analysis
 }
 \examples{
 a=rnorm(100)

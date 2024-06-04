@@ -2,9 +2,9 @@
 #'
 #'@description Calculates multiresolution decomposition (MRD) according to Vickers and Mahrt, 2003
 #'@param var1 timeseries of a variable
-#'@param var2 timeseries of another variable to calculate cospectrum of \code{var1} and \code{var2}, optional (default is \code{NULL})
+#'@param var2 timeseries of another variable to calculate the cospectrum of \code{var1} and \code{var2}, optional (default is \code{NULL})
 #'@param time_res time resolution of the given timeseries in seconds (e.g., \code{time_res = 0.05} for 20 Hz)
-#'@return MRD in form of data frame containing the columns: index, scale, time, mean, median, q25, q75
+#'@return MRD in form of a data frame containing the columns: index, scale, time, mean, median, q25, q75
 #'@export
 #'
 #'@examples
@@ -65,7 +65,7 @@ calc_mrd = function(var1,var2=NULL,time_res=0.05) {
 #' Plotting Multiresolution Decomposition
 #'
 #'@description Plots multiresolution decomposition (MRD)
-#'@param mrd_out an output object from \code{calc_mrd}
+#'@param mrd_out an object returned from \code{calc_mrd}
 #'@param ... parameters passed to plot function
 #'@return creates a plot of MRD with logarithmic time scale (no return)
 #'@export

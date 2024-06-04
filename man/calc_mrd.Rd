@@ -9,12 +9,12 @@ calc_mrd(var1, var2 = NULL, time_res = 0.05)
 \arguments{
 \item{var1}{timeseries of a variable}
 
-\item{var2}{timeseries of another variable to calculate cospectrum of \code{var1} and \code{var2}, optional (default is \code{NULL})}
+\item{var2}{timeseries of another variable to calculate the cospectrum of \code{var1} and \code{var2}, optional (default is \code{NULL})}
 
 \item{time_res}{time resolution of the given timeseries in seconds (e.g., \code{time_res = 0.05} for 20 Hz)}
 }
 \value{
-MRD in form of data frame containing the columns: index, scale, time, mean, median, q25, q75
+MRD in form of a data frame containing the columns: index, scale, time, mean, median, q25, q75
 }
 \description{
 Calculates multiresolution decomposition (MRD) according to Vickers and Mahrt, 2003

@@ -11,13 +11,13 @@ plot_barycentric_map(xb, yb, contours = c(5, 10, 20))
 
 \item{yb}{yb coordinate (e.g., from \code{calc_anisotropy})}
 
-\item{contours}{vector containing levels of contour lines for 2d kernel densoty estimation, default: \code{contours=c(5,10,20)}}
+\item{contours}{vector containing levels of contour lines for 2d kernel density estimation, default: \code{contours=c(5,10,20)}}
 }
 \value{
 plots (xb, yb) in barycentric map with 2d kernel density estimation (no return)
 }
 \description{
-Plots (xb, yb) from invariant analysis of Reynolds stress tensor (calc_anisotropy) in barycentric map
+Plots \code{(xb, yb)} from invariant analysis of Reynolds stress tensor (\code{calc_anisotropy}) in barycentric map
 }
 \examples{
 nm=100

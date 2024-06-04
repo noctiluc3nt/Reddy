@@ -25,7 +25,7 @@ calc_satvaporpressure = function(temp) {
 #'
 calc_csi = function(temp,lw_in,rh=NULL,e=NULL) {
     if (is.null(rh) & is.null(e)) {
-        print("ERROR: Either relative humidity rh or vapor pressure e have to be given.")
+        stop("Either relative humidity rh or vapor pressure e have to be given.")
     }
     if (!is.null(rh)) { #calculate vapor pressure
         es = calc_satvaporpressure(temp-273.15)
