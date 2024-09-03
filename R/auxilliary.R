@@ -106,3 +106,30 @@ deaccumulate1h=function(dat,factor=-1/3600) {
 	}
     return(out*factor) #time unit conversion
 }
+
+
+#' gap-filling
+#'
+#'@description gap-filling of a timeseries based on linear or constant interpolation
+#'@param var timeseries, where NA indicates missing values that should be filled
+#'@param method interpolation method, can be either \code{method = "linear"} for linear interpolation (default) or \code{method = "constant"} for constant interpolation
+#'@param nmissing number of allowed missing values, default \code{nmissing = 4}
+#'@return gap-filled timeseries
+#'@export
+#'
+#'@examples
+#'ts1=c(1,2,NA,0)
+#'gapfilling(ts1) #1,2,1,0
+#'gapfilling(ts1,method="constant") #1,2,2,0
+#'gapfilling(ts1,nmissing=0) #too many missing values
+#'
+gapfilling=function(var,nmissing=4,method="linear") {
+    n=length(var)
+	nm=sum(is.na(var))
+	if (nm <= nmissing) {
+		var_interpolated = approx(1:n,var,xout=1:n,method=method)
+		return(var_interpolated$y)
+	} else {
+		warning("The timeseries contains more missing values than desired (specified in nmissing).")
+	}
+}
