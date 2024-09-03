@@ -133,3 +133,38 @@ gapfilling=function(var,nmissing=4,method="linear") {
 		warning("The timeseries contains more missing values than desired (specified in nmissing).")
 	}
 }
+
+
+#' accumulating / averaging
+#'
+#'@description averaging of a timeseries
+#'@param var timeseries
+#'@param tres1 time resolution [s] of the given timeseries \code{var}, default \code{tres1 = 0.05} (for 20 Hz)
+#'@param tres2 desired time resolution(s) [s] of the averaged timeseries (scalar or vector), default \code{tres2 = c(1,10,30)*60} (for 1, 10 and 30 minutes)
+#'@return list containing mean and standard deviation of the timeseries for the desired time interval(s)
+#'@export
+#'@importFrom RcppRoll roll_mean roll_sd
+#'
+#'@examples
+#'ts=rnorm(30*60*20) #30 minutes of 20 Hz measurements
+#'averaging(ts)
+#'
+averaging=function(var,tres1=0.05,tres2=c(1,10,30)*60) {
+	n=length(var)
+	nt=length(tres2)
+    maxt=max(tres2)
+	if (n<(maxt/tres1)) warning("The timeseries is not long enough for the desired (maximum) averaging time.")
+	nav=tres2/tres1 #number of values to be averaged
+	averaged_mean=list()
+	averaged_sd=list()
+	for (i in 1:nt) {
+		vari=RcppRoll::roll_mean(var,nav[i])[seq(1,n,nav[i])]
+		averaged_mean[[i]]=vari
+		vari=RcppRoll::roll_sd(var,nav[i])[seq(1,n,nav[i])]
+		averaged_sd[[i]]=vari
+	}
+	averaged=list("mean"=averaged_mean,"sd"=averaged_sd)
+	averaged$averaging_time_min=tres2/60
+	averaged$number_of_averaged_values=nav
+	return(averaged)
+}

@@ -5,7 +5,7 @@ Version: 0.0.0.9000
 Author: Laura Mack
 Maintainer: Laura Mack <laura.mack@geo.uio.no>
 Description: The package Reddy provides functions from post-processing over analyzing to plotting turbulence data, e.g., eddy-covariance measurements. 
-Imports: pracma, MASS
+Imports: pracma, MASS, RcppRoll
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
