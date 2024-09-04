@@ -46,6 +46,22 @@ Runiversal = function() {
 	return(8.31451)
 }
 
+#' Rd
+#'
+#' gas constant for dry air [J/(kg*K)]
+#' @keywords internal
+Rd = function() {
+	return(287.05)
+}
+
+#' gamma
+#'
+#' ratio of specific heat of moist air at constant pressure to that at constant volume (cp/cv) 
+#' @keywords internal
+cpcv = function() {
+	return(1.4)
+}
+
 #' rhoAir
 #'
 #' molar density of air [mol/m^3]

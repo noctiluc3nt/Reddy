@@ -319,6 +319,20 @@ ppt2rho = function(ppt,T_mean=288.15, pres = 101325, e = 0, gas="H2O") {
 }
 
 
+### speed of sound to sonic temperature ###
+#' Converts speed of sound (sos) to sonic temperature
+#'
+#'@description Converts speed of sound (sos) to sonic temperature
+#'@param sos speed of sound [m/s]
+#'
+#'@return sonic temperature (virtual temperature) [K]
+#'@export
+#'
+sos2Ts = function(sos) {
+	return(sos^2/(cpcv()*Rd()))
+}
+
+
 ### fluxes (unit conversion) ###
 #' Converts cov(w,T) to sensible heat flux SH
 #'
