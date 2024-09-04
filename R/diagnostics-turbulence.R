@@ -131,56 +131,7 @@ calc_dshear = function(cov_uw,cov_vw) {
 	return((atan2(cov_vw,cov_uw)*180/pi+360)%%360)
 }
 
-
-### fluxes ###
-#' Converts cov(w,T) to sensible heat flux SH
-#'
-#'@description Converts cov(T,w) to sensible heat flux SH
-#'@param cov_wT covariance cov(w,T) [K m/s]
-#'@param rho density of air [kg/m^3] (optional)
-#'
-#'@return sensible heat flux [W/m^2]
-#'@export
-#'
-cov2sh = function(cov_wT,rho=NULL) {
-	if (is.null(rho)) {
-		rho = rhoAir()
-	}
-	return(rho*cp()*cov_wT)
-}
-
-#' Converts cov(w,q) to latent heat flux LH
-#'
-#'@description Converts cov(w,q) to latent heat flux LH
-#'@param cov_wq covariance cov(w,q) [m/s]
-#'@param rho density of air [kg/m^3] (optional)
-#'
-#'@return latent heat flux [W/m^2]
-#'@export
-#'
-cov2lh = function(cov_wq,rho=NULL) {
-	if (is.null(rho)) {
-		rho = rhoAir()
-	}
-	return(rho*Lv()*cov_wq)
-}
-
-#' Converts cov(co2,w) to CO2 flux
-#'
-#'@description Converts cov(co2,w) to CO2 flux
-#'@param cov_co2w covariance cov(co2,w) [m/s]
-#'@param rho density of air [kg/m^3] (optional)
-#'
-#'@return latent heat flux [W/m^2]
-#'@export
-#'
-cov2cf = function(cov_co2w,rho=NULL) {
-	if (is.null(rho)) {
-		rho = rhoAir()
-	}
-	return(rho*cov_co2w)
-}
-
+### hydrological measures ###
 #' Bowen ratio BR
 #'
 #'@description Calculates the Bowen ratio as ratio of sensible and latent heat flux, i.e., BR := SH/LH
