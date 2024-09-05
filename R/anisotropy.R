@@ -46,7 +46,7 @@ calc_anisotropy = function(a11,a12,a13,a22,a23,a33) {
 				eta[i] = (1/3*(evs_sort[1]^2 + evs_sort[1]*evs_sort[2] + evs_sort[2]^2))^(1/2)
 				dummyX=evs_sort[1]*evs_sort[2]*(evs_sort[1]+evs_sort[2])
 				xi[i] = -sign(dummyX)*(1/2*abs(dummyX))^(1/3)
-				#baricentric map
+				#barycentric map
 				C1c = evs_sort[1]-evs_sort[2]
 				C2c = 2*(evs_sort[2]-evs_sort[3])
 				C3c = 3*(evs_sort[3]) + 1
