@@ -7,10 +7,10 @@
 calc_satvaporpressure(temp)
 }
 \arguments{
-\item{temp}{scalar or vector, temperature [deg C]}
+\item{temp}{temperature [K]}
 }
 \value{
-E_s, saturation vapor pressure over water [hPa]
+E_s, saturation vapor pressure over water [Pa]
 }
 \description{
 Calculates the saturation vapor pressure over water for given temperature and pressure

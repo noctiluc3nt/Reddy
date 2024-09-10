@@ -2,11 +2,11 @@
 % Please edit documentation in R/constants.R
 \name{cpcv}
 \alias{cpcv}
-\title{gamma}
+\title{gamma (ratio cp/cv)}
 \usage{
 cpcv()
 }
 \description{
-ratio of specific heat of moist air at constant pressure to that at constant volume (cp/cv)
+ratio of specific heat at constant pressure to that at constant volume (i.e. cp/cv = 1004 / 717 = 1.4)
 }
 \keyword{internal}

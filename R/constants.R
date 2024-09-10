@@ -54,9 +54,17 @@ Rd = function() {
 	return(287.05)
 }
 
-#' gamma
+#' Rv
 #'
-#' ratio of specific heat of moist air at constant pressure to that at constant volume (cp/cv) 
+#' gas constant for water vapor [J/(kg*K)]
+#' @keywords internal
+Rv = function() {
+	return(461.52)
+}
+
+#' gamma (ratio cp/cv)
+#'
+#' ratio of specific heat at constant pressure to that at constant volume (i.e. cp/cv = 1004 / 717 = 1.4) 
 #' @keywords internal
 cpcv = function() {
 	return(1.4)

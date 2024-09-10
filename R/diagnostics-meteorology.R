@@ -1,15 +1,57 @@
 #' Saturation vapor pressure over water
 #'
 #'@description Calculates the saturation vapor pressure over water for given temperature and pressure
-#'@param temp scalar or vector, temperature [deg C]
-#'@return E_s, saturation vapor pressure over water [hPa]
+#'@param temp temperature [K]
+#'@return E_s, saturation vapor pressure over water [Pa]
 #'@export
 #'
 calc_satvaporpressure = function(temp) {
     a=0.61094
     b=17.625
     c=243.04
-    return(a*exp(b*temp/(temp+c))/10)
+    temp=temp-273.15 #K to deg C
+    return(a*exp(b*temp/(temp+c))*1000)
+}
+
+#' Potential temperature
+#'
+#'@description Calculates potential temperature for given temperature and pressure
+#'@param temp temperature [K]
+#'@param pres pressure [Pa]
+#'@return potential temperature [K]
+#'@export
+#'
+calc_pottemp = function(temp,pres) {
+    return(temp*(100000/pres)^(Rd()/cp()))
+}
+
+#' Converts pressure to height (using barometric formula)
+#'
+#'@description Calculates height from pressure
+#'@param pres pressure [Pa]
+#'@param pres0 reference pressure, scalar [Pa], default \code{pres0=101315}
+#'@param temp0 reference temperature, scalar [K], default \code{temp0=288.15}
+#'@return height [m]
+#'@export
+#'
+pres2height = function(pres,pres0=101315,temp0=288.15) {
+    return(temp0/0.0065*(1-(pres/pres0)^(1/5.255)))
+}
+
+#' Converts relative humidity to specific humidity
+#'
+#'@description Calculates specific humidity from relative humidity, temperature and pressure
+#'@param rh relative humidity [percent]
+#'@param temp temperature [K]
+#'@param pres pressure [Pa]
+#'@return specific humidity [kg/kg]
+#'@export
+#'
+rh2q = function(rh,temp,pres) {
+    es=calc_satvaporpressure(temp) #saturation vapor pressure [Pa]
+    e=rh*es/100 #vapor pressure [Pa]
+    w=e*Rd()/(Rv()*(pres-e))
+    return(w/(w+1))
 }
 
 
@@ -28,7 +70,7 @@ calc_csi = function(temp,lw_in,rh=NULL,e=NULL) {
         stop("Either relative humidity rh or vapor pressure e have to be given.")
     }
     if (!is.null(rh)) { #calculate vapor pressure
-        es = calc_satvaporpressure(temp-273.15)
+        es = calc_satvaporpressure(temp)
         e = rh * es/100
     }
     sigma=5.67*10^(-8)
