@@ -7,13 +7,13 @@
 calc_csi(temp, lw_in, rh = NULL, e = NULL)
 }
 \arguments{
-\item{temp}{scalar or vector, temperature [K]}
+\item{temp}{temperature [K]}
 
-\item{lw_in}{scalar or vector, longwave incoming radiation [W/m^2]}
+\item{lw_in}{longwave incoming radiation [W/m^2]}
 
-\item{rh}{scalar or vector, relative humidity [percent]}
+\item{rh}{relative humidity [percent]}
 
-\item{e}{scalar or vector, vapor pressure [Pa]}
+\item{e}{vapor pressure [Pa] (either rh or e have to be given)}
 }
 \value{
 CSI, clear sky index

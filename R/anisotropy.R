@@ -89,6 +89,9 @@ plot_barycentric_map = function(xb,yb,contours=c(5,10,20)) {
 	segments(0,0,0.5,sqrt(3)/2,lwd=2)
 	segments(1,0,0.5,sqrt(3)/2,lwd=2)
 	points(0.5,sqrt(3)/6,pch=3,lwd=2)
+	points(0,0,pch=20,cex=3)
+	points(1,0,pch=20,cex=3)
+	points(0.5,sqrt(3)/2,pch=20,cex=3)
     #2d kde
     nc=length(contours)
     lab=colorRampPalette(c("blue3","red3"), space = "Lab")

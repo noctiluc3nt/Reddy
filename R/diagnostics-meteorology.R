@@ -58,10 +58,10 @@ rh2q = function(rh,temp,pres) {
 #' Clear Sky Index (CSI)
 #'
 #'@description Calculates clear sky index
-#'@param temp scalar or vector, temperature [K]
-#'@param lw_in scalar or vector, longwave incoming radiation [W/m^2]
-#'@param rh scalar or vector, relative humidity [percent]
-#'@param e scalar or vector, vapor pressure [Pa]
+#'@param temp temperature [K]
+#'@param lw_in longwave incoming radiation [W/m^2]
+#'@param rh relative humidity [percent]
+#'@param e vapor pressure [Pa] (either rh or e have to be given)
 #'@return CSI, clear sky index
 #'@export
 #'
