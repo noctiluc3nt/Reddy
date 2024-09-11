@@ -5,7 +5,8 @@
 #'@param yval values of y variable (vector)
 #'@param do_normalization should the values be normalized? i.e. \code{(x-mean(x))/sd(x)}, default: \code{do_normalization=TRUE}
 #'@param hole_sizes vector containing desired hole sizes (integers >= 0)
-#'@return list containing occurrence fraction and strength (calculated based on product and covariance) for all four quadrants (mathematical orientation)
+#'@param orient only relevant for exuberance and organization ratio: if down-gradient flux corresponds to positive values, use \code{orient="+"} (for sensible and latent heat flux), if down-gradient flux corresponds to neegative values, use \code{orient="-"} (for momentum flux and CO2 flux)
+#'@return list containing occurrence fraction and strength (calculated based on product and covariance) for all four quadrants (mathematical orientation) as well as the therefrom derived measures exuberance and organization ratio
 #'@export
 #'
 #'@examples
@@ -13,7 +14,7 @@
 #'b=rnorm(100)
 #'qa_ab=calc_quadrant_analysis(a,b)
 #'
-calc_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=seq(0,10)) {
+calc_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=seq(0,10),orient="+") {
     covariance_total=cov(xval,yval,use="pairwise.complete.obs")
     correlation_total=cor(xval,yval,use="pairwise.complete.obs")
     if (do_normalization==TRUE) {
@@ -47,6 +48,16 @@ calc_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=seq(0
         product[4,i] = mean(xval[is.q4] * yval[is.q4],rm=T)
         covariance[4,i] = cov(xval[is.q4],yval[is.q4])
     }
+    #exuberance and organization ratio
+    if (orient == "+") {
+        exub=(product[1,]+product[3,])/(product[2,]+product[4,])
+        or=(occurrence[1,]+occurrence[3,])/(occurrence[2,]+occurrence[4,])
+    } else if (orient == "-") {
+        exub=(product[2,]+product[4,])/(product[1,]+product[3,])
+        or=(occurrence[2,]+occurrence[4,])/(occurrence[1,]+occurrence[3,])
+    } else {
+        warning("The orientation has to be either + or -.")
+    }
     return(list("hole_sizes"=hole_sizes,
             "occurrence"=occurrence,
             "product"=product,
@@ -54,6 +65,8 @@ calc_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=seq(0
             "covariance_total"=covariance_total,
             "correlation_total"=correlation_total,
             "product_total"=product_total,
+            "exuberance"=exub,
+            "organization_ratio"=or,
             "meta"="Output format: rows represent the quadrants Q1, Q2, Q3, Q4 -- columns represent selected hole sizes"))
 }
 
