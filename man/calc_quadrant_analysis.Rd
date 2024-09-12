@@ -21,7 +21,7 @@ calc_quadrant_analysis(
 
 \item{hole_sizes}{vector containing desired hole sizes (integers >= 0)}
 
-\item{orient}{only relevant for exuberance and organization ratio: if down-gradient flux corresponds to positive values, use \code{orient="+"} (for sensible and latent heat flux), if down-gradient flux corresponds to neegative values, use \code{orient="-"} (for momentum flux and CO2 flux)}
+\item{orient}{only relevant for exuberance and organization ratio: if down-gradient flux corresponds to positive values, use \code{orient="+"} (for sensible and latent heat flux), if down-gradient flux corresponds to negative values, use \code{orient="-"} (for momentum flux and CO2 flux)}
 }
 \value{
 list containing occurrence fraction and strength (calculated based on product and covariance) for all four quadrants (mathematical orientation) as well as the therefrom derived measures exuberance and organization ratio, i.e. the ratio of the strength (or occurrence frequency, respectively) of disorganized to organized structures

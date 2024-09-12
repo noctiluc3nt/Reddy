@@ -26,7 +26,9 @@ The Reddy package provides functions for the post-processing, analysis and evalu
 - `ec-processing.R`: collection of functions for post-processing and quality control of eddy-covariance measurements
 - `flux-footprint.R`: calculation and visualization of 2D flux footprint (FFP, Kljun et al., 2015)
 - `multiresolution-decomposition.R`: calculation and visualization of multiresolution decomposition (MRD, Vickers and Mahrt, 2003)
-- `quadrant-analysis.R`: calculation and visualization of quadrant analysis
+- `quadrant-analysis.R`: calculation and visualization of quadrant analysis to study coherent structures and their organization
+- `scaling-functions.R`: scaling functions used in flux-variance and flux-profile relations
+- `spectrum.R`: wrapper for the rbase spectrum function to derive averaged FFT spectra and compare them with theoretical slopes
 - `surface-energy-balance.R`: visualization of surface energy balance, residual flux and closure ratio
 
 <image src="./inst/figures/schema.png">
@@ -41,15 +43,6 @@ A detailed tutorial containing several jupyter notebooks showcasing the most imp
 - create documentation (Rd files) with roxygen2: `roxygen2::roxygenize("./Reddy")` 
 - build package: `devtools::build("./Reddy")` or via terminal `R CMD build Reddy`
 - check package: `devtools::check("./Reddy")` or via terminal `R CMD check Reddy`
-
-### Other packages for processing of eddy-covariance data
-- [EddyPro®](https://github.com/LI-COR-Environmental/eddypro-engine): Post-processing of eddy-covariance data (LI-COR Biosciences)
-- [REddyProc](https://cran.r-project.org/web/packages/REddyProc/index.html): Post-processing of (half-)hourly eddy-covariance measurements
-- [openeddy](https://github.com/lsigut/openeddy): Post-processing of eddy-covariance data, aligned with REddyProc
-- [RFlux](https://github.com/domvit81/RFlux/): GUI for post-processing of eddy-covariance raw data by calling [EddyPro®](https://github.com/LI-COR-Environmental/eddypro-engine) (LI-COR Biosciences, 2019)
-- [ONEFlux](https://github.com/fluxnet/ONEFlux) ("Open Network-Enabled Flux processing pipeline"): Post-processing of (half-)hourly eddy-covariance data used to create the [FLUXNET2015 dataset](https://fluxnet.org/data/fluxnet2015-dataset/)
-- [icoscp](https://pypi.org/project/icoscp/): accessing data from [ICOS](https://www.icos-cp.eu/) (Integrated Carbon Observing System) [data portal](https://data.icos-cp.eu/portal/#%7B%22filterCategories%22:%7B%22project%22:%5B%22icos%22%5D,%22level%22:%5B1,2%5D,%22stationclass%22:%5B%22ICOS%22%5D%7D%7D)
-- something missing: please create an issue
 
 
 ## Literature

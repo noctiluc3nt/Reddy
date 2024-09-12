@@ -5,7 +5,7 @@
 #'@param yval values of y variable (vector)
 #'@param do_normalization should the values be normalized? i.e. \code{(x-mean(x))/sd(x)}, default: \code{do_normalization=TRUE}
 #'@param hole_sizes vector containing desired hole sizes (integers >= 0)
-#'@param orient only relevant for exuberance and organization ratio: if down-gradient flux corresponds to positive values, use \code{orient="+"} (for sensible and latent heat flux), if down-gradient flux corresponds to neegative values, use \code{orient="-"} (for momentum flux and CO2 flux)
+#'@param orient only relevant for exuberance and organization ratio: if down-gradient flux corresponds to positive values, use \code{orient="+"} (for sensible and latent heat flux), if down-gradient flux corresponds to negative values, use \code{orient="-"} (for momentum flux and CO2 flux)
 #'@return list containing occurrence fraction and strength (calculated based on product and covariance) for all four quadrants (mathematical orientation) as well as the therefrom derived measures exuberance and organization ratio, i.e. the ratio of the strength (or occurrence frequency, respectively) of disorganized to organized structures
 #'@export
 #'
