@@ -6,7 +6,7 @@
 #'@param do_normalization should the values be normalized? i.e. \code{(x-mean(x))/sd(x)}, default: \code{do_normalization=TRUE}
 #'@param hole_sizes vector containing desired hole sizes (integers >= 0)
 #'@param orient only relevant for exuberance and organization ratio: if down-gradient flux corresponds to positive values, use \code{orient="+"} (for sensible and latent heat flux), if down-gradient flux corresponds to neegative values, use \code{orient="-"} (for momentum flux and CO2 flux)
-#'@return list containing occurrence fraction and strength (calculated based on product and covariance) for all four quadrants (mathematical orientation) as well as the therefrom derived measures exuberance and organization ratio
+#'@return list containing occurrence fraction and strength (calculated based on product and covariance) for all four quadrants (mathematical orientation) as well as the therefrom derived measures exuberance and organization ratio, i.e. the ratio of the strength (or occurrence frequency, respectively) of disorganized to organized structures
 #'@export
 #'
 #'@examples
@@ -49,10 +49,10 @@ calc_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=seq(0
         covariance[4,i] = cov(xval[is.q4],yval[is.q4])
     }
     #exuberance and organization ratio
-    if (orient == "+") {
+    if (orient == "-") {
         exub=(product[1,]+product[3,])/(product[2,]+product[4,])
         or=(occurrence[1,]+occurrence[3,])/(occurrence[2,]+occurrence[4,])
-    } else if (orient == "-") {
+    } else if (orient == "+") {
         exub=(product[2,]+product[4,])/(product[1,]+product[3,])
         or=(occurrence[2,]+occurrence[4,])/(occurrence[1,]+occurrence[3,])
     } else {

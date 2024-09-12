@@ -8,7 +8,8 @@ calc_quadrant_analysis(
   xval,
   yval,
   do_normalization = TRUE,
-  hole_sizes = seq(0, 10)
+  hole_sizes = seq(0, 10),
+  orient = "+"
 )
 }
 \arguments{
@@ -19,9 +20,11 @@ calc_quadrant_analysis(
 \item{do_normalization}{should the values be normalized? i.e. \code{(x-mean(x))/sd(x)}, default: \code{do_normalization=TRUE}}
 
 \item{hole_sizes}{vector containing desired hole sizes (integers >= 0)}
+
+\item{orient}{only relevant for exuberance and organization ratio: if down-gradient flux corresponds to positive values, use \code{orient="+"} (for sensible and latent heat flux), if down-gradient flux corresponds to neegative values, use \code{orient="-"} (for momentum flux and CO2 flux)}
 }
 \value{
-list containing occurrence fraction and strength (calculated based on product and covariance) for all four quadrants (mathematical orientation)
+list containing occurrence fraction and strength (calculated based on product and covariance) for all four quadrants (mathematical orientation) as well as the therefrom derived measures exuberance and organization ratio, i.e. the ratio of the strength (or occurrence frequency, respectively) of disorganized to organized structures
 }
 \description{
 Calculates occurrence fraction and strength of the four quadrants in the framework of quadrant analysis
