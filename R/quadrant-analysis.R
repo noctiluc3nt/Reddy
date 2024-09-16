@@ -21,7 +21,6 @@ calc_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=seq(0
         xval = (xval-mean(xval,na.rm=T))/sd(xval,na.rm=T)
         yval = (yval-mean(yval,na.rm=T))/sd(yval,na.rm=T)
     }
-    product_total=xval*yval
     nh = length(hole_sizes)
     occurrence = array(NA,dim=c(4,nh))
     product = array(NA,dim=c(4,nh))
@@ -64,7 +63,6 @@ calc_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=seq(0
             "covariance"=covariance,
             "covariance_total"=covariance_total,
             "correlation_total"=correlation_total,
-            "product_total"=product_total,
             "exuberance"=exub,
             "organization_ratio"=or,
             "meta"="Output format: rows represent the quadrants Q1, Q2, Q3, Q4 -- columns represent selected hole sizes"))
@@ -80,7 +78,7 @@ calc_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=seq(0
 #'@param contours vector containing levels of contour lines for 2d kernel density estimation, default: \code{contours=10^(-3:3)}
 #'@param print_fit should the fit summary from the linear regression be printed? default: \code{print_fit=TRUE}
 #'@param ... arguments passed to plot function
-#'@return 
+#'@return no return
 #'@export
 #'
 #'@importFrom MASS kde2d

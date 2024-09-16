@@ -30,7 +30,7 @@ plot_quadrant_analysis(
 \item{...}{arguments passed to plot function}
 }
 \value{
-
+no return
 }
 \description{
 Plots two vectors in the framework of quadrant analysis with 2d kernel density estimation

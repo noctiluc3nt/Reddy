@@ -111,3 +111,96 @@ scale_phih = function(zeta,method="BD") {
         }
     }
 }
+
+
+
+### calculate scaling parameters for flux-profile relations ###
+
+#' Calculates Phi_m
+#'
+#'@description calculates scaling function Phi_m (for momentum)
+#'@param U1 wind speed at the lower level [m/s]
+#'@param U2 wind speed at the upper level [m/s]
+#'@param ustar friction velocity [m/s]
+#'@param zm measurement/scaling height [m]
+#'@param dz height difference of the two measurements [m]
+#'
+#'@return Phi_m
+#'@export
+#'
+calc_phim = function(U1,U2,ustar,zm,dz) {
+	dUbar_dz=(U2-U1)/dz
+	phi=karman()*zm*abs(dUbar_dz)/ustar
+	return(phi)
+}
+
+#' Calculates Phi_t
+#'
+#'@description calculate scaling function Phi_t (for heat)
+#'@param T1 temperature at the lower level [K]
+#'@param T2 temperature at the upper level [K]
+#'@param cov_wT covariance cov(w,T) [K m/s]
+#'@param ustar friction velocity [m/s]
+#'@param zm measurement/scaling height [m]
+#'@param dz height difference of the two measurements [m]
+#'
+#'@return Phi_t
+#'@export
+#'
+calc_phit = function(T1,T2,cov_wT,ustar,zm,dz) {
+    tstar=calc_xstar(cov_wT,ustar)
+	dTbar_dz=(T2-T1)/dz
+	phi=karman()*zm*abs(dTbar_dz)/tstar
+	return(phi)
+}
+
+
+#' Calculates Richardson number Ri
+#'
+#'@description calculates Richardson number Ri
+#'@param U1 wind speed at the lower level [m/s]
+#'@param U2 wind speed at the upper level [m/s]
+#'@param T1 temperature at the lower level [K]
+#'@param T2 temperature at the upper level [K]
+#'@param dz height difference of the two measurements [m]
+#'
+#'@return Ri
+#'@export
+#'
+calc_ri = function(T1,T2,U1,U2,dz) {
+	T0=273.15
+	dT_dz=(T2-T1)/dz
+	dUbar_dz=(U2-U1)/dz
+	ri=g()/T0*dT_dz/(dUbar_dz^2)
+	return(ri)
+}
+
+
+#' Calculates xstar (denominator for general flux-variance relation)
+#'
+#'@description calculates xstar = x/ustar (for general flux-variance relation)
+#'@param x variable that should be scaled
+#'@param ustar friction velocity [m/s]
+#'
+#'@return xstar = x/ustar
+#'@export
+#'
+calc_xstar = function(x,ustar) {
+	return(x/ustar)
+}
+
+
+#' Calculates Phi_x (general flux-variance relation)
+#'
+#'@description calculates Phi_x = sigma_x/xstar (for general flux-variance relation)
+#'@param sigma_x standard deviation of x
+#'@param x variable that should be scaled, e.g. vertical flux of x with x = T or x = q
+#'@param ustar friction velocity [m/s]
+#'
+#'@return Phi_x = sigma_x/xstar
+#'@export
+#'
+calc_phix = function(sigma_x,x,ustar) {
+    xstar=calc_xstar(x,ustar)
+	return(sigma_x/xstar)
+}

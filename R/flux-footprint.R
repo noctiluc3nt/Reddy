@@ -116,7 +116,7 @@ calc_flux_footprint = function(zm, u_mean=NA, h, L, v_sd, ustar, z0=NA,contours=
 #'@param ffp an object returned from \code{calc_flux_footprint}
 #'@param levels levels used for filled contour plot of footprint, default \code{levels=c(0,10^seq(-6,-3,0.1))}
 #' 
-#'@return
+#'@return no return
 #'@importFrom grDevices colorRampPalette contourLines rgb
 #'@importFrom graphics .filled.contour abline arrows axis
 #'@importFrom stats approx ccf cor cov lm median quantile sd

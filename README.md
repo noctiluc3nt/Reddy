@@ -1,11 +1,11 @@
-# Reddy (dev): Analyzing Turbulence Data
+# Reddy: An open-source package for analyzing eddy-covariance measurements
 <!-- badges: start --> 
 [![CRAN status](https://www.r-pkg.org/badges/version/Reddy)](https://cran.r-project.org/package=Reddy)
 [![Last Commit](https://img.shields.io/github/last-commit/noctiluc3nt/Reddy)](https://github.com/noctiluc3nt/Reddy)
 [![License](https://eddelbuettel.github.io/badges/GPL2+.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
 <!-- badges: end -->
 
-R-Package (under development) to automatize standard analyses of turbulence data (e.g., from eddy-covariance measurements). 
+R-Package for analyzing eddy-covariance measurements: https://noctiluc3nt.github.io/ec_analyze/
 
 
 ## How to use the package
@@ -35,18 +35,22 @@ The Reddy package provides functions for the post-processing, analysis and evalu
 
 
 ### Usage
-A detailed tutorial containing several jupyter notebooks showcasing the most important features of Reddy along with some theoretical background information can be found [here](https://github.com/noctiluc3nt/ec_analyze).<br><br>
-**Plot examples:**<br>
-<image src="./inst/figures/reddy_showcase.png">
+A detailed tutorial containing several jupyter notebooks showcasing the most important features of Reddy along with some theoretical background information can be found [here](https://noctiluc3nt.github.io/ec_analyze/).
 
+
+<!--
 ### Workflow for package building
 - create documentation (Rd files) with roxygen2: `roxygen2::roxygenize("./Reddy")` 
 - build package: `devtools::build("./Reddy")` or via terminal `R CMD build Reddy`
 - check package: `devtools::check("./Reddy")` or via terminal `R CMD check Reddy`
-
+-->
 
 ## Literature
-- Foken, T. (2017). Micrometeorology, Springer-Verlag Berlin Heidelberg, doi: 10.1007/978-3-642-25440-6.
-- Kljun, N. and Calanca, P. and Rotach, M. W. and Schmid, H. P. (2015). A simple two-dimensional parameterisation for Flux Footprint
-Prediction (FFP), Geoscie. Model Dev., 8, 3695-3713.
-- Vickers, D. and Mahrt, L. (2003). The Cospectral Gap and Turbulent Flux Calculations. Journal of Atmospheric and Oceanic Technology, 20:660-672.
+- Foken, T. (2017). Micrometeorology, Springer, Berlin, Heidelberg. DOI: https://doi.org/10.1007/978-3-642-25440-6.
+- Kljun, N., Calanca, P., Rotach, M. W., Schmid, H. P. (2015). A simple two-dimensional parameterisation for Flux Footprint
+Prediction (FFP), Geoscientific Model Development, 8, 3695-3713. DOI: https://doi.org/10.5194/gmd-8-3695-2015
+- Mack, L., Berntsen, T.K., Vercauteren, N., Pirk, N. (2024). Transfer Efficiency and Organization in Turbulent Transport over Alpine Tundra. Boundary-Layer Meteorology 190, 38. DOI: https://doi.org/10.1007/s10546-024-00879-5
+- Vickers, D., Mahrt, L. (2003). The Cospectral Gap and Turbulent Flux Calculations. Journal of Atmospheric and Oceanic Technology, 20:660-672. DOI: 
+[https://doi.org/10.1175/1520-0426(2003)20<660:TCGATF>2.0.CO;2](https://doi.org/10.1175/1520-0426(2003)20<660:TCGATF>2.0.CO;2)
+
+

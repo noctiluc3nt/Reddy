@@ -12,7 +12,7 @@ plot_flux_footprint(ffp, levels = c(0, 10^seq(-6, -3, 0.1)))
 \item{levels}{levels used for filled contour plot of footprint, default \code{levels=c(0,10^seq(-6,-3,0.1))}}
 }
 \value{
-
+no return
 }
 \description{
 Plots Flux-Footprint Parametrization (FFP) according to Kljun et al., 2015

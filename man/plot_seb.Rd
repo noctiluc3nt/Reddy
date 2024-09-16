@@ -44,6 +44,3 @@ no return
 \description{
 Plotting of surface energy balance and calculation of surface energy balance unclosure as residual flux and closure ratio
 }
-\examples{
-
-}

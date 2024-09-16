@@ -15,8 +15,6 @@
 #'@return no return
 #'@export
 #'
-#'@examples
-#'
 plot_seb = function(sw_in,sw_out,lw_in,lw_out,sh=NULL,lh=NULL,gh=NULL,time_vector=NULL,print_fit=TRUE,...) {
     #check which fluxes are given
     if (is.null(sh)) sh = 0
@@ -46,4 +44,6 @@ plot_seb = function(sw_in,sw_out,lw_in,lw_out,sh=NULL,lh=NULL,gh=NULL,time_vecto
     abline(fit,lwd=2,col=2,lty=2)
     abline(0,1,lwd=2,lty=1)
     grid()
+    #if (print_fit==TRUE) print(paste("mean closure ratio: ", mean(cr,na.rm=TRUE)))
+    #if (print_fit==TRUE) print(paste("mean residual flux: ", mean(seb_balance,na.rm=TRUE)))
 }
