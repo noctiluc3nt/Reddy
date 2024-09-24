@@ -372,7 +372,7 @@ cov2lh = function(cov_wq,rho=NULL) {
 #'@param cov_co2w covariance cov(co2,w) [m/s]
 #'@param rho density of air [kg/m^3] (optional)
 #'
-#'@return latent heat flux [W/m^2]
+#'@return CO2 flux [kg/(m^2*s)]
 #'@export
 #'
 cov2cf = function(cov_co2w,rho=NULL) {

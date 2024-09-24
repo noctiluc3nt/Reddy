@@ -72,10 +72,10 @@ cpcv = function() {
 
 #' rhoAir
 #'
-#' molar density of air [mol/m^3]
+#' density of air [kg/m^3]
 #' @keywords internal
 rhoAir = function() {
-	return(1.164)
+	return(1.225) #at surface with p0 = 1013.25 hPa and T0 = 288 K 
 }
 
 #' Lv
