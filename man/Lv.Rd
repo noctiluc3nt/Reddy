@@ -4,7 +4,10 @@
 \alias{Lv}
 \title{Lv}
 \usage{
-Lv()
+Lv(temp = NULL)
+}
+\arguments{
+\item{temp}{temperature [K] (optional)}
 }
 \description{
 latent heat of vaporization [J/kg]

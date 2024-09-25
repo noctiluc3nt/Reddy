@@ -81,9 +81,15 @@ rhoAir = function() {
 #' Lv
 #'
 #' latent heat of vaporization [J/kg]
+#' @param temp temperature [K] (optional)
 #' @keywords internal
-Lv = function() {
-	return(2264.705*1000)
+Lv = function(temp=NULL) {
+	if (is.null(temp)) {
+		return(2264.705*1000)
+	} else {
+		return((3147.5-2.37*temp)*1000) #Lv temperature dependence
+	}
+	
 }
 
 #' M_H2O
