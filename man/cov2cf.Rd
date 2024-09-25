@@ -12,7 +12,7 @@ cov2cf(cov_co2w, rho = NULL)
 \item{rho}{density of air [kg/m^3] (optional)}
 }
 \value{
-latent heat flux [W/m^2]
+CO2 flux [kg/(m^2*s)]
 }
 \description{
 Converts cov(co2,w) to CO2 flux

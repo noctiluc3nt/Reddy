@@ -7,6 +7,6 @@
 rhoAir()
 }
 \description{
-molar density of air [mol/m^3]
+density of air [kg/m^3]
 }
 \keyword{internal}

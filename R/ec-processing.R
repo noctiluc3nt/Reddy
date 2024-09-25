@@ -381,3 +381,41 @@ cov2cf = function(cov_co2w,rho=NULL) {
 	}
 	return(rho*cov_co2w)
 }
+
+
+#' Calculates covariance of two timeseries using pair-wise complete observations
+#'
+#'@description Calculates cov(x,y)
+#'@param x timeseries 1
+#'@param y timeseries 2
+#'
+#'@return cov(x,y)
+#'@export
+#'
+#'@examples
+#'set.seed(5)
+#'x=rnorm(100)
+#'y=rnorm(100)
+#'cov_xy=calc_cov(x,y)
+#'
+calc_cov = function(x,y) {
+	return(cov(x,y,use="pairwise.complete.obs"))
+}
+
+
+#' Response-time correction factor (spectral correction)
+#'
+#'@description Calculates the response-time correction factor from cospectrum, e.g. Peltola et al., 2021
+#'@param cospectrum cospectrum
+#'@param freq frequency [Hz], corresponding to the cospectrum, i.e. same length
+#'@param tau response time of the instrument [s] (has to be determined first by comparison with another instrument, that samples faster)
+#'
+#'@return response-time correction factor (which then can be used to correct the covariance and fluxes by multiplication)
+#'@export
+#'
+RTcorrection = function(cospectrum,freq,tau=1) {
+    tf=(1+(2*pi*tau*freq)^2) #transfer function that accounts for high-frequency loss due to limited sampling frequency
+    cospectrum_cor=co*sqrt(tf) #note: their is a discussion whether sqrt(tf) or tf should be applied in the correction
+    rt_factor=sum(cospectrum_cor)/sum(cospectrum)
+	return(rt_factor)
+}
