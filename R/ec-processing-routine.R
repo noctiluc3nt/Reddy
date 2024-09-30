@@ -5,23 +5,25 @@
 #'@param v v-wind [m/s] (sonic)
 #'@param w w-wind [m/s] (sonic)
 #'@param temp temperature [K] (sonic)
-#'@param h2o specific humidity (gas analyzer, optional)
+#'@param h2o H2O density (gas analyzer, optional)
 #'@param co2 CO2 concentration (gas analyzer, optional)
 #'@param ch4 CH4 concentration (gas analyzer, optional)
 #'@param time_resolution time resolution of the measurements [s], default 20 Hz = 0.05 s
 #'@param time_averaging desired time averaging for flux calculations [min], default 30 minutes
 #'@param measurement_height measurement height [m], only used for calculation of the stability parameter \code{zeta}
 #'@param do_despiking locigal, should the data be despiked? default \code{TRUE}
+#'@param do_detrending logical, should the data be linearly detrended? default \code{FALSE}
 #'@param do_double_rotation locigal, should the wind data be double rotated? default \code{TRUE}
 #'@param do_planar_fit locigal, should the data be rotated with planar fit? default \code{FALSE} (either double rotation or planar fit can be \code{TRUE})
 #'@param do_flagging locigal, should the data be flagged? default \code{TRUE}, i.e. several flags are calculated, but no data is removed, can be used for quality analysis
 #'@param do_SNDcorrection locigal, should SND correction be applied to the buoyancy flux? default \code{TRUE}
 #'@param do_WPLcorrection locigal, should WPL correction be applied to the density measurements of the gas analyszer? default \code{FALSE} (only applicable, if data from a gas analyzer is used)
+#'@param p0 pressure [hPa] used for unit conversion of trace gas measurements from concentration to density, default \code{p0 = 1013} [hPa]
 #'@param format_out file format of the output, can be either "txt" or "rds" (for netcdf, see separate function)
 #'@param filename desired output filename, default \code{NULL}, the date and runtime will be used to create a filename
 #'@param meta locical, should meta data be stored? default \code{TRUE}
 #'
-#'@return 
+#'@return data frame of post-processed eddy-covariance data (that is also stored in the output file by default)
 #'@export
 #'
 #'
@@ -30,12 +32,14 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     time_averaging=30, #mins
     measurement_height=1, #m
     do_despiking=TRUE,despike_u=c(-30,30,10,2,8),despike_v=c(-30,30,10,2,8),despike_w=c(-5,5,10,2,8),despike_temp=c(230,300,10,2,8),
+    do_detrending,
     do_double_rotation=TRUE,
     do_planar_fit=FALSE,
     do_flagging=TRUE, dir_blocked=c(0,0),
     do_SNDcorrection=TRUE,A=7/8,B=7/8,
     do_WPLcorrection=FALSE,
-    format_out="txt",filename="ec_out.txt",
+    p0=1013,
+    format_out="txt",filename=NULL,
     meta=TRUE
     ) {
     #given data
@@ -48,7 +52,7 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     nint=meas_time/(time_averaging*60) #number of output values
     if (nint<1) stop("The measurement time is too short for the desired averaging time -- check time resolution and desired averaging time.")
     nint=round(nint) #needs to be integer value
-    lint=time_averaging*60*1/(time_resolution) #length of averaging interval, i.e. number of measurements to be averaged
+    lint=time_averaging*60/(time_resolution) #length of averaging interval, i.e. number of measurements to be averaged
     #prepare output data
     cat("\n... allocate storage for output data ...")
     column_names=c("u_mean","v_mean","w_mean","Ts_mean","h20_mean","co2_mean","ch4_mean",
@@ -73,6 +77,10 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         if (do_co2) co2=despiking(temp,despike_co2[1],despike_co2[2],despike_co2[3],despike_co2[4],despike_co2[5])
         if (do_ch4) ch4=despiking(temp,despike_ch4[1],despike_ch4[2],despike_ch4[3],despike_ch4[4],despike_ch4[5])
     }
+    #wind (before rotation, assumes that the sonic is oriented towards north)
+    out$ws=calc_windSpeed2D(out$u,out$v)
+    out$wd=calc_windDirection(out$u,out$v)
+    #loop over data for double rotation 
     cat("\n\t... start loop over data: do rotation and stationarity flagging (if requested)...")    
     for (i in 1:nint) {
         i1=(i*(lint-1)+1)
@@ -99,7 +107,19 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         }
     }
     #unit conversions
-    #TODO
+    if (do_h2o) h2o=ppt2rho(h2o,temp,p0*100)
+    if (do_co2) co2=ppt2rho(co2/1000,temp,p0*100,gas="CO2")
+    if (do_ch4) ch4=ppt2rho(ch4/1000000,temp,p0*100,gas="CH4")
+    #detrending
+    if (do_detrending  == TRUE) {
+        u=pracma::detrend(u)
+        v=pracma::detrend(v)
+        w=pracma::detrend(w)
+        temp=pracma::detrend(temp)
+        if (do_h2o) h2o=pracma::detrend(h2o)
+        if (do_co2) co2=pracma::detrend(co2)
+        if (do_ch4) ch4=pracma::detrend(ch4)
+    }
     #averaging
     cat("\n\t... do time averaging ...")
     u_avg=averaging(u,time_resolution,time_averaging*60)
@@ -152,18 +172,19 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     }
     #WPL correction
     if (do_WPLcorrection) {
-        #TODO
+        if (do_h2o) cov_h2ow_wpl=WPLcorrection(h2o,w,temp)
+        if (do_co2) cov_co2w_wpl=WPLcorrection(co2,w,temp)
+        if (do_ch4) cov_ch4w_wpl=WPLcorrection(ch4,w,temp)
     }
     if (do_h2o) out$lh=cov2lh(out$cov_h2ow)
+    if (do_h2o & do_WPLcorrection) out$lh=cov2lh(cov_h2ow_wpl)
     if (do_co2) out$co2_flux=cov2cf(out$cov_co2w)
+    if (do_co2 & do_WPLcorrection) out$co2_flux=cov2cf(cov_co2w_wpl)
     #calculate turbulence statistics
     out$tke=calc_tke(out$u_sd,out$v_sd,out$w_sd)
     out$ustar=calc_ustar(out$cov_uw,out$cov_vw)
     out$L=calc_L(out$ustar,out$Ts_mean,out$cov_wTs)
     out$zeta=calc_zeta(measurement_height,out$L)
-    #wind
-    out$ws=calc_windSpeed2D(out$u,out$v)
-    out$wd=calc_windDirection(out$u,out$v)
     #flagging: the other flags
     if (do_flagging==TRUE) {
         out$flag_distortion=flag_distortion(out$u_mean,out$v_mean,dir_blocked)
@@ -171,11 +192,14 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         out$flag_w=flag_w(out$w_mean)
         out$flag_all=max(out$flag_stationarity,out$flag_distortion,out$flag_itc,out$flag_w)
     }
-    #store
+    #------------------------------------------------
+    #store post-processed data
     if (is.null(filename)) {
-        systime=format(Sys.time(),"%F_%H%M%S",tz="utc")
-        filename=paste0("ec-processing_Reddy_",systime,".",format_out)
+        systime=Sys.time()
+        systime_string=format(systime,"%F_%H%M%S",tz="utc")
+        filename=paste0("ec-processing_Reddy_",systime_string,".",format_out)
     }
+    out=out[,colSums(is.na(out)<nint)] #remove columns that only contain NA
     if (format_out=="txt" | format_out=="dat") {
         cat("\n... store output as .dat file ...")
         write.table(out,file=filename,quote=FALSE,row.names=FALSE,col.names=TRUE)
@@ -190,10 +214,10 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     } else {
         warning("You chose an output format that is not available by default in this function. But you can store the returned data frame in the desired format yourself.")
     }
+    #write metadata file
     if (meta) {
-        #write metadata file
         meta=paste0("Eddy-covariance post-processing with Reddy package\n------------------------------------------
-            \ndate: ",format(Sys.time(),"%F %T"),
+             \ndate: ",format(systime,"%F %T",tz="utc")," UTC"
             "\noutput filename: ", filename,
             "\ntime resolution of input data: ", time_resolution,
             "\naveraging time: ", time_averaging,
@@ -201,6 +225,7 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
             "\ndo_co2: ", do_co2,
             "\ndo_ch4: ", do_ch4,
             "\ndo_despiking: ", do_despiking,
+            "\ndo_detrending: ", do_detrending,
             "\ndo_double_rotation: ", do_double_rotation,
             "\ndo_planar_fit: ", do_planar_fit,
             "\ndo_flagging: ", do_flagging,
@@ -208,10 +233,8 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
             "\ndo_WPLcorrection: ", do_WPLcorrection
         )
         print(meta)
-        writeLines(meta,file="metadata_ec-processing.txt")
+        writeLines(meta,file=paste0("metadata_ec-processing_Reddy_",systime_string,".txt"))
     }
-    #return
     return(out)
 }
-
 
