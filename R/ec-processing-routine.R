@@ -31,7 +31,7 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     time_resolution=0.05, #s
     time_averaging=30, #mins
     measurement_height=1, #m
-    do_despiking=TRUE,despike_u=c(-30,30,10,2,8),despike_v=c(-30,30,10,2,8),despike_w=c(-5,5,10,2,8),despike_temp=c(230,300,10,2,8),
+    do_despiking=TRUE,despike_u=c(-15,15,10,2,8),despike_v=c(-15,15,10,2,8),despike_w=c(-4,4,10,2,8),despike_temp=c(230,300,10,2,8),
     do_detrending,
     do_double_rotation=TRUE,
     do_planar_fit=FALSE,
@@ -54,7 +54,7 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     nint=round(nint) #needs to be integer value
     lint=time_averaging*60/(time_resolution) #length of averaging interval, i.e. number of measurements to be averaged
     #prepare output data
-    cat("\n... allocate storage for output data ...")
+    cat("\n... allocate storage for output data ...\n")
     column_names=c("u_mean","v_mean","w_mean","Ts_mean","h20_mean","co2_mean","ch4_mean",
                     "u_sd","v_sd","w_sd","Ts_sd","h20_sd","co2_sd","ch4_sd",
                     "wd","ws",
@@ -63,48 +63,54 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
                     "sh","lh","co2_flux","methane_flux",
                     "flag_all","flag_stationarity","flag_distortion","flag_w","flag_itc",
                     "rotation_angle1","rotation_angle2")
-    out=array(NA,ndim=c(nint,length(column_names)))
+    out=array(NA,dim=c(nint,length(column_names)))
     out=as.data.frame(out)
     colnames(out)=column_names
     #despiking
     if (do_despiking==TRUE) {
         cat("\n... do despiking ...")
-        u=despiking(u,despike_u[1],despike_u[2],despike_u[3],despike_u[4],despike_v[5])
-        v=despiking(v,despike_v[1],despike_v[2],despike_v[3],despike_v[4],despike_v[5])
-        w=despiking(w,despike_w[1],despike_w[2],despike_w[3],despike_w[4],despike_w[5])
-        temp=despiking(temp,despike_temp[1],despike_temp[2],despike_temp[3],despike_temp[4],despike_temp[5])
-        if (do_h2o) h2o=despiking(temp,despike_h2o[1],despike_h2o[2],despike_h2o[3],despike_h2o[4],despike_h2o[5])
-        if (do_co2) co2=despiking(temp,despike_co2[1],despike_co2[2],despike_co2[3],despike_co2[4],despike_co2[5])
-        if (do_ch4) ch4=despiking(temp,despike_ch4[1],despike_ch4[2],despike_ch4[3],despike_ch4[4],despike_ch4[5])
+        u=despiking(u,c(despike_u[1],despike_u[2]),despike_u[3],despike_u[4],despike_v[5])
+        v=despiking(v,c(despike_v[1],despike_v[2]),despike_v[3],despike_v[4],despike_v[5])
+        w=despiking(w,c(despike_w[1],despike_w[2]),despike_w[3],despike_w[4],despike_w[5])
+        temp=despiking(temp,c(despike_temp[1],despike_temp[2]),despike_temp[3],despike_temp[4],despike_temp[5])
+        if (do_h2o) h2o=despiking(temp,c(despike_h2o[1],despike_h2o[2]),despike_h2o[3],despike_h2o[4],despike_h2o[5])
+        if (do_co2) co2=despiking(temp,c(despike_co2[1],despike_co2[2]),despike_co2[3],despike_co2[4],despike_co2[5])
+        if (do_ch4) ch4=despiking(temp,c(despike_ch4[1],despike_ch4[2]),despike_ch4[3],despike_ch4[4],despike_ch4[5])
     }
-    #wind (before rotation, assumes that the sonic is oriented towards north)
-    out$ws=calc_windSpeed2D(out$u,out$v)
-    out$wd=calc_windDirection(out$u,out$v)
     #loop over data for double rotation 
-    cat("\n\t... start loop over data: do rotation and stationarity flagging (if requested)...")    
+    cat("\n\t... start loop over data: do double rotation and stationarity flagging (if requested)...")    
     for (i in 1:nint) {
-        i1=(i*(lint-1)+1)
+        i1=(i-1)*lint+1
         i2=(i*lint)
         iselect=seq(i1,i2)
         #cat(paste0("\n\t #index: ",i,"\t progress: ",round(i/nint*100,2)," %"))
+        #wind (before rotation, assumes that the sonic is oriented towards north as indicated on the instrument)
+        out$ws[i]=mean(calc_windSpeed2D(u,v),na.rm=T)
+        out$wd[i]=calc_circular_mean(calc_windDirection(u,v)*pi/180)*180/pi
         #rotation
         if (do_double_rotation==TRUE & do_planar_fit==TRUE) warning("You chose two rotation types, but only one can be applied. Apply double rotation now.")
         if (do_double_rotation==FALSE & do_planar_fit==FALSE) warning("You chose no rotation type, so no rotation is applied to the data.")
         if (do_double_rotation==TRUE) {
             wind_rotated=rotate_double(u[iselect],v[iselect],w[iselect])
-            out$rotation_angle1=wind_rotated$theta
-            out$rotation_angle2=wind_rotated$phi
+            out$rotation_angle1[i]=wind_rotated$theta
+            out$rotation_angle2[i]=wind_rotated$phi
             u[iselect]=wind_rotated$u
             v[iselect]=wind_rotated$v
             w[iselect]=wind_rotated$w
-        } else if (do_planar_fit==TRUE) {
-            #cat("\n\t... do planar fit ...")
-            #TODO
-        }
+        } 
         #flagging: stationarity
-        if (flagging == TRUE) {
-            flag_stationarity=flag_stationarity(temp[iselect],w[iselect])
+        if (do_flagging == TRUE) {
+            out$flag_stationarity=flag_stationarity(temp[iselect],w[iselect])
         }
+    }
+    #planar fit
+    if (do_planar_fit) {
+        wind_rotated=rotate_planar(u,v,w)
+        u=wind_rotated$u
+        v=wind_rotated$v
+        w=wind_rotated$w
+        out$rotation_angle1=wind_rotated$alpha
+        out$rotation_angle2=wind_rotated$beta
     }
     #unit conversions
     if (do_h2o) h2o=ppt2rho(h2o,temp,p0*100)
@@ -128,10 +134,10 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     v_avg=averaging(v,time_resolution,time_averaging*60)
     out$v_mean=v_avg$mean[[1]]
     out$v_sd=v_avg$sd[[1]]
-    w_avg$w=averaging(w,time_resolution,time_averaging*60)
+    w_avg=averaging(w,time_resolution,time_averaging*60)
     out$w_mean=w_avg$mean[[1]]
     out$w_sd=w_avg$sd[[1]]
-    Ts_avg$Ts=averaging(temp,time_resolution,time_averaging*60)
+    Ts_avg=averaging(temp,time_resolution,time_averaging*60)
     out$Ts_mean=Ts_avg$mean[[1]]
     out$Ts_sd=Ts_avg$sd[[1]]
     if (do_h2o) {
@@ -190,7 +196,7 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         out$flag_distortion=flag_distortion(out$u_mean,out$v_mean,dir_blocked)
         out$flag_itc=flag_most(out$w_sd,out$ustar,out$zeta)
         out$flag_w=flag_w(out$w_mean)
-        out$flag_all=max(out$flag_stationarity,out$flag_distortion,out$flag_itc,out$flag_w)
+        out$flag_all=max(out$flag_stationarity,out$flag_distortion,out$flag_itc,out$flag_w,na.rm=T)
     }
     #------------------------------------------------
     #store post-processed data
@@ -199,7 +205,7 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         systime_string=format(systime,"%F_%H%M%S",tz="utc")
         filename=paste0("ec-processing_Reddy_",systime_string,".",format_out)
     }
-    out=out[,colSums(is.na(out)<nint)] #remove columns that only contain NA
+    out=out[,colSums(is.na(out))<nint] #remove columns that contain only NA
     if (format_out=="txt" | format_out=="dat") {
         cat("\n... store output as .dat file ...")
         write.table(out,file=filename,quote=FALSE,row.names=FALSE,col.names=TRUE)
@@ -217,7 +223,7 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     #write metadata file
     if (meta) {
         meta=paste0("Eddy-covariance post-processing with Reddy package\n------------------------------------------
-             \ndate: ",format(systime,"%F %T",tz="utc")," UTC"
+             \ndate: ",format(systime,"%F %T",tz="utc")," UTC",
             "\noutput filename: ", filename,
             "\ntime resolution of input data: ", time_resolution,
             "\naveraging time: ", time_averaging,
@@ -238,3 +244,53 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     return(out)
 }
 
+
+
+###########################################################################################
+
+
+#' Eddy-covariance post-processing applied to list of files
+#'
+#'@description An eddy-covariance post-processing routine utilizing the functions from ec_processing.R
+#'@param u u-wind [m/s] (sonic)
+#'@param v v-wind [m/s] (sonic)
+#'@param w w-wind [m/s] (sonic)
+#'@param temp temperature [K] (sonic)
+#'@param h2o specific humidity (gas analyzer, optional)
+#'@param co2 CO2 concentration (gas analyzer, optional)
+#'@param ch4 CH4 concentration (gas analyzer, optional)
+#'@param time_resolution time resolution of the measurements [s], default 20 Hz = 0.05 s
+#'@param time_averaging desired time averaging for flux calculations [min], default 30 minutes
+#'@param measurement_height measurement height [m], only used for calculation of the stability parameter \code{zeta}
+#'@param do_despiking locigal, should the data be despiked? default \code{TRUE}
+#'@param do_double_rotation locigal, should the wind data be double rotated? default \code{TRUE}
+#'@param do_planar_fit locigal, should the data be rotated with planar fit? default \code{FALSE} (either double rotation or planar fit can be \code{TRUE})
+#'@param do_flagging locigal, should the data be flagged? default \code{TRUE}, i.e. several flags are calculated, but no data is removed, can be used for quality analysis
+#'@param do_SNDcorrection locigal, should SND correction be applied to the buoyancy flux? default \code{TRUE}
+#'@param do_WPLcorrection locigal, should WPL correction be applied to the density measurements of the gas analyszer? default \code{FALSE} (only applicable, if data from a gas analyzer is used)
+#'@param format_out file format of the output, can be either "txt" or "rds" (for netcdf, see separate function)
+#'@param meta locical, should meta data be stored? default \code{TRUE}
+#'
+#'@return no return
+#'@export
+#'
+#'
+ECprocessing_files = function(list_of_files,u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
+    time_resolution=0.05, #s
+    time_averaging=30, #mins
+    measurement_height=1, #m
+    do_despiking=TRUE,despike_u=c(-30,30,10,2,8),despike_v=c(-30,30,10,2,8),despike_w=c(-5,5,10,2,8),despike_temp=c(230,300,10,2,8),
+    do_double_rotation=TRUE,
+    do_planar_fit=FALSE,
+    do_flagging=TRUE, dir_blocked=c(0,0),
+    do_SNDcorrection=TRUE,A=7/8,B=7/8,
+    do_WPLcorrection=FALSE,
+    format_out="txt",
+    meta=TRUE
+    ) {
+    #read files
+    nf=length(list_of_files)
+    for (i in 1:nf) {
+        
+    }
+}

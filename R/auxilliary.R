@@ -158,13 +158,32 @@ averaging=function(var,tres1=0.05,tres2=c(1,10,30)*60) {
 	averaged_mean=list()
 	averaged_sd=list()
 	for (i in 1:nt) {
-		vari=RcppRoll::roll_mean(var,nav[i])[seq(1,n,nav[i])]
+		vari=RcppRoll::roll_mean(var,nav[i],na.rm=T)[seq(1,n,nav[i])]
 		averaged_mean[[i]]=vari
-		vari=RcppRoll::roll_sd(var,nav[i])[seq(1,n,nav[i])]
+		vari=RcppRoll::roll_sd(var,nav[i],na.rm=T)[seq(1,n,nav[i])]
 		averaged_sd[[i]]=vari
 	}
 	averaged=list("mean"=averaged_mean,"sd"=averaged_sd)
 	averaged$averaging_time_min=tres2/60
 	averaged$number_of_averaged_values=nav
 	return(averaged)
+}
+
+
+
+#' calculates circular mean
+#'
+#'@description calculates circular mean
+#'@param x input vector, e.g. wind directions [rad]
+#'@param na.rm should NA values be removed? default \code{TRUE}
+#'@return circular mean of x values
+#'@export
+#'
+#'@examples
+#'wd=c(270,90)*pi/180
+#'calc_circular_mean(ts)*180/pi
+#'
+calc_circular_mean=function(x,na.rm=TRUE) {
+	if (na.rm==TRUE) return(atan2(sum(sin(x),na.rm=T),sum(cos(x),na.rm=T)))
+	if (na.rm==FALSE) return(atan2(sum(sin(x)),sum(cos(x))))
 }
