@@ -15,7 +15,7 @@
 #'
 binning=function(var1,var2,bins) {
     if (length(var1)!=length(var2)) {
-        print("ERROR: var1 and var2 have to have the same length")
+        stop("var1 and var2 have to have the same length")
     } else {
         nbins=length(bins)
 	    out=array(NA,dim=c(nbins-1,4))
@@ -181,7 +181,7 @@ averaging=function(var,tres1=0.05,tres2=c(1,10,30)*60) {
 #'
 #'@examples
 #'wd=c(270,90)*pi/180
-#'calc_circular_mean(ts)*180/pi
+#'calc_circular_mean(wd)*180/pi
 #'
 calc_circular_mean=function(x,na.rm=TRUE) {
 	if (na.rm==TRUE) return(atan2(sum(sin(x),na.rm=T),sum(cos(x),na.rm=T)))

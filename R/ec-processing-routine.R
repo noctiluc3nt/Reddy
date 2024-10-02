@@ -5,9 +5,9 @@
 #'@param v v-wind [m/s] (sonic)
 #'@param w w-wind [m/s] (sonic)
 #'@param temp temperature [K] (sonic)
-#'@param h2o H2O density (gas analyzer, optional)
-#'@param co2 CO2 concentration (gas analyzer, optional)
-#'@param ch4 CH4 concentration (gas analyzer, optional)
+#'@param h2o H2O mixing ratio (gas analyzer, optional)
+#'@param co2 CO2 mixing ratio (gas analyzer, optional)
+#'@param ch4 CH4 mixing ratio (gas analyzer, optional)
 #'@param time_resolution time resolution of the measurements [s], default 20 Hz = 0.05 s
 #'@param time_averaging desired time averaging for flux calculations [min], default 30 minutes
 #'@param measurement_height measurement height [m], only used for calculation of the stability parameter \code{zeta}
@@ -18,7 +18,6 @@
 #'@param do_flagging locigal, should the data be flagged? default \code{TRUE}, i.e. several flags are calculated, but no data is removed, can be used for quality analysis
 #'@param do_SNDcorrection locigal, should SND correction be applied to the buoyancy flux? default \code{TRUE}
 #'@param do_WPLcorrection locigal, should WPL correction be applied to the density measurements of the gas analyszer? default \code{FALSE} (only applicable, if data from a gas analyzer is used)
-#'@param p0 pressure [hPa] used for unit conversion of trace gas measurements from concentration to density, default \code{p0 = 1013} [hPa]
 #'@param format_out file format of the output, can be either "txt" or "rds" (for netcdf, see separate function)
 #'@param filename desired output filename, default \code{NULL}, the date and runtime will be used to create a filename
 #'@param meta locical, should meta data be stored? default \code{TRUE}
@@ -32,13 +31,12 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     time_averaging=30, #mins
     measurement_height=1, #m
     do_despiking=TRUE,despike_u=c(-15,15,10,2,8),despike_v=c(-15,15,10,2,8),despike_w=c(-4,4,10,2,8),despike_temp=c(230,300,10,2,8),
-    do_detrending,
+    do_detrending=FALSE,
     do_double_rotation=TRUE,
     do_planar_fit=FALSE,
     do_flagging=TRUE, dir_blocked=c(0,0),
     do_SNDcorrection=TRUE,A=7/8,B=7/8,
     do_WPLcorrection=FALSE,
-    p0=1013,
     format_out="txt",filename=NULL,
     meta=TRUE
     ) {
@@ -54,12 +52,13 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     nint=round(nint) #needs to be integer value
     lint=time_averaging*60/(time_resolution) #length of averaging interval, i.e. number of measurements to be averaged
     #prepare output data
-    cat("\n... allocate storage for output data ...\n")
+    cat("\n... allocate storage for output data ...")
     column_names=c("u_mean","v_mean","w_mean","Ts_mean","h20_mean","co2_mean","ch4_mean",
                     "u_sd","v_sd","w_sd","Ts_sd","h20_sd","co2_sd","ch4_sd",
                     "wd","ws",
                     "tke","ustar","L","zeta",
                     "cov_uw","cov_vw","cov_uv","cov_wTs","cov_vTs","cov_h2ow","cov_co2w","cov_ch4w",
+                    "cov_wT_snd",
                     "sh","lh","co2_flux","methane_flux",
                     "flag_all","flag_stationarity","flag_distortion","flag_w","flag_itc",
                     "rotation_angle1","rotation_angle2")
@@ -78,7 +77,7 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         if (do_ch4) ch4=despiking(temp,c(despike_ch4[1],despike_ch4[2]),despike_ch4[3],despike_ch4[4],despike_ch4[5])
     }
     #loop over data for double rotation 
-    cat("\n\t... start loop over data: do double rotation and stationarity flagging (if requested)...")    
+    cat("\n... start loop over data: do double rotation and stationarity flagging (if requested) ...")    
     for (i in 1:nint) {
         i1=(i-1)*lint+1
         i2=(i*lint)
@@ -98,9 +97,17 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
             v[iselect]=wind_rotated$v
             w[iselect]=wind_rotated$w
         } 
+        #SND correction
+        if (do_SNDcorrection==TRUE) {
+            if (do_h2o == FALSE) {
+                out$cov_wT_snd[i]=SNDcorrection(u[iselect],v[iselect],w[iselect],temp[iselect],NULL,A,B)
+            } else {
+                ot$cov_wT_snd[i]=SNDcorrection(u[iselect],v[iselect],w[iselect],temp[iselect],h2o[iselect],A,B)           
+            }
+        }
         #flagging: stationarity
         if (do_flagging == TRUE) {
-            out$flag_stationarity=flag_stationarity(temp[iselect],w[iselect])
+            out$flag_stationarity=flag_stationarity(temp[iselect],w[iselect],nsub=as.integer(lint/4))
         }
     }
     #planar fit
@@ -112,10 +119,6 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         out$rotation_angle1=wind_rotated$alpha
         out$rotation_angle2=wind_rotated$beta
     }
-    #unit conversions
-    if (do_h2o) h2o=ppt2rho(h2o,temp,p0*100)
-    if (do_co2) co2=ppt2rho(co2/1000,temp,p0*100,gas="CO2")
-    if (do_ch4) ch4=ppt2rho(ch4/1000000,temp,p0*100,gas="CH4")
     #detrending
     if (do_detrending  == TRUE) {
         u=pracma::detrend(u)
@@ -127,7 +130,7 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         if (do_ch4) ch4=pracma::detrend(ch4)
     }
     #averaging
-    cat("\n\t... do time averaging ...")
+    cat("\n... do time averaging ...")
     u_avg=averaging(u,time_resolution,time_averaging*60)
     out$u_mean=u_avg$mean[[1]]
     out$u_sd=u_avg$sd[[1]]
@@ -156,26 +159,17 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         out$ch4_sd=ch4_avg$sd[[1]]
     }
     #flux calculation
-    cat("\n\t... do flux calculation ...")
+    cat("\n... do flux calculation ...")
     out$cov_uw=averaging(u*w,time_resolution,time_averaging*60)$mean[[1]]
     out$cov_uv=averaging(u*v,time_resolution,time_averaging*60)$mean[[1]]
     out$cov_vw=averaging(v*w,time_resolution,time_averaging*60)$mean[[1]]
     out$cov_wTs=averaging(w*temp,time_resolution,time_averaging*60)$mean[[1]]
     out$cov_vTs=averaging(v*temp,time_resolution,time_averaging*60)$mean[[1]]
+    if (do_SNDcorrection) out$sh=cov2sh(out$cov_wT_snd)
+    if (!do_SNDcorrection) out$sh=cov2sh(out$cov_wTs)
     if (do_h2o) out$cov_h2ow=averaging(w*h2o,time_resolution,time_averaging*60)$mean[[1]]
     if (do_co2) out$cov_co2w=averaging(w*co2,time_resolution,time_averaging*60)$mean[[1]]
     if (do_ch4) out$cov_ch4w=averaging(w*ch4,time_resolution,time_averaging*60)$mean[[1]]
-    #SND correction
-    if (do_SNDcorrection==TRUE) {
-        if (h2o == FALSE) {
-            cov_wTs_snd=SNDcorrection(u,v,w,temp,NULL,A,B)
-        } else {
-            cov_wTs_snd=SNDcorrection(u,v,w,temp,h2o,A,B)           
-        }
-        out$sh=cov2sh(cov_wTs_snd)
-    } else {
-        out$sh=cov2sh(cov_wTs)
-    }
     #WPL correction
     if (do_WPLcorrection) {
         if (do_h2o) cov_h2ow_wpl=WPLcorrection(h2o,w,temp)
@@ -196,7 +190,7 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         out$flag_distortion=flag_distortion(out$u_mean,out$v_mean,dir_blocked)
         out$flag_itc=flag_most(out$w_sd,out$ustar,out$zeta)
         out$flag_w=flag_w(out$w_mean)
-        out$flag_all=max(out$flag_stationarity,out$flag_distortion,out$flag_itc,out$flag_w,na.rm=T)
+        out$flag_all=pmax(out$flag_stationarity,out$flag_distortion,out$flag_itc,out$flag_w,na.rm=T)
     }
     #------------------------------------------------
     #store post-processed data
@@ -222,11 +216,11 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     }
     #write metadata file
     if (meta) {
-        meta=paste0("Eddy-covariance post-processing with Reddy package\n------------------------------------------
+        meta=paste0("--------------------------------------------------\nEddy-covariance post-processing with Reddy package\n--------------------------------------------------
              \ndate: ",format(systime,"%F %T",tz="utc")," UTC",
             "\noutput filename: ", filename,
-            "\ntime resolution of input data: ", time_resolution,
-            "\naveraging time: ", time_averaging,
+            "\ntime resolution of input data: ", time_resolution, " s",
+            "\naveraging time: ", time_averaging, " min",
             "\ndo_h2o: ", do_h2o,
             "\ndo_co2: ", do_co2,
             "\ndo_ch4: ", do_ch4,
@@ -238,8 +232,8 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
             "\ndo_SNDcorrection: ", do_SNDcorrection,
             "\ndo_WPLcorrection: ", do_WPLcorrection
         )
-        print(meta)
-        writeLines(meta,file=paste0("metadata_ec-processing_Reddy_",systime_string,".txt"))
+        cat(paste0("\n\n",meta,"\n\n"))
+        writeLines(meta,paste0("metadata_ec-processing_Reddy_",systime_string,".txt"))
     }
     return(out)
 }

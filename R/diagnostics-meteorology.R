@@ -54,6 +54,31 @@ rh2q = function(rh,temp,pres) {
     return(w/(w+1))
 }
 
+#' Converts relative humidity to absolute humidity
+#'
+#'@description Calculates absolute humidity from relative humidity and temperature
+#'@param rh relative humidity [percent]
+#'@param temp temperature [K]
+#'@return absolute humidity [kg/m^3]
+#'@export
+#'
+rh2ah = function(rh,temp) {
+    es=calc_satvaporpressure(temp)/100 #saturation vapor pressure [hPa, here]
+    return(es*rh*2.1674/temp/1000)
+}
+
+#' Converts absolute humidity to relative humidity
+#'
+#'@description Calculates absolute humidity from relative humidity and temperature
+#'@param rh absolute humidity [kg/m^3]
+#'@param temp temperature [K]
+#'@return relative humidity [percent]
+#'@export
+#'
+ah2rh = function(ah,temp) {
+    es=calc_satvaporpressure(temp)/100 #saturation vapor pressure [hPa, here]
+    return(ah/(2.1674*es)*temp*1000)
+}
 
 #' Clear Sky Index (CSI)
 #'
@@ -133,3 +158,5 @@ calc_windSpeed3D = function(u,v,w) {
 calc_gustfactor = function(ws_max,ws_mean) {
 	return(ws_max/ws_mean)
 }
+
+
