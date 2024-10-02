@@ -225,39 +225,30 @@ flag_most = function(sigma_w,ustar,zeta) {
     return(flag)
 }
 
+
 #' SND and cross-wind correction of sensible heat flux
 #'
 #'@description SND and cross-wind correction of sensible heat flux: converts the buoyancy flux cov(w,Ts) (based on sonic temperature Ts) to sensible heat flux
-#'@param u u-wind [m/s] (levelled sonic)
-#'@param v v-wind [m/s] (levelled sonic)
-#'@param w w-wind [m/s] (levelled sonic)
-#'@param Ts temperature [K] (sonic temperature or corrected temperature)
-#'@param q specific humidity [kg/kg] (if measured by the sonic, default NULL)
+#'@param Ts_mean temperature [K] (averaged)
+#'@param u_mean u-wind [m/s] (averaged)
+#'@param v_mean v-wind [m/s] (averaged)
+#'@param cov_uw cov(u,w) [m^2/s^2]
+#'@param cov_vw cov(v,w) [m^2/s^2]
+#'@param cov_wTs cov(Ts,w) [K*m/s] (buoyancy flux)
+#'@param cov_qw cov(q,w) [kg/kg*m/s] (optional)
 #'@param A constant used in cross-wind correction, default \code{A = 7/8} for CSAT3
 #'@param B constant used in cross-wind correction, default \code{B = 7/8} for CSAT3
 #'
 #'@return SND correction of sensible heat flux
 #'@export
 #'
-SNDcorrection = function(u,v,w,Ts,q=NULL,A=7/8,B=7/8) {
-    #calculation of respective covariances
-    not_na=!is.na(w)&!is.na(Ts)
-    cov_wTs = cov(w[not_na],Ts[not_na]) 
-    not_na=!is.na(w)&!is.na(u)
-    cov_uw = cov(u[not_na],w[not_na]) 
-    not_na=!is.na(w)&!is.na(v)
-    cov_vw = cov(v[not_na],w[not_na])
-    ubar=mean(u,na.rm=TRUE)
-    vbar=mean(v,na.rm=TRUE)
-    Tsbar=mean(Ts,na.rm=TRUE)
-    if (!is.null(q)) { #considering q
-        not_na=!is.na(w)&!is.na(q)
-        cov_qw=cov(q[not_na],w[not_na])
+SNDcorrection = function(Ts_mean,u_mean,v_mean,cov_uw,cov_vw,cov_wTs,cov_qw=NULL,A=7/8,B=7/8) {
+    if (!is.null(cov_qw)) { #considering q
         #second term: SND correction, third term: cross-wind correction
-        return(cov_wTs - 0.51*cov_qw + 2*Tsbar/clight()^2*(A*ubar*cov_uw + B*vbar*cov_vw))
+        return(cov_wTs - 0.51*cov_qw + 2*Ts_mean/clight()^2*(A*u_mean*cov_uw + B*v_mean*cov_vw))
     }
     #without q: only cross-wind correction
-    return(cov_wTs + 2*Tsbar/clight()^2*(A*ubar*cov_uw + B*vbar*cov_vw))
+    return(cov_wTs + 2*Ts_mean/clight()^2*(A*u_mean*cov_uw + B*v_mean*cov_vw))
 }
 
 #' WPL correction

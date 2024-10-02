@@ -4,18 +4,32 @@
 \alias{SNDcorrection}
 \title{SND and cross-wind correction of sensible heat flux}
 \usage{
-SNDcorrection(u, v, w, Ts, q = NULL, A = 7/8, B = 7/8)
+SNDcorrection(
+  Ts_mean,
+  u_mean,
+  v_mean,
+  cov_uw,
+  cov_vw,
+  cov_wTs,
+  cov_qw = NULL,
+  A = 7/8,
+  B = 7/8
+)
 }
 \arguments{
-\item{u}{u-wind [m/s] (levelled sonic)}
+\item{Ts_mean}{temperature [K] (averaged)}
 
-\item{v}{v-wind [m/s] (levelled sonic)}
+\item{u_mean}{u-wind [m/s] (averaged)}
 
-\item{w}{w-wind [m/s] (levelled sonic)}
+\item{v_mean}{v-wind [m/s] (averaged)}
 
-\item{Ts}{temperature [K] (sonic temperature or corrected temperature)}
+\item{cov_uw}{cov(u,w) [m^2/s^2]}
 
-\item{q}{specific humidity [kg/kg] (if measured by the sonic, default NULL)}
+\item{cov_vw}{cov(v,w) [m^2/s^2]}
+
+\item{cov_wTs}{cov(Ts,w) [K*m/s] (buoyancy flux)}
+
+\item{cov_qw}{cov(q,w) [kg/kg*m/s] (optional)}
 
 \item{A}{constant used in cross-wind correction, default \code{A = 7/8} for CSAT3}
 

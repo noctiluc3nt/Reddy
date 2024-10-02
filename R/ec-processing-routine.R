@@ -30,7 +30,7 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     time_resolution=0.05, #s
     time_averaging=30, #mins
     measurement_height=1, #m
-    do_despiking=TRUE,despike_u=c(-15,15,10,2,8),despike_v=c(-15,15,10,2,8),despike_w=c(-4,4,10,2,8),despike_temp=c(230,300,10,2,8),
+    do_despiking=TRUE,despike_u=c(-15,15,10,2,8),despike_v=c(-15,15,10,2,8),despike_w=c(-4,4,10,2,8),despike_temp=c(230,300,10,2,8),despike_h2o=c(0,12,10,2,8),despike_co2=c(0,12,10,2,8),despike_ch4=c(0,12,10,2,8),
     do_detrending=FALSE,
     do_double_rotation=TRUE,
     do_planar_fit=FALSE,
@@ -72,23 +72,23 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         v=despiking(v,c(despike_v[1],despike_v[2]),despike_v[3],despike_v[4],despike_v[5])
         w=despiking(w,c(despike_w[1],despike_w[2]),despike_w[3],despike_w[4],despike_w[5])
         temp=despiking(temp,c(despike_temp[1],despike_temp[2]),despike_temp[3],despike_temp[4],despike_temp[5])
-        if (do_h2o) h2o=despiking(temp,c(despike_h2o[1],despike_h2o[2]),despike_h2o[3],despike_h2o[4],despike_h2o[5])
-        if (do_co2) co2=despiking(temp,c(despike_co2[1],despike_co2[2]),despike_co2[3],despike_co2[4],despike_co2[5])
-        if (do_ch4) ch4=despiking(temp,c(despike_ch4[1],despike_ch4[2]),despike_ch4[3],despike_ch4[4],despike_ch4[5])
+        if (do_h2o) h2o=despiking(h2o,c(despike_h2o[1],despike_h2o[2]),despike_h2o[3],despike_h2o[4],despike_h2o[5])
+        if (do_co2) co2=despiking(co2,c(despike_co2[1],despike_co2[2]),despike_co2[3],despike_co2[4],despike_co2[5])
+        if (do_ch4) ch4=despiking(ch4,c(despike_ch4[1],despike_ch4[2]),despike_ch4[3],despike_ch4[4],despike_ch4[5])
     }
-    #loop over data for double rotation 
-    cat("\n... start loop over data: do double rotation and stationarity flagging (if requested) ...")    
+    #rotation pre-check
+    if (do_double_rotation==TRUE & do_planar_fit==TRUE) warning("You have chosen two rotation types, but only one can be applied. Apply double rotation now.")
+    if (do_double_rotation==FALSE & do_planar_fit==FALSE) warning("You have chosen no rotation type, so no rotation is applied to the data.")
+    cat("\n... start loop over data: do double rotation and stationarity flagging (if requested) ...")
     for (i in 1:nint) {
+        #cat(paste0("\n\t #index: ",i,"\t progress: ",round(i/nint*100,2)," %"))
         i1=(i-1)*lint+1
         i2=(i*lint)
         iselect=seq(i1,i2)
-        #cat(paste0("\n\t #index: ",i,"\t progress: ",round(i/nint*100,2)," %"))
         #wind (before rotation, assumes that the sonic is oriented towards north as indicated on the instrument)
-        out$ws[i]=mean(calc_windSpeed2D(u,v),na.rm=T)
-        out$wd[i]=calc_circular_mean(calc_windDirection(u,v)*pi/180)*180/pi
-        #rotation
-        if (do_double_rotation==TRUE & do_planar_fit==TRUE) warning("You chose two rotation types, but only one can be applied. Apply double rotation now.")
-        if (do_double_rotation==FALSE & do_planar_fit==FALSE) warning("You chose no rotation type, so no rotation is applied to the data.")
+        out$ws[i]=mean(calc_windSpeed2D(u[iselect],v[iselect]),na.rm=T)
+        out$wd[i]=calc_circular_mean(calc_windDirection(u[iselect],v[iselect])*pi/180)*180/pi
+        #double rotation
         if (do_double_rotation==TRUE) {
             wind_rotated=rotate_double(u[iselect],v[iselect],w[iselect])
             out$rotation_angle1[i]=wind_rotated$theta
@@ -97,14 +97,6 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
             v[iselect]=wind_rotated$v
             w[iselect]=wind_rotated$w
         } 
-        #SND correction
-        if (do_SNDcorrection==TRUE) {
-            if (do_h2o == FALSE) {
-                out$cov_wT_snd[i]=SNDcorrection(u[iselect],v[iselect],w[iselect],temp[iselect],NULL,A,B)
-            } else {
-                ot$cov_wT_snd[i]=SNDcorrection(u[iselect],v[iselect],w[iselect],temp[iselect],h2o[iselect],A,B)           
-            }
-        }
         #flagging: stationarity
         if (do_flagging == TRUE) {
             out$flag_stationarity=flag_stationarity(temp[iselect],w[iselect],nsub=as.integer(lint/4))
@@ -120,7 +112,7 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         out$rotation_angle2=wind_rotated$beta
     }
     #detrending
-    if (do_detrending  == TRUE) {
+    if (do_detrending == TRUE) {
         u=pracma::detrend(u)
         v=pracma::detrend(v)
         w=pracma::detrend(w)
@@ -165,11 +157,20 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     out$cov_vw=averaging(v*w,time_resolution,time_averaging*60)$mean[[1]]
     out$cov_wTs=averaging(w*temp,time_resolution,time_averaging*60)$mean[[1]]
     out$cov_vTs=averaging(v*temp,time_resolution,time_averaging*60)$mean[[1]]
-    if (do_SNDcorrection) out$sh=cov2sh(out$cov_wT_snd)
-    if (!do_SNDcorrection) out$sh=cov2sh(out$cov_wTs)
     if (do_h2o) out$cov_h2ow=averaging(w*h2o,time_resolution,time_averaging*60)$mean[[1]]
     if (do_co2) out$cov_co2w=averaging(w*co2,time_resolution,time_averaging*60)$mean[[1]]
     if (do_ch4) out$cov_ch4w=averaging(w*ch4,time_resolution,time_averaging*60)$mean[[1]]
+    #SND correction
+    if (do_SNDcorrection==TRUE) {
+        if (do_h2o == FALSE) {
+            out$cov_wT_snd=SNDcorrection(out$Ts_mean,out$u_mean,out$v_mean,out$cov_uw,out$cov_vw,out$cov_wTs,NULL,A,B)
+        } else {
+            out$cov_wT_snd=SNDcorrection(out$Ts_mean,out$u_mean,out$v_mean,out$cov_uw,out$cov_vw,out$cov_wTs,out$cov_qw,A,B)
+        }
+        out$sh=cov2sh(out$cov_wT_snd)
+    } else {
+        out$sh=cov2sh(out$cov_wTs)
+    }
     #WPL correction
     if (do_WPLcorrection) {
         if (do_h2o) cov_h2ow_wpl=WPLcorrection(h2o,w,temp)
