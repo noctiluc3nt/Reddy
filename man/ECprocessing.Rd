@@ -20,6 +20,9 @@ ECprocessing(
   despike_v = c(-15, 15, 10, 2, 8),
   despike_w = c(-4, 4, 10, 2, 8),
   despike_temp = c(230, 300, 10, 2, 8),
+  despike_h2o = c(0, 12, 10, 2, 8),
+  despike_co2 = c(0, 12, 10, 2, 8),
+  despike_ch4 = c(0, 12, 10, 2, 8),
   do_detrending = FALSE,
   do_double_rotation = TRUE,
   do_planar_fit = FALSE,
@@ -28,7 +31,7 @@ ECprocessing(
   do_SNDcorrection = TRUE,
   A = 7/8,
   B = 7/8,
-  do_WPLcorrection = FALSE,
+  store = TRUE,
   format_out = "txt",
   filename = NULL,
   meta = TRUE
@@ -57,6 +60,20 @@ ECprocessing(
 
 \item{do_despiking}{locigal, should the data be despiked? default \code{TRUE}}
 
+\item{despike_u}{vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_u=c(-15,15,10,2,8)}}
+
+\item{despike_v}{vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_v=c(-15,15,10,2,8)}}
+
+\item{despike_w}{vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_w=c(-4,4,10,2,8)}}
+
+\item{despike_temp}{vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_temp=c(230,300,10,2,8)}}
+
+\item{despike_h2o}{vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_h2o=c(0,12,10,2,8)}}
+
+\item{despike_co2}{vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_co2=c(0,12,10,2,8)}}
+
+\item{despike_ch4}{vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_ch4=c(0,12,10,2,8)}}
+
 \item{do_detrending}{logical, should the data be linearly detrended? default \code{FALSE}}
 
 \item{do_double_rotation}{locigal, should the wind data be double rotated? default \code{TRUE}}
@@ -65,13 +82,19 @@ ECprocessing(
 
 \item{do_flagging}{locigal, should the data be flagged? default \code{TRUE}, i.e. several flags are calculated, but no data is removed, can be used for quality analysis}
 
+\item{dir_blocked}{vector containing 2 elements: wind directions blocked through mast or tower, used in flow distortion flag only}
+
 \item{do_SNDcorrection}{locigal, should SND correction be applied to the buoyancy flux? default \code{TRUE}}
 
-\item{do_WPLcorrection}{locigal, should WPL correction be applied to the density measurements of the gas analyszer? default \code{FALSE} (only applicable, if data from a gas analyzer is used)}
+\item{A}{constant used in SND correction, default \code{A=7/8} for CSAT3 sonic}
 
-\item{format_out}{file format of the output, can be either "txt" or "rds" (for netcdf, see separate function)}
+\item{B}{constant used in SND correction, default \code{A=7/8} for CSAT3 sonic}
 
-\item{filename}{desired output filename, default \code{NULL}, the date and runtime will be used to create a filename}
+\item{store}{logical, should the output be stored? default \code{TRUE}}
+
+\item{format_out}{file format of the output, can be either \code{txt} or \code{rds} (for netcdf, see separate function), only used if \code{store=TRUE}}
+
+\item{filename}{desired output filename, default \code{NULL}, the date and runtime will be used to create a filename, only used if \code{store=TRUE}}
 
 \item{meta}{locical, should meta data be stored? default \code{TRUE}}
 }

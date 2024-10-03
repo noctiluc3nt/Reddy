@@ -70,7 +70,7 @@ rh2ah = function(rh,temp) {
 #' Converts absolute humidity to relative humidity
 #'
 #'@description Calculates absolute humidity from relative humidity and temperature
-#'@param rh absolute humidity [kg/m^3]
+#'@param ah absolute humidity [kg/m^3]
 #'@param temp temperature [K]
 #'@return relative humidity [percent]
 #'@export

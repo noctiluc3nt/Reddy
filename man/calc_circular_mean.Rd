@@ -7,7 +7,7 @@
 calc_circular_mean(x, na.rm = TRUE)
 }
 \arguments{
-\item{x}{input vector, e.g. wind directions [rad]}
+\item{x}{input vector, e.g. wind directions [degree]}
 
 \item{na.rm}{should NA values be removed? default \code{TRUE}}
 }
@@ -18,7 +18,7 @@ circular mean of x values
 calculates circular mean
 }
 \examples{
-wd=c(270,90)*pi/180
-calc_circular_mean(wd)*180/pi
+wd=c(280,90)
+calc_circular_mean(wd)
 
 }

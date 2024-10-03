@@ -7,9 +7,9 @@
 ah2rh(ah, temp)
 }
 \arguments{
-\item{temp}{temperature [K]}
+\item{ah}{absolute humidity [kg/m^3]}
 
-\item{rh}{absolute humidity [kg/m^3]}
+\item{temp}{temperature [K]}
 }
 \value{
 relative humidity [percent]

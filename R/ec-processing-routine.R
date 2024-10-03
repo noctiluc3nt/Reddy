@@ -12,14 +12,24 @@
 #'@param time_averaging desired time averaging for flux calculations [min], default 30 minutes
 #'@param measurement_height measurement height [m], only used for calculation of the stability parameter \code{zeta}
 #'@param do_despiking locigal, should the data be despiked? default \code{TRUE}
+#'@param despike_u vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_u=c(-15,15,10,2,8)}
+#'@param despike_v vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_v=c(-15,15,10,2,8)}
+#'@param despike_w vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_w=c(-4,4,10,2,8)}
+#'@param despike_temp vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_temp=c(230,300,10,2,8)}
+#'@param despike_h2o vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_h2o=c(0,12,10,2,8)}
+#'@param despike_co2 vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_co2=c(0,12,10,2,8)}
+#'@param despike_ch4 vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_ch4=c(0,12,10,2,8)}
 #'@param do_detrending logical, should the data be linearly detrended? default \code{FALSE}
 #'@param do_double_rotation locigal, should the wind data be double rotated? default \code{TRUE}
 #'@param do_planar_fit locigal, should the data be rotated with planar fit? default \code{FALSE} (either double rotation or planar fit can be \code{TRUE})
 #'@param do_flagging locigal, should the data be flagged? default \code{TRUE}, i.e. several flags are calculated, but no data is removed, can be used for quality analysis
+#'@param dir_blocked vector containing 2 elements: wind directions blocked through mast or tower, used in flow distortion flag only
 #'@param do_SNDcorrection locigal, should SND correction be applied to the buoyancy flux? default \code{TRUE}
-#'@param do_WPLcorrection locigal, should WPL correction be applied to the density measurements of the gas analyszer? default \code{FALSE} (only applicable, if data from a gas analyzer is used)
-#'@param format_out file format of the output, can be either "txt" or "rds" (for netcdf, see separate function)
-#'@param filename desired output filename, default \code{NULL}, the date and runtime will be used to create a filename
+#'@param A constant used in SND correction, default \code{A=7/8} for CSAT3 sonic
+#'@param B constant used in SND correction, default \code{A=7/8} for CSAT3 sonic
+#'@param store logical, should the output be stored? default \code{TRUE}
+#'@param format_out file format of the output, can be either \code{txt} or \code{rds} (for netcdf, see separate function), only used if \code{store=TRUE}
+#'@param filename desired output filename, default \code{NULL}, the date and runtime will be used to create a filename, only used if \code{store=TRUE}
 #'@param meta locical, should meta data be stored? default \code{TRUE}
 #'
 #'@return data frame of post-processed eddy-covariance data (that is also stored in the output file by default)
@@ -36,8 +46,8 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     do_planar_fit=FALSE,
     do_flagging=TRUE, dir_blocked=c(0,0),
     do_SNDcorrection=TRUE,A=7/8,B=7/8,
-    do_WPLcorrection=FALSE,
-    format_out="txt",filename=NULL,
+    #do_WPLcorrection=FALSE,
+    store=TRUE,format_out="txt",filename=NULL,
     meta=TRUE
     ) {
     #given data
@@ -87,7 +97,8 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         iselect=seq(i1,i2)
         #wind (before rotation, assumes that the sonic is oriented towards north as indicated on the instrument)
         out$ws[i]=mean(calc_windSpeed2D(u[iselect],v[iselect]),na.rm=T)
-        out$wd[i]=calc_circular_mean(calc_windDirection(u[iselect],v[iselect])*pi/180)*180/pi
+        out$wd[i]=calc_circular_mean(calc_windDirection(u[iselect],v[iselect]))
+        if (do_flagging) out$flag_distortion[i]=flag_distortion(u[iselect],v[iselect],dir_blocked)
         #double rotation
         if (do_double_rotation==TRUE) {
             wind_rotated=rotate_double(u[iselect],v[iselect],w[iselect])
@@ -172,15 +183,15 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         out$sh=cov2sh(out$cov_wTs)
     }
     #WPL correction
-    if (do_WPLcorrection) {
-        if (do_h2o) cov_h2ow_wpl=WPLcorrection(h2o,w,temp)
-        if (do_co2) cov_co2w_wpl=WPLcorrection(co2,w,temp)
-        if (do_ch4) cov_ch4w_wpl=WPLcorrection(ch4,w,temp)
-    }
+    #if (do_WPLcorrection) {
+    #    if (do_h2o) cov_h2ow_wpl=WPLcorrection(h2o,w,temp)
+    #    if (do_co2) cov_co2w_wpl=WPLcorrection(co2,w,temp)
+    #    if (do_ch4) cov_ch4w_wpl=WPLcorrection(ch4,w,temp)
+    #}
     if (do_h2o) out$lh=cov2lh(out$cov_h2ow)
-    if (do_h2o & do_WPLcorrection) out$lh=cov2lh(cov_h2ow_wpl)
+    #if (do_h2o & do_WPLcorrection) out$lh=cov2lh(cov_h2ow_wpl)
     if (do_co2) out$co2_flux=cov2cf(out$cov_co2w)
-    if (do_co2 & do_WPLcorrection) out$co2_flux=cov2cf(cov_co2w_wpl)
+    #if (do_co2 & do_WPLcorrection) out$co2_flux=cov2cf(cov_co2w_wpl)
     #calculate turbulence statistics
     out$tke=calc_tke(out$u_sd,out$v_sd,out$w_sd)
     out$ustar=calc_ustar(out$cov_uw,out$cov_vw)
@@ -188,7 +199,6 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     out$zeta=calc_zeta(measurement_height,out$L)
     #flagging: the other flags
     if (do_flagging==TRUE) {
-        out$flag_distortion=flag_distortion(out$u_mean,out$v_mean,dir_blocked)
         out$flag_itc=flag_most(out$w_sd,out$ustar,out$zeta)
         out$flag_w=flag_w(out$w_mean)
         out$flag_all=pmax(out$flag_stationarity,out$flag_distortion,out$flag_itc,out$flag_w,na.rm=T)
@@ -201,19 +211,21 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         filename=paste0("ec-processing_Reddy_",systime_string,".",format_out)
     }
     out=out[,colSums(is.na(out))<nint] #remove columns that contain only NA
-    if (format_out=="txt" | format_out=="dat") {
-        cat("\n... store output as .dat file ...")
-        write.table(out,file=filename,quote=FALSE,row.names=FALSE,col.names=TRUE)
-    } else if (format_out=="csv") {
-        cat("\n... store output as .csv file ...")
-        write.csv(out,file=filename,quote=FALSE,row.names=FALSE,col.names=TRUE)
-    } else if (format_out=="rds") {
-        cat("\n... store output as .rds file ...")
-        saveRDS(out,file=filename)
-    #} else if (format_out=="nc" | format_out=="netcdf") {
-    #   #see separate function in data_handling directory: the storage as netcdf is not available here, since installing the ncdf4 package sometimes causes problems, but the respective function ECprocessing_nc can be found in the directory data_handling
-    } else {
-        warning("You chose an output format that is not available by default in this function. But you can store the returned data frame in the desired format yourself.")
+    if (store == TRUE) {    
+        if (format_out=="txt" | format_out=="dat") {
+            cat("\n... store output as .dat file ...")
+            write.table(out,file=filename,quote=FALSE,row.names=FALSE,col.names=TRUE)
+        } else if (format_out=="csv") {
+            cat("\n... store output as .csv file ...")
+            write.csv(out,file=filename,quote=FALSE,row.names=FALSE,col.names=TRUE)
+        } else if (format_out=="rds") {
+            cat("\n... store output as .rds file ...")
+            saveRDS(out,file=filename)
+        #} else if (format_out=="nc" | format_out=="netcdf") {
+        #   #see separate function in data_handling directory: the storage as netcdf is not available here, since installing the ncdf4 package sometimes causes problems, but the respective function ECprocessing_nc can be found in the directory data_handling
+        } else {
+            warning("You chose an output format that is not available by default in this function. But you can store the returned data frame in the desired format yourself.")
+        }
     }
     #write metadata file
     if (meta) {
@@ -230,62 +242,10 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
             "\ndo_double_rotation: ", do_double_rotation,
             "\ndo_planar_fit: ", do_planar_fit,
             "\ndo_flagging: ", do_flagging,
-            "\ndo_SNDcorrection: ", do_SNDcorrection,
-            "\ndo_WPLcorrection: ", do_WPLcorrection
+            "\ndo_SNDcorrection: ", do_SNDcorrection
         )
         cat(paste0("\n\n",meta,"\n\n"))
-        writeLines(meta,paste0("metadata_ec-processing_Reddy_",systime_string,".txt"))
+        if (store==TRUE) writeLines(meta,paste0("metadata_ec-processing_Reddy_",systime_string,".txt"))
     }
     return(out)
-}
-
-
-
-###########################################################################################
-
-
-#' Eddy-covariance post-processing applied to list of files
-#'
-#'@description An eddy-covariance post-processing routine utilizing the functions from ec_processing.R
-#'@param u u-wind [m/s] (sonic)
-#'@param v v-wind [m/s] (sonic)
-#'@param w w-wind [m/s] (sonic)
-#'@param temp temperature [K] (sonic)
-#'@param h2o specific humidity (gas analyzer, optional)
-#'@param co2 CO2 concentration (gas analyzer, optional)
-#'@param ch4 CH4 concentration (gas analyzer, optional)
-#'@param time_resolution time resolution of the measurements [s], default 20 Hz = 0.05 s
-#'@param time_averaging desired time averaging for flux calculations [min], default 30 minutes
-#'@param measurement_height measurement height [m], only used for calculation of the stability parameter \code{zeta}
-#'@param do_despiking locigal, should the data be despiked? default \code{TRUE}
-#'@param do_double_rotation locigal, should the wind data be double rotated? default \code{TRUE}
-#'@param do_planar_fit locigal, should the data be rotated with planar fit? default \code{FALSE} (either double rotation or planar fit can be \code{TRUE})
-#'@param do_flagging locigal, should the data be flagged? default \code{TRUE}, i.e. several flags are calculated, but no data is removed, can be used for quality analysis
-#'@param do_SNDcorrection locigal, should SND correction be applied to the buoyancy flux? default \code{TRUE}
-#'@param do_WPLcorrection locigal, should WPL correction be applied to the density measurements of the gas analyszer? default \code{FALSE} (only applicable, if data from a gas analyzer is used)
-#'@param format_out file format of the output, can be either "txt" or "rds" (for netcdf, see separate function)
-#'@param meta locical, should meta data be stored? default \code{TRUE}
-#'
-#'@return no return
-#'@export
-#'
-#'
-ECprocessing_files = function(list_of_files,u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
-    time_resolution=0.05, #s
-    time_averaging=30, #mins
-    measurement_height=1, #m
-    do_despiking=TRUE,despike_u=c(-30,30,10,2,8),despike_v=c(-30,30,10,2,8),despike_w=c(-5,5,10,2,8),despike_temp=c(230,300,10,2,8),
-    do_double_rotation=TRUE,
-    do_planar_fit=FALSE,
-    do_flagging=TRUE, dir_blocked=c(0,0),
-    do_SNDcorrection=TRUE,A=7/8,B=7/8,
-    do_WPLcorrection=FALSE,
-    format_out="txt",
-    meta=TRUE
-    ) {
-    #read files
-    nf=length(list_of_files)
-    for (i in 1:nf) {
-        
-    }
 }

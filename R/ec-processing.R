@@ -194,7 +194,7 @@ flag_distortion = function(u,v,dir_blocked=c(30,60),threshold_cr=0.9) {
     #flow distortion flag considering cr
     if (!is.na(ws) & !is.na(cr)) {
         if (ws>0.1 & cr>threshold_cr) {
-            wd=(atan2(mean(v),mean(u))+360)%%360
+            wd=median(calc_windDirection(u,v))
             flag=ifelse(wd>=dir_blocked[1] & wd<=dir_blocked[2],2,0)
         } else {
             flag=0

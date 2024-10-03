@@ -170,20 +170,20 @@ averaging=function(var,tres1=0.05,tres2=c(1,10,30)*60) {
 }
 
 
-
 #' calculates circular mean
 #'
 #'@description calculates circular mean
-#'@param x input vector, e.g. wind directions [rad]
+#'@param x input vector, e.g. wind directions [degree]
 #'@param na.rm should NA values be removed? default \code{TRUE}
 #'@return circular mean of x values
 #'@export
 #'
 #'@examples
-#'wd=c(270,90)*pi/180
-#'calc_circular_mean(wd)*180/pi
+#'wd=c(280,90)
+#'calc_circular_mean(wd)
 #'
 calc_circular_mean=function(x,na.rm=TRUE) {
-	if (na.rm==TRUE) return(atan2(sum(sin(x),na.rm=T),sum(cos(x),na.rm=T)))
-	if (na.rm==FALSE) return(atan2(sum(sin(x)),sum(cos(x))))
+	x=x*pi/180
+	if (na.rm==TRUE) return((atan2(sum(sin(x),na.rm=T),sum(cos(x),na.rm=T))*180/pi)%%360)
+	if (na.rm==FALSE) return((atan2(sum(sin(x)),sum(cos(x)))*180/pi)%%360)
 }
