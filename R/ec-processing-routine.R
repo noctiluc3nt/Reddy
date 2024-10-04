@@ -63,8 +63,8 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     lint=time_averaging*60/(time_resolution) #length of averaging interval, i.e. number of measurements to be averaged
     #prepare output data
     cat("\n... allocate storage for output data ...")
-    column_names=c("u_mean","v_mean","w_mean","Ts_mean","h20_mean","co2_mean","ch4_mean",
-                    "u_sd","v_sd","w_sd","Ts_sd","h20_sd","co2_sd","ch4_sd",
+    column_names=c("u_mean","v_mean","w_mean","Ts_mean","h2o_mean","co2_mean","ch4_mean",
+                    "u_sd","v_sd","w_sd","Ts_sd","h2o_sd","co2_sd","ch4_sd",
                     "wd","ws",
                     "tke","ustar","L","zeta",
                     "cov_uw","cov_vw","cov_uv","cov_wTs","cov_vTs","cov_h2ow","cov_co2w","cov_ch4w",
@@ -210,7 +210,7 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         systime_string=format(systime,"%F_%H%M%S",tz="utc")
         filename=paste0("ec-processing_Reddy_",systime_string,".",format_out)
     }
-    out=out[,colSums(is.na(out))<nint] #remove columns that contain only NA
+    #out=out[,colSums(is.na(out))<nint] #remove columns that contain only NA
     if (store == TRUE) {    
         if (format_out=="txt" | format_out=="dat") {
             cat("\n... store output as .dat file ...")

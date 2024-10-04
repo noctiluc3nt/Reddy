@@ -50,3 +50,5 @@ rsconnect/
 
 # development
 R/dev/*
+
+*package-description.R
