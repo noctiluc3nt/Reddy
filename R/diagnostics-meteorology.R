@@ -13,6 +13,27 @@ calc_satvaporpressure = function(temp) {
     return(a*exp(b*temp/(temp+c))*1000)
 }
 
+#' Vapor pressure deficit (VPD)
+#'
+#'@description Calculates vapor pressure deficit (VPD) from temperature and relative humidity using Arrhenius formula
+#'@param temp temperature [K]
+#'@param rh relative humidity [%]
+#'@return VPD, vapor pressure deficit [Pa]
+#'@export
+#'
+calc_vpd = function(temp,rh) {
+    #calculate saturation pressure here using Arrhenius formula
+    a=-1.0440397*10^4
+    b=-11.29465
+    c=-2.7022355*10^-2
+    d=1.289036*10^-5
+    e=-2.4780681*10^-9
+    f=6.5459673
+    temp=temp*5/9 #K to deg R (Rankine scale)
+    es=exp(a/temp+b+c*temp+d*temp^2+e*temp^3+f*log(temp))
+    return(es*(1-rh/100))
+}
+
 #' Potential temperature
 #'
 #'@description Calculates potential temperature for given temperature and pressure

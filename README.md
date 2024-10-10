@@ -1,4 +1,4 @@
-# Reddy: An open-source package for analyzing eddy-covariance measurements
+# Reddy: A toolbox for analyzing eddy-covariance measurements
 <!-- badges: start --> 
 [![CRAN status](https://www.r-pkg.org/badges/version/Reddy)](https://cran.r-project.org/package=Reddy)
 [![Last Commit](https://img.shields.io/github/last-commit/noctiluc3nt/Reddy)](https://github.com/noctiluc3nt/Reddy)
@@ -31,7 +31,7 @@ The Reddy package provides functions for the post-processing, analysis and evalu
 - `spectrum.R`: wrapper for the rbase spectrum function to derive averaged FFT spectra and compare them with theoretical slopes
 - `surface-energy-balance.R`: visualization of surface energy balance, residual flux and closure ratio
 
-<image src="./inst/figures/schema.png">
+<image src="./inst/figures/schema2.png">
 
 
 ### Usage

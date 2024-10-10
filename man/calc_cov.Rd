@@ -21,6 +21,7 @@ Calculates cov(x,y)
 set.seed(5)
 x=rnorm(100)
 y=rnorm(100)
+y[1:10]=NA
 cov_xy=calc_cov(x,y)
 
 }

@@ -115,3 +115,11 @@ M_CO2 = function() {
 M_CH4 = function() {
 	return(0.01604)
 }
+
+#' Charnock constant (alpha)
+#'
+#' Charnock constant (alpha) used to convert friction velocity to surface roughness length
+#' @keywords internal
+alpha = function() {
+	return(0.016)
+}

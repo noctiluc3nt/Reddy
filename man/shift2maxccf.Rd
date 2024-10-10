@@ -17,7 +17,7 @@ shift2maxccf(var1, var2, plot = TRUE)
 a matrix cotaining timeseries \code{var1} and \code{var2} as columns after shifting to the maximum cross-correlation
 }
 \description{
-Shifts two timeseries to match their maximum cross-correlation
+Shifts two timeseries to match their maximum cross-correlation (can be used e.g. for lag-time correction)
 }
 \examples{
 ts1=runif(10)

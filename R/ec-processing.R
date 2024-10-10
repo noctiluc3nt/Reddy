@@ -387,6 +387,7 @@ cov2cf = function(cov_co2w,rho=NULL) {
 #'set.seed(5)
 #'x=rnorm(100)
 #'y=rnorm(100)
+#'y[1:10]=NA
 #'cov_xy=calc_cov(x,y)
 #'
 calc_cov = function(x,y) {

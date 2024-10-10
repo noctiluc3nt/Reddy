@@ -37,7 +37,7 @@ binning=function(var1,var2,bins) {
 
 #' Shifting two timeseries to match maximum cross-correlation
 #'
-#'@description Shifts two timeseries to match their maximum cross-correlation
+#'@description Shifts two timeseries to match their maximum cross-correlation (can be used e.g. for lag-time correction)
 #'@param var1 vector, first timeseries
 #'@param var2 vector, second timeseries
 #'@param plot logical, should the cross-correlation be plotted? default \code{plot = TRUE}
@@ -61,7 +61,7 @@ shift2maxccf=function(var1,var2,plot=TRUE) {
 	n=max(n1,n2)
 	#calc cross-correlation
 	notna=(!is.na(var1) & !is.na(var2))
-    cc=ccf(var1[notna],var2[notna])
+	cc=ccf(var1[notna],var2[notna])
 	maxcc=max(cc$acf) #max positive cross-correlation
 	lag=cc$lag[which(cc$acf==max(cc$acf))] #respective time lag
 	if (plot == TRUE) {

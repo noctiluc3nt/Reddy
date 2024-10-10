@@ -157,3 +157,32 @@ calc_br = function(sh,lh) {
 calc_ef = function(sh,lh) {
 	return(lh/(sh+lh))
 }
+
+#' Evapotranspiration
+#'
+#'@description Calculates evapotranspiration from latent heat flux
+#'@param lh latent heat flux [W/m^2]
+#'@param temp temperature [K] (optional), if provided, the latent heat of vaporization is calculated temperature-dependent
+#'
+#'@return evapotranspiration [kg/(s*m^2)]
+#'@export
+#'
+calc_evapotranspiration = function(lh,temp=NULL) {
+	lv=Lv(temp)
+	return(lh/lv)
+}
+
+
+### surface roughness and related concepts ###
+
+#' Calculates surface roughness length z0 from friction velocity using the simple estimate from Charnock, 1955
+#'
+#'@description Calculates surface roughness z0 from friction velocity using the simple estimate from Charnock, 1955: z0 = alpha*ustar^2/g with alpha=0.016 and g=9.81 m/s^2
+#'@param ustar friction velocity [m/s]
+#'
+#'@return surface roughness length [m]
+#'@export
+#'
+ustar2z0 = function(ustar) {
+	return(alpha()*ustar^2/g())
+}
