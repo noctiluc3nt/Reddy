@@ -2,20 +2,24 @@
 % Please edit documentation in R/spectrum.R
 \name{calc_spectrum1D}
 \alias{calc_spectrum1D}
-\title{Spectrum of timeseries}
+\title{Spectrum of timeseries (1D)}
 \usage{
-calc_spectrum1D(ts, tres = 0.05, nbins = 100, method = "fft", plot = TRUE, ...)
+calc_spectrum1D(ts, tres = 0.05, nbins = NULL, plot = TRUE, ...)
 }
 \arguments{
 \item{ts}{timeseries}
 
-\item{nbins}{number of bins used to average the spectrum, default \code{nbins=100}}
+\item{tres}{time resolution of the given timeseries, default \code{tres=0.05} for 20 Hz}
+
+\item{nbins}{number of bins used to average the spectrum, default \code{nbins=NULL}, i.e. no further binning is applied (means number of bins equals half of length of input timeseries)}
 
 \item{plot}{should the spectrum be plotted? default \code{plot=TRUE}}
+
+\item{...}{further arguments passed to plot function}
 }
 \value{
-binned spectrum
+1D FFT spectrum
 }
 \description{
-Calculates and plots the averaged turbulence spectrum (using FFT or DCT)
+Calculates and plots turbulence spectrum (in time) calculated using FFT (and optionally bins it)
 }

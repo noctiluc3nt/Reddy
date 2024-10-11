@@ -2,7 +2,7 @@
 % Please edit documentation in R/spectrum.R
 \name{calc_spectrum}
 \alias{calc_spectrum}
-\title{Turbulence Spectrum of Timeseries}
+\title{Spectrum of timeseries by wrapping rbase::spectrum()}
 \usage{
 calc_spectrum(ts, nbins = 100, plot = TRUE)
 }
