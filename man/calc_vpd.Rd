@@ -9,7 +9,7 @@ calc_vpd(temp, rh)
 \arguments{
 \item{temp}{temperature [K]}
 
-\item{rh}{relative humidity [%]}
+\item{rh}{relative humidity [percent]}
 }
 \value{
 VPD, vapor pressure deficit [Pa]

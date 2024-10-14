@@ -208,7 +208,7 @@ flag_distortion = function(u,v,dir_blocked=c(30,60),threshold_cr=0.9) {
 #' Integral Turbulence Characteristics Flag 
 #'
 #'@description Integral Turbulence Characteristics Flag: Tests the consistency with Monin-Obukhov similarity theory using the scaling functions from Panofsky and Dutton, 1984.
-#'@param sigma_w standard deviation of vertical velocity
+#'@param w_sd standard deviation of vertical velocity
 #'@param ustar friction velocity
 #'@param zeta stability parameter \code{zeta = z/L}
 #'
@@ -218,9 +218,9 @@ flag_distortion = function(u,v,dir_blocked=c(30,60),threshold_cr=0.9) {
 #'@examples
 #'itc_flag=flag_most(0.2,0.4,-0.3)
 #'
-flag_most = function(sigma_w,ustar,zeta) {
-    parameterized=1.3*(1+2*abs(zeta))^(1/3) #sigma_w/ustar parametrized according to scaling function based on zeta
-    itc=abs((sigma_w/ustar-parameterized)/parameterized)
+flag_most = function(w_sd,ustar,zeta) {
+    parameterized=1.3*(1+2*abs(zeta))^(1/3) #w_sd/ustar parametrized according to scaling function based on zeta
+    itc=abs((w_sd/ustar-parameterized)/parameterized)
     flag=ifelse(itc<0.3,0,ifelse(itc<0.8,1,2))
     return(flag)
 }

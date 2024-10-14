@@ -4,10 +4,10 @@
 \alias{flag_most}
 \title{Integral Turbulence Characteristics Flag}
 \usage{
-flag_most(sigma_w, ustar, zeta)
+flag_most(w_sd, ustar, zeta)
 }
 \arguments{
-\item{sigma_w}{standard deviation of vertical velocity}
+\item{w_sd}{standard deviation of vertical velocity}
 
 \item{ustar}{friction velocity}
 
