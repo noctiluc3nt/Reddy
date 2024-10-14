@@ -17,7 +17,7 @@ calc_satvaporpressure = function(temp) {
 #'
 #'@description Calculates vapor pressure deficit (VPD) from temperature and relative humidity using Arrhenius formula
 #'@param temp temperature [K]
-#'@param rh relative humidity [%]
+#'@param rh relative humidity [percent]
 #'@return VPD, vapor pressure deficit [Pa]
 #'@export
 #'
@@ -42,8 +42,20 @@ calc_vpd = function(temp,rh) {
 #'@return potential temperature [K]
 #'@export
 #'
-calc_pottemp = function(temp,pres) {
+calc_theta = function(temp,pres) {
     return(temp*(100000/pres)^(Rd()/cp()))
+}
+
+#' Virtual temperature
+#'
+#'@description Calculates virtual temperature for given temperature and specific humidity (mixing ratio)
+#'@param temp temperature [K]
+#'@param q specific humidity [kg/kg]
+#'@return virtual temperature [K]
+#'@export
+#'
+calc_Tv = function(temp,q) {
+    return(temp*(1+Rd()/Rv()*q))
 }
 
 #' Converts pressure to height (using barometric formula)

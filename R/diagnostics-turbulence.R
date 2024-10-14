@@ -131,6 +131,21 @@ calc_dshear = function(cov_uw,cov_vw) {
 	return((atan2(cov_vw,cov_uw)*180/pi+360)%%360)
 }
 
+#' Decoupling metric (Omega)
+#'
+#'@description Calculates the decoupling metric (Omega) from Peltola et al., 2021 (without vegetation)
+#'@param w_sd standard deviation of vertical velocity [m/s]
+#'@param N Brunt-Vaisala frequency [1/s]
+#'@param z measurement height [m]
+#'
+#'@return decoupling metric (Omega) [-]
+#'@export
+#'
+calc_decoupling_param = function(w_sd,N,z=2) {
+	LB=w_sd/N #buoyancy length scale
+	return(LB/(sqrt(2)*z)) #Peltola et al, 2021: eq 6
+}
+
 ### hydrological measures ###
 #' Bowen ratio BR
 #'
