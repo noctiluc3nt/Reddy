@@ -106,10 +106,11 @@ calc_spectrum2D = function(field,xres=1000,yres=NULL,nbins=NULL,method="fft",plo
     }
     #calc 2D spectrum
     if (method=="fft" | method=="FFT") {
-        kx=seq(0,nx/2-1)/(nx*xres)
-        ky=seq(0,ny/2-1)/(ny*yres)
+        kx=seq(-nx/2,nx/2-1)/(nx*xres)
+        ky=seq(-ny/2,ny/2-1)/(ny*yres)
         k=calc_k2d(kx,ky)
-        spec=abs(fft(field))[1:(nx/2),1:(ny/2)] #fft() automatically calculates 2D fft for 2D input array
+        spec=abs(fft(field)) #fft() automatically calculates 2D fft for 2D input array
+        spec=gsignal::fftshift(spec,MARGIN=c(1,2)) #fftshift
     } else if (method=="dct" | method=="DCT") {
         kx=seq(0,nx-1)/(nx*xres)
         ky=seq(0,ny-1)/(ny*yres)
