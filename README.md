@@ -1,23 +1,24 @@
 # Reddy: A toolbox for analyzing eddy-covariance measurements
-<!-- badges: start --> 
-[![CRAN status](https://www.r-pkg.org/badges/version/Reddy)](https://cran.r-project.org/package=Reddy)
+<!-- badges: start 
+[![CRAN status](https://www.r-pkg.org/badges/version/Reddy)](https://cran.r-project.org/package=Reddy) -->
+[![doc](https://img.shields.io/badge/Reddy-documentation-blue)]([link](https://noctiluc3nt.github.io/ec_analyze/))
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Last Commit](https://img.shields.io/github/last-commit/noctiluc3nt/Reddy)](https://github.com/noctiluc3nt/Reddy)
-[![License](https://eddelbuettel.github.io/badges/GPL2+.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
+<!--[![maintained](https://img.shields.io/badge/maintained-black)
 <!-- badges: end -->
 
-R-Package for analyzing eddy-covariance measurements: https://noctiluc3nt.github.io/ec_analyze/
 
-
-## How to use the package
-
-### Installation
-The package Reddy can be installed directly from github (current development version):
+## Installation
+The package Reddy can be installed directly from github:
 ```
     devtools::install_git("https://github.com/noctiluc3nt/Reddy")
 ```
 
-### Functionality
-The Reddy package provides functions for the post-processing, analysis and evaluation of eddy-covariance measurements (see schematic), which are described in the [manual](https://github.com/noctiluc3nt/Reddy/tree/main/inst/figures/Reddy-manual.pdf) and are divided into the following scripts:
+## Documentation, examples and usage
+The [manual](https://github.com/noctiluc3nt/Reddy/tree/main/inst/manual/Reddy-manual.pdf) describes all functions and the [gitbook](https://noctiluc3nt.github.io/ec_analyze/) provides background information and examples how to execute the core functions of this package. The examples are also provided as [jupyter notebooks](https://github.com/noctiluc3nt/ec_analyze/tree/main/notebooks) (based on [example data](https://github.com/noctiluc3nt/ec_analyze/tree/main/data)).
+
+## Functionality and scripts
+The Reddy package provides functions for the post-processing, analysis and evaluation of eddy-covariance measurements (see schematic), which are described in the [manual](https://github.com/noctiluc3nt/Reddy/tree/main/inst/manual/Reddy-manual.pdf) and are divided into the following scripts:
 - `anisotropy.R`: invariant analysis of the Reynolds stress tensor, calculation of turbulence anisotropy and visualization in a barycentric map
 - `auxilliary.R`: collection of some useful generic functions for the evaluation (e.g., discrete binning, cross-correlation maximization)
 - `constants.R`: constants used for calculations (internal)
@@ -25,25 +26,25 @@ The Reddy package provides functions for the post-processing, analysis and evalu
 - `diagnostics-turbulence.R`: calculation of some standard turbulence diagnostics (e.g., friction velocity, TKE, turbulence intensity, stability parameter)
 - `ec-processing.R`: collection of functions for post-processing and quality control of eddy-covariance measurements
 - `flux-footprint.R`: calculation and visualization of 2D flux footprint (FFP, Kljun et al., 2015)
+- `model-utils.R`:
 - `multiresolution-decomposition.R`: calculation and visualization of multiresolution decomposition (MRD, Vickers and Mahrt, 2003)
 - `quadrant-analysis.R`: calculation and visualization of quadrant analysis to study coherent structures and their organization
 - `scaling-functions.R`: scaling functions used in flux-variance and flux-profile relations
-- `spectrum.R`: wrapper for the rbase spectrum function to derive averaged FFT spectra and compare them with theoretical slopes
+- `spectrum.R`: calculation and visualization of frequency (temporal) and wavenumber (spatial) spectra, possibility to bin them to compare them with theoretically expected slopes
 - `surface-energy-balance.R`: visualization of surface energy balance, residual flux and closure ratio
 
+<!--
 <image src="./inst/figures/schema2.png">
 
 
-### Usage
-A detailed tutorial containing several jupyter notebooks showcasing the most important features of Reddy along with some theoretical background information can be found [here](https://noctiluc3nt.github.io/ec_analyze/).
 
-
-<!--
 ### Workflow for package building
 - create documentation (Rd files) with roxygen2: `roxygen2::roxygenize("./Reddy")` 
 - build package: `devtools::build("./Reddy")` or via terminal `R CMD build Reddy`
 - check package: `devtools::check("./Reddy")` or via terminal `R CMD check Reddy`
 -->
+
+**Any issues or comments?** Create an issue [here](https://github.com/noctiluc3nt/Reddy/issues).
 
 ## Literature
 - Foken, T. (2017). Micrometeorology, Springer, Berlin, Heidelberg. DOI: https://doi.org/10.1007/978-3-642-25440-6.
