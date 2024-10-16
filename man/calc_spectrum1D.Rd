@@ -18,7 +18,7 @@ calc_spectrum1D(ts, tres = 0.05, nbins = NULL, plot = TRUE, ...)
 \item{...}{further arguments passed to plot function}
 }
 \value{
-1D FFT spectrum
+binned frequency spectrum from 1D FFT
 }
 \description{
 Calculates and plots turbulence spectrum (in time) calculated using FFT (and optionally bins it)

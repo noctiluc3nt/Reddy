@@ -32,6 +32,8 @@
 #'@param filename desired output filename, default \code{NULL}, the date and runtime will be used to create a filename, only used if \code{store=TRUE}
 #'@param meta locical, should meta data be stored? default \code{TRUE}
 #'
+#'@importFrom pracma detrend
+#'
 #'@return data frame of post-processed eddy-covariance data (that is also stored in the output file by default)
 #'@export
 #'

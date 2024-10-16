@@ -23,3 +23,16 @@ deaccumulate1h=function(dat,factor=-1/3600) {
 	}
     return(out*factor) #time unit conversion
 }
+
+
+#' Converts hybrid (terrain-following) sigma levels to physical heights 
+#'
+#'@description Converts hybrid (terrain-following) sigma levels to physical heights
+#'@param hybrid scalar or vector, hybrid sigma levels
+#'@param Tv virtual temperature
+#'@return hybrid levels converted to physical height [m]
+#'@export
+#'
+sigma2height=function(hybrid,Tv=273.15) {
+    return(-R()*Tv/g()*log(hybrid))
+}

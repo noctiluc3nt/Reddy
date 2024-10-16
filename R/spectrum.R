@@ -35,7 +35,9 @@ calc_spectrum = function(ts,nbins=100,plot=TRUE) {
 #'@param plot should the spectrum be plotted? default \code{plot=TRUE}
 #'@param ... further arguments passed to plot function
 #'
-#'@return 1D FFT spectrum
+#'@importFrom gsignal dct
+#'
+#'@return binned frequency spectrum from 1D FFT
 #'@export
 #'
 calc_spectrum1D = function(ts,tres=0.05,nbins=NULL,plot=TRUE,...) {
@@ -85,7 +87,9 @@ calc_spectrum1D = function(ts,tres=0.05,nbins=NULL,plot=TRUE,...) {
 #'@param plot should the spectrum be plotted? default \code{plot=TRUE}
 #'@param ... further arguments passed to plot function
 #'
-#'@return 2D spectrum from FFT or DCT
+#'@importFrom gsignal dct2 fftshift
+#'
+#'@return binned wavenumber spectrum from 2D FFT or DCT
 #'@export
 #'
 calc_spectrum2D = function(field,xres=1000,yres=NULL,nbins=NULL,method="fft",plot=TRUE,...) {

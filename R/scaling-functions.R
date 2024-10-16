@@ -71,12 +71,12 @@ scale_phiT = function(zeta,method="K1994") {
 #'
 #'@description scaling function Phi_m
 #'@param zeta stability parameter [-]
-#'@param method defining from which paper the scaling function should be used, default \code{method="ecmwf"} for for the ones used in ECMWF-IFS, other option \code{method="BD"} for the lienar Businger-Dyer relations
+#'@param method defining from which paper the scaling function should be used, default \code{method="ecmwf"} for the ones used in ECMWF-IFS, other option \code{method="BD"} for the linear Businger-Dyer relations
 #'
 #'@return Phi_m
 #'@export
 #'
-scale_phim = function(zeta,method="BD") {
+scale_phim = function(zeta,method="ecmwf") {
     if (method=="ecmwf") {
         if (zeta<=0) { #unstable
             return((1-16*zeta)^(-1/4))
@@ -203,4 +203,35 @@ calc_xstar = function(x,ustar) {
 calc_phix = function(sigma_x,x,ustar) {
     xstar=calc_xstar(x,ustar)
 	return(sigma_x/xstar)
+}
+
+
+#' Wind profile from Monin-Obukhov similarity theory
+#'
+#'@description Calculates vertical profile of horizontal wind speed following Monin-Obukhov similarity theory
+#'@param zs scalar or vector, heights [m] at which the horizontal wind speed should be calculate 
+#'@param ustar friction velocity [m/s]
+#'@param z0 surface roughness length [m], default \code{z0=0} (note: it could be an option to calculate z0 from ustar with \code{ustar2z0()})
+#'@param d displacement height [m], optional, default \code{d=0} (i.e. no displacement)
+#'@param zeta stability parameter [-] to correct for stability effects, default \code{zeta=0} (i.e. no stability correction, resulting in classical logarithmic wind profile)
+#'@param method "method" for calculating stability correction function (only relevant if zeta is non-zero), default \code{method="ecmwf"} for using Phi_m from ECMWF-IFS
+#'
+#'@return data frame containing the requested heights \code{zs} and the calculated wind speed [m/s] there
+#'@export
+#'
+#'@examples
+#'zs=seq(1,100)
+#'ustar=0.2
+#'u_neutral=calc_windprofile(zs,ustar)
+#'u_unstable=calc_windprofile(zs,ustar,zeta=-0.2)
+#'u_stable=calc_windprofile(zs,ustar,zeta=0.2)
+#'
+calc_windprofile = function(zs,ustar,z0=0,d=0,zeta=0,method="ecmwf") {
+    Phi=scale_phim(zeta,method)
+    if (z0==0) {
+        uz=ustar/karman()*(log(zs-d)+Phi)
+    } else {
+        uz=ustar/karman()*log((zs-d)/z0+Phi)
+    }
+	return(data.frame("height"=zs,"windspeed"=uz))
 }

@@ -191,5 +191,3 @@ calc_windSpeed3D = function(u,v,w) {
 calc_gustfactor = function(ws_max,ws_mean) {
 	return(ws_max/ws_mean)
 }
-
-

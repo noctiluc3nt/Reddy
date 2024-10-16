@@ -4,12 +4,12 @@
 \alias{scale_phim}
 \title{Scaling function for momentum Phi_m}
 \usage{
-scale_phim(zeta, method = "BD")
+scale_phim(zeta, method = "ecmwf")
 }
 \arguments{
 \item{zeta}{stability parameter [-]}
 
-\item{method}{defining from which paper the scaling function should be used, default \code{method="ecmwf"} for for the ones used in ECMWF-IFS, other option \code{method="BD"} for the lienar Businger-Dyer relations}
+\item{method}{defining from which paper the scaling function should be used, default \code{method="ecmwf"} for the ones used in ECMWF-IFS, other option \code{method="BD"} for the linear Businger-Dyer relations}
 }
 \value{
 Phi_m

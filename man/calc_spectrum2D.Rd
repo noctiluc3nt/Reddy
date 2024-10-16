@@ -30,7 +30,7 @@ calc_spectrum2D(
 \item{...}{further arguments passed to plot function}
 }
 \value{
-2D spectrum from FFT or DCT
+binned wavenumber spectrum from 2D FFT or DCT
 }
 \description{
 Calculates and plots turbulence spectrum (in space) calculated using FFT or DCT (and optionally bins it)
