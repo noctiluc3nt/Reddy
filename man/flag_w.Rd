@@ -15,3 +15,7 @@ vertical velocity flags (0: in full agreement with the criterion ... 2: does not
 \description{
 Vertical Velocity Flag according to Mauder et al., 2013: After rotation the vertical velocity should vanish, this flag flags high remaining vertical velocities.
 }
+\examples{
+flag_w(0.01)
+
+}

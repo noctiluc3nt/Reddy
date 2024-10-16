@@ -17,3 +17,8 @@ hybrid levels converted to physical height [m]
 \description{
 Converts hybrid (terrain-following) sigma levels to physical heights
 }
+\examples{
+sigma2height(0.1)
+sigma2height(0.1,288)
+
+}

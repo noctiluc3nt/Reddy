@@ -5,6 +5,9 @@
 #'@return E_s, saturation vapor pressure over water [Pa]
 #'@export
 #'
+#'@examples
+#'calc_satvaporpressure(273)
+#'
 calc_satvaporpressure = function(temp) {
     a=0.61094
     b=17.625
@@ -20,6 +23,9 @@ calc_satvaporpressure = function(temp) {
 #'@param rh relative humidity [percent]
 #'@return VPD, vapor pressure deficit [Pa]
 #'@export
+#'
+#'@examples
+#'calc_vpd(273,70)
 #'
 calc_vpd = function(temp,rh) {
     #calculate saturation pressure here using Arrhenius formula
@@ -42,6 +48,9 @@ calc_vpd = function(temp,rh) {
 #'@return potential temperature [K]
 #'@export
 #'
+#'@examples
+#'calc_theta(273,70000)
+#'
 calc_theta = function(temp,pres) {
     return(temp*(100000/pres)^(Rd()/cp()))
 }
@@ -53,6 +62,10 @@ calc_theta = function(temp,pres) {
 #'@param q specific humidity [kg/kg]
 #'@return virtual temperature [K]
 #'@export
+#'
+#'@examples
+#'calc_Tv(273,0) #no difference
+#'calc_Tv(273,0.1)
 #'
 calc_Tv = function(temp,q) {
     return(temp*(1+Rd()/Rv()*q))
@@ -67,6 +80,10 @@ calc_Tv = function(temp,q) {
 #'@return height [m]
 #'@export
 #'
+#'@examples
+#'pres2height(60000) #using default surface values
+#'pres2height(60000,95000,265) #adapted surface values
+#'
 pres2height = function(pres,pres0=101315,temp0=288.15) {
     return(temp0/0.0065*(1-(pres/pres0)^(1/5.255)))
 }
@@ -79,6 +96,9 @@ pres2height = function(pres,pres0=101315,temp0=288.15) {
 #'@param pres pressure [Pa]
 #'@return specific humidity [kg/kg]
 #'@export
+#'
+#'@examples
+#'rh2q(70,273,101300)
 #'
 rh2q = function(rh,temp,pres) {
     es=calc_satvaporpressure(temp) #saturation vapor pressure [Pa]
@@ -95,6 +115,9 @@ rh2q = function(rh,temp,pres) {
 #'@return absolute humidity [kg/m^3]
 #'@export
 #'
+#'@examples
+#'rh2ah(70,273)
+#'
 rh2ah = function(rh,temp) {
     es=calc_satvaporpressure(temp)/100 #saturation vapor pressure [hPa, here]
     return(es*rh*2.1674/temp/1000)
@@ -107,6 +130,9 @@ rh2ah = function(rh,temp) {
 #'@param temp temperature [K]
 #'@return relative humidity [percent]
 #'@export
+#'
+#'@examples
+#'ah2rh(0.005,273)
 #'
 ah2rh = function(ah,temp) {
     es=calc_satvaporpressure(temp)/100 #saturation vapor pressure [hPa, here]
@@ -122,6 +148,9 @@ ah2rh = function(ah,temp) {
 #'@param e vapor pressure [Pa] (either rh or e have to be given)
 #'@return CSI, clear sky index
 #'@export
+#'
+#'@examples
+#'calc_csi(273,230,70) #with relative humidity
 #'
 calc_csi = function(temp,lw_in,rh=NULL,e=NULL) {
     if (is.null(rh) & is.null(e)) {
@@ -148,6 +177,9 @@ calc_csi = function(temp,lw_in,rh=NULL,e=NULL) {
 #'@return wind direction [deg]
 #'@export
 #'
+#'@examples
+#'calc_windDirection(3,3)
+#'
 calc_windDirection = function(u,v) {
 	return((180+180/pi*atan2(v,u))%%360) #from ERA5 doc: https://confluence.ecmwf.int/pages/viewpage.action?pageId=133262398
 }
@@ -160,6 +192,9 @@ calc_windDirection = function(u,v) {
 #'
 #'@return wind speed [m/s]
 #'@export
+#'
+#'@examples
+#'calc_windSpeed2D(3,3)
 #'
 calc_windSpeed2D = function(u,v) {
 	return(sqrt(u^2+v^2))
@@ -175,6 +210,9 @@ calc_windSpeed2D = function(u,v) {
 #'@return wind speed (3D) [m/s]
 #'@export
 #'
+#'@examples
+#'calc_windSpeed3D(3,3,0.1)
+#'
 calc_windSpeed3D = function(u,v,w) {
 	return(sqrt(u^2+v^2+w^2))
 }
@@ -187,6 +225,9 @@ calc_windSpeed3D = function(u,v,w) {
 #'
 #'@return gust factor [-]
 #'@export
+#'
+#'@examples
+#'calc_gustfactor(6,3)
 #'
 calc_gustfactor = function(ws_max,ws_mean) {
 	return(ws_max/ws_mean)

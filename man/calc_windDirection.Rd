@@ -17,3 +17,7 @@ wind direction [deg]
 \description{
 Calculates (horizontal) wind direction
 }
+\examples{
+calc_windDirection(3,3)
+
+}

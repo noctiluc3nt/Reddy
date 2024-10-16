@@ -19,3 +19,7 @@ turbulent kinetic energy TKE [m^2/s^2]
 \description{
 Calculates turbulent kinetic energy (TKE) from \code{u_sd}, \code{v_sd} and \code{w_sd}
 }
+\examples{
+calc_tke(1,1,1)
+
+}

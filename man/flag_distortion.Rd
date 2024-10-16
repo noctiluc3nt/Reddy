@@ -4,7 +4,7 @@
 \alias{flag_distortion}
 \title{Flow Distortion Flag and Wind Constancy Ratio}
 \usage{
-flag_distortion(u, v, dir_blocked = c(30, 60), threshold_cr = 0.9)
+flag_distortion(u, v, dir_blocked, threshold_cr = 0.9)
 }
 \arguments{
 \item{u}{u-wind (levelled sonic)}
@@ -20,4 +20,9 @@ distortion flags (0: in full agreement with the criterion ... 2: does not fulfil
 }
 \description{
 Flow Distortion Flag according to Mauder et al., 2013: Wind coming from (pre-defined) directions blocked by the measurement device is flaged with 2 (for wind speeds greater than 0.1 assuming that during calm wind the wind direction is not well-defined). The wind constancy ratio is calculated to quantify the variability of horizontal wind direction according to Mahrt, 1999.
+}
+\examples{
+flag_distortion(1,1,dir_blocked=c(30,60))
+flag_distortion(1,1,dir_blocked=c(180,360))
+
 }

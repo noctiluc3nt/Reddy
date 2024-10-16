@@ -35,3 +35,12 @@ binned wavenumber spectrum from 2D FFT or DCT
 \description{
 Calculates and plots turbulence spectrum (in space) calculated using FFT or DCT (and optionally bins it)
 }
+\examples{
+set.seed(5)
+field=matrix(rnorm(10000),nrow=100)
+calc_spectrum2D(field,xres=100) #equidistant grid, no binning, fft
+calc_spectrum2D(field,xres=100,yres=200) #non-equidistant grid, no binning, fft
+calc_spectrum2D(field,xres=100,nbins=1000) #equidistant grid, binning, fft
+calc_spectrum2D(field,xres=100,nbins=1000,method="dct") #equidistant grid, binning, dct
+
+}

@@ -17,3 +17,8 @@ virtual temperature [K]
 \description{
 Calculates virtual temperature for given temperature and specific humidity (mixing ratio)
 }
+\examples{
+calc_Tv(273,0) #no difference
+calc_Tv(273,0.1)
+
+}

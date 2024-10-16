@@ -19,3 +19,7 @@ specific humidity [kg/kg]
 \description{
 Calculates specific humidity from relative humidity, temperature and pressure
 }
+\examples{
+rh2q(70,273,101300)
+
+}

@@ -10,6 +10,7 @@
 #'@param z0 roughness length [m] (either \code{u_mean} or \code{z0} have to be given)
 #'@param contours which contour lines should be calculated? default: \code{contours=seq(0.9,0.1,-0.1)}
 #'@param nres resolution (default: \code{nres=1000})
+#'@param plot logical, should the flux footprint be plotted? default \code{plot=TRUE}
 #'
 #'@return list containing all relevant flux footprint information
 #'@export
@@ -17,7 +18,7 @@
 #'@examples
 #'ffp=calc_flux_footprint(zm=20,u_mean=2,h=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
 #'
-calc_flux_footprint = function(zm, u_mean=NA, h, L, v_sd, ustar, z0=NA,contours=seq(0.9,0.1,-0.1),nres=1000) {
+calc_flux_footprint = function(zm, u_mean=NA, h, L, v_sd, ustar, z0=NA,contours=seq(0.9,0.1,-0.1),nres=1000,plot=TRUE) {
     #fitting parameters for crosswind-integrated footprint, see (Kljun et al., 2015) eq. 17
     a=1.452
     b=-1.991
@@ -106,6 +107,7 @@ calc_flux_footprint = function(zm, u_mean=NA, h, L, v_sd, ustar, z0=NA,contours=
     ffp$xcontour=ffp_cont$xcont
     ffp$ycontour=ffp_cont$ycont
     ffp$contour_levels=contours
+    if (plot==TRUE) plot_flux_footprint(ffp)
     return(ffp)
 }
 

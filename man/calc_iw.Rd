@@ -17,3 +17,7 @@ vertical turbulence intensity [-]
 \description{
 Calculates vertical turbulence intensity \code{Iw = w_sd/ws_mean}
 }
+\examples{
+calc_iw(1,3) #unstable
+
+}

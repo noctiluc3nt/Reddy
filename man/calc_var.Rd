@@ -19,3 +19,8 @@ velocity aspect ratio [-]
 \description{
 Calculates the velocity aspect ratio: \code{VAR = sqrt(2)*w_sd/sqrt(u_sd^2+v_sd^2)}
 }
+\examples{
+calc_var(1,1,1) #"isotropic"
+calc_var(1,1,2) #not isotropic
+
+}

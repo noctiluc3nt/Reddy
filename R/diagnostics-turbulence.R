@@ -10,6 +10,9 @@
 #'@return turbulent kinetic energy TKE [m^2/s^2]
 #'@export
 #'
+#'@examples
+#'calc_tke(1,1,1)
+#'
 calc_tke = function(u_sd,v_sd,w_sd) {
 	return(1/2*(u_sd^2+v_sd^2+w_sd^2)) 
 }
@@ -24,6 +27,9 @@ calc_tke = function(u_sd,v_sd,w_sd) {
 #'
 #'@return turbulent kinetic energy velocity scale [m/s]
 #'@export
+#'
+#'@examples
+#'calc_vtke(1,1,1)
 #'
 calc_vtke = function(u_sd,v_sd,w_sd) {
 	tke=calc_tke(u_sd,v_sd,w_sd)
@@ -40,6 +46,9 @@ calc_vtke = function(u_sd,v_sd,w_sd) {
 #'@return friction velocity [m/s]
 #'@export
 #'
+#'@examples
+#'calc_ustar(1,1)
+#'
 calc_ustar = function(cov_uw,cov_vw) {
 	return((cov_uw^2+cov_vw^2)^(1/4)) 
 }
@@ -54,6 +63,10 @@ calc_ustar = function(cov_uw,cov_vw) {
 #'@return Obukhov length [m]
 #'@export
 #'
+#'@examples
+#'calc_L(0.2,273,0.1) #unstable
+#'calc_L(0.2,273,-0.1) #stable
+#'
 calc_L = function(ustar,T_mean,cov_wT) {
 	return(-abs(ustar^3)*T_mean/(karman()*g()*cov_wT))
 }
@@ -67,6 +80,10 @@ calc_L = function(ustar,T_mean,cov_wT) {
 #'
 #'@return stability parameter [-]
 #'@export
+#'
+#'@examples
+#'calc_zeta(2,-1) #unstable
+#'calc_zeta(2,1) #stable
 #'
 calc_zeta = function(z,L) {
 	return(z/L)
@@ -83,6 +100,9 @@ calc_zeta = function(z,L) {
 #'@return horizontal turbulence intensity [-]
 #'@export
 #'
+#'@examples
+#'calc_ti(1,1,3)
+#'
 calc_ti = function(u_sd,v_sd,ws_mean) {
 	return(sqrt(u_sd^2+v_sd^2)/ws_mean)
 }
@@ -95,6 +115,9 @@ calc_ti = function(u_sd,v_sd,ws_mean) {
 #'
 #'@return vertical turbulence intensity [-]
 #'@export
+#'
+#'@examples
+#'calc_iw(1,3) #unstable
 #'
 calc_iw = function(w_sd,ws_mean) {
 	return(w_sd/ws_mean)
@@ -109,6 +132,10 @@ calc_iw = function(w_sd,ws_mean) {
 #'
 #'@return velocity aspect ratio [-]
 #'@export
+#'
+#'@examples
+#'calc_var(1,1,1) #"isotropic"
+#'calc_var(1,1,2) #not isotropic
 #'
 calc_var = function(u_sd,v_sd,w_sd) {
 	return(sqrt(2)*w_sd/sqrt(u_sd^2+v_sd^2))
@@ -141,7 +168,10 @@ calc_dshear = function(cov_uw,cov_vw) {
 #'@return decoupling metric (Omega) [-]
 #'@export
 #'
-calc_decoupling_param = function(w_sd,N,z=2) {
+#'@examples
+#'calc_decoupling_metric(1,1)
+#'
+calc_decoupling_metric = function(w_sd,N,z=2) {
 	LB=w_sd/N #buoyancy length scale
 	return(LB/(sqrt(2)*z)) #Peltola et al, 2021: eq 6
 }
@@ -197,6 +227,9 @@ calc_flux_intermittency = function(ts1,ts2=NULL,nsub=6000) {
 #'@return Bowen ratio [-]
 #'@export
 #'
+#'@examples
+#'calc_br(50,20)
+#'
 calc_br = function(sh,lh) {
 	return(sh/abs(lh))
 }
@@ -210,20 +243,27 @@ calc_br = function(sh,lh) {
 #'@return evaporative fraction [-]
 #'@export
 #'
+#'@examples
+#'calc_ef(50,20)
+#'
 calc_ef = function(sh,lh) {
 	return(lh/(sh+lh))
 }
 
 #' Evapotranspiration
 #'
-#'@description Calculates evapotranspiration from latent heat flux
+#'@description Converts latent heat flux to evaporation
 #'@param lh latent heat flux [W/m^2]
 #'@param temp temperature [K] (optional), if provided, the latent heat of vaporization is calculated temperature-dependent
 #'
 #'@return evapotranspiration [kg/(s*m^2)]
 #'@export
 #'
-calc_evapotranspiration = function(lh,temp=NULL) {
+#'@examples
+#'lh2et(20)
+#'lh2et(20,273)
+#'
+lh2et = function(lh,temp=NULL) {
 	lv=Lv(temp)
 	return(lh/lv)
 }
@@ -238,6 +278,9 @@ calc_evapotranspiration = function(lh,temp=NULL) {
 #'
 #'@return surface roughness length [m]
 #'@export
+#'
+#'@examples
+#'ustar2z0(0.2)
 #'
 ustar2z0 = function(ustar) {
 	return(alpha()*ustar^2/g())

@@ -4,7 +4,7 @@
 \alias{calc_anisotropy}
 \title{Invariant analysis of Reynolds stress tensor}
 \usage{
-calc_anisotropy(a11, a12, a13, a22, a23, a33)
+calc_anisotropy(a11, a12, a13, a22, a23, a33, plot = FALSE)
 }
 \arguments{
 \item{a11}{R11 element of Reynolds stress tensor: \code{u_sd^2}   (scalar or vector)}
@@ -18,6 +18,8 @@ calc_anisotropy(a11, a12, a13, a22, a23, a33)
 \item{a23}{R23 element of Reynolds stress tensor: \code{cov(v,w)} (scalar or vector)}
 
 \item{a33}{R33 element of Reynolds stress tensor: \code{w_sd^2}   (scalar or vector)}
+
+\item{plot}{should the barycentric map be plotted? default \code{plot=FALSE}}
 }
 \value{
 list containing \code{xb}, \code{yb}, \code{eta}, \code{xi}, all eigenvalues and eigenvectors (\code{eta}, \code{xi} are the coordinates of the Lumley triangle and \code{xb}, \code{yb} the coordinates of the barycentric map)

@@ -17,3 +17,7 @@ VPD, vapor pressure deficit [Pa]
 \description{
 Calculates vapor pressure deficit (VPD) from temperature and relative humidity using Arrhenius formula
 }
+\examples{
+calc_vpd(273,70)
+
+}

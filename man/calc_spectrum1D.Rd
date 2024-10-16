@@ -23,3 +23,10 @@ binned frequency spectrum from 1D FFT
 \description{
 Calculates and plots turbulence spectrum (in time) calculated using FFT (and optionally bins it)
 }
+\examples{
+set.seed(5)
+ts=rnorm(1000)
+calc_spectrum1D(ts) #no binning
+calc_spectrum1D(ts,nbins=100) #binning
+
+}

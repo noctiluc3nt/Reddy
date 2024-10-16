@@ -166,6 +166,9 @@ flag_stationarity = function(var1,var2,nsub=3000) {
 #'@return vertical velocity flags (0: in full agreement with the criterion ... 2: does not fulfill the criterion)
 #'@export
 #'
+#'@examples
+#'flag_w(0.01)
+#'
 flag_w = function(w) {
     w=abs(w)
     flag=ifelse(w<0.1,0,ifelse(1<0.15,1,2))
@@ -183,7 +186,11 @@ flag_w = function(w) {
 #'@return distortion flags (0: in full agreement with the criterion ... 2: does not fulfill the criterion)
 #'@export
 #'
-flag_distortion = function(u,v,dir_blocked=c(30,60),threshold_cr=0.9) {
+#'@examples
+#'flag_distortion(1,1,dir_blocked=c(30,60))
+#'flag_distortion(1,1,dir_blocked=c(180,360))
+#'
+flag_distortion = function(u,v,dir_blocked,threshold_cr=0.9) {
     if (length(u) != length(v)) {
         stop("u and v have to be of equal length.")
     }

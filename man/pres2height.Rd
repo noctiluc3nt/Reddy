@@ -19,3 +19,8 @@ height [m]
 \description{
 Calculates height from pressure
 }
+\examples{
+pres2height(60000) #using default surface values
+pres2height(60000,95000,265) #adapted surface values
+
+}

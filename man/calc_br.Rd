@@ -17,3 +17,7 @@ Bowen ratio [-]
 \description{
 Calculates the Bowen ratio as ratio of sensible and latent heat flux, i.e., BR := SH/LH
 }
+\examples{
+calc_br(50,20)
+
+}

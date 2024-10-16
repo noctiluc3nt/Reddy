@@ -17,3 +17,7 @@ evaporative fraction [-]
 \description{
 Calculates the evaporative fraction EF := LH/(SH+LH)
 }
+\examples{
+calc_ef(50,20)
+
+}

@@ -6,6 +6,9 @@
 #'@param do_normalization should the values be normalized? i.e. \code{(x-mean(x))/sd(x)}, default: \code{do_normalization=TRUE}
 #'@param hole_sizes vector containing desired hole sizes (integers >= 0)
 #'@param orient only relevant for exuberance and organization ratio: if down-gradient flux corresponds to positive values, use \code{orient="+"} (for sensible and latent heat flux), if down-gradient flux corresponds to negative values, use \code{orient="-"} (for momentum flux and CO2 flux)
+#'@param plot logical, should the quadrant analysis be plotted? default \code{plot=TRUE}
+#'@param ... arguments passed to \code{plot_quadrant_analysis}
+#'
 #'@return list containing occurrence fraction and strength (calculated based on product and covariance) for all four quadrants (mathematical orientation) as well as the therefrom derived measures exuberance and organization ratio, i.e. the ratio of the strength (or occurrence frequency, respectively) of disorganized to organized structures
 #'@export
 #'
@@ -14,7 +17,7 @@
 #'b=rnorm(100)
 #'qa_ab=calc_quadrant_analysis(a,b)
 #'
-calc_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=seq(0,10),orient="+") {
+calc_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=seq(0,10),orient="+",plot=TRUE,...) {
     covariance_total=cov(xval,yval,use="pairwise.complete.obs")
     correlation_total=cor(xval,yval,use="pairwise.complete.obs")
     if (do_normalization==TRUE) {
@@ -57,7 +60,7 @@ calc_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=seq(0
     } else {
         warning("The orientation has to be either + or -.")
     }
-    return(list("hole_sizes"=hole_sizes,
+    qa_out=list("hole_sizes"=hole_sizes,
             "occurrence"=occurrence,
             "product"=product,
             "covariance"=covariance,
@@ -65,7 +68,12 @@ calc_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=seq(0
             "correlation_total"=correlation_total,
             "exuberance"=exub,
             "organization_ratio"=or,
-            "meta"="Output format: rows represent the quadrants Q1, Q2, Q3, Q4 -- columns represent selected hole sizes"))
+            "meta"="Output format: rows represent the quadrants Q1, Q2, Q3, Q4 -- columns represent selected hole sizes")
+    if (plot==TRUE) {
+        plot_quadrant_analysis(xval,yval,do_normalization=FALSE,...)
+        print(qa_out)
+    }
+    return(qa_out)
 }
 
 #' Plotting Quadrant Analysis

@@ -5,13 +5,14 @@
 #'@param var2 timeseries of another variable to calculate the cospectrum of \code{var1} and \code{var2}, optional (default is \code{NULL})
 #'@param time_res time resolution of the given timeseries in seconds (e.g., \code{time_res = 0.05} for 20 Hz)
 #'@return MRD in form of a data frame containing the columns: index, scale, time, mean, median, q25, q75
+#'@param plot logical, should the MRD spectrum be plotted? default \code{plot=TRUE}
 #'@export
 #'
 #'@examples
 #'series=c(1,3,2,5,1,2,1,3) #example used in Vickers and Mahrt, 2003
 #'calc_mrd(series)
 #'
-calc_mrd = function(var1,var2=NULL,time_res=0.05) {
+calc_mrd = function(var1,var2=NULL,time_res=0.05,plot=TRUE) {
     nf=length(var1)
     #calc exponent M
     pot=2^(0:100)
@@ -58,6 +59,7 @@ calc_mrd = function(var1,var2=NULL,time_res=0.05) {
         }
     }
     out=data.frame("index"=1:(M+1),"m"=M:0,"scale"=2^(M:0),"time"=time_res*(2^(M:0)),"mean"=mrd_mean,"median"=mrd_median,"q25"=mrd_q25,"q75"=mrd_q75)
+    if (plot==TRUE) plot_mrd(out)
     return(out)
 }
 

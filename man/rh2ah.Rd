@@ -17,3 +17,7 @@ absolute humidity [kg/m^3]
 \description{
 Calculates absolute humidity from relative humidity and temperature
 }
+\examples{
+rh2ah(70,273)
+
+}

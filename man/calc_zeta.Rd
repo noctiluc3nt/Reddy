@@ -17,3 +17,8 @@ stability parameter [-]
 \description{
 Calculates dimensionless stability parameter from Obukhov length and measurement height, i.e. \code{zeta = z/L}
 }
+\examples{
+calc_zeta(2,-1) #unstable
+calc_zeta(2,1) #stable
+
+}

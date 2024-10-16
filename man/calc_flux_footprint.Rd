@@ -13,7 +13,8 @@ calc_flux_footprint(
   ustar,
   z0 = NA,
   contours = seq(0.9, 0.1, -0.1),
-  nres = 1000
+  nres = 1000,
+  plot = TRUE
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ calc_flux_footprint(
 \item{contours}{which contour lines should be calculated? default: \code{contours=seq(0.9,0.1,-0.1)}}
 
 \item{nres}{resolution (default: \code{nres=1000})}
+
+\item{plot}{logical, should the flux footprint be plotted? default \code{plot=TRUE}}
 }
 \value{
 list containing all relevant flux footprint information

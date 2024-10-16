@@ -17,3 +17,7 @@ relative humidity [percent]
 \description{
 Calculates absolute humidity from relative humidity and temperature
 }
+\examples{
+ah2rh(0.005,273)
+
+}

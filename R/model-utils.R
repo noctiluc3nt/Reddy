@@ -33,6 +33,10 @@ deaccumulate1h=function(dat,factor=-1/3600) {
 #'@return hybrid levels converted to physical height [m]
 #'@export
 #'
+#'@examples
+#'sigma2height(0.1)
+#'sigma2height(0.1,288)
+#'
 sigma2height=function(hybrid,Tv=273.15) {
-    return(-R()*Tv/g()*log(hybrid))
+    return(-Rd()*Tv/g()*log(hybrid))
 }

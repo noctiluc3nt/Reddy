@@ -17,3 +17,7 @@ potential temperature [K]
 \description{
 Calculates potential temperature for given temperature and pressure
 }
+\examples{
+calc_theta(273,70000)
+
+}

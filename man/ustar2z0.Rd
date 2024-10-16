@@ -15,3 +15,7 @@ surface roughness length [m]
 \description{
 Calculates surface roughness z0 from friction velocity using the simple estimate from Charnock, 1955: z0 = alpha*ustar^2/g with alpha=0.016 and g=9.81 m/s^2
 }
+\examples{
+ustar2z0(0.2)
+
+}

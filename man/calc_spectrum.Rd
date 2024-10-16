@@ -19,3 +19,9 @@ binned spectrum
 \description{
 Calculates and plots the averaged turbulence spectrum (as wrapper of rbase::spectrum)
 }
+\examples{
+set.seed(5)
+ts=rnorm(1000)
+calc_spectrum(ts,nbins=100,plot=FALSE)
+
+}

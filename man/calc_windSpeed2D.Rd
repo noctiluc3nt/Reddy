@@ -17,3 +17,7 @@ wind speed [m/s]
 \description{
 Calculates horizontal wind speed
 }
+\examples{
+calc_windSpeed2D(3,3)
+
+}

@@ -21,3 +21,7 @@ CSI, clear sky index
 \description{
 Calculates clear sky index
 }
+\examples{
+calc_csi(273,230,70) #with relative humidity
+
+}

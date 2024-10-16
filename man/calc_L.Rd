@@ -19,3 +19,8 @@ Obukhov length [m]
 \description{
 Calculates Obukhov length from friction velocity, mean temperature and cov(T,w)
 }
+\examples{
+calc_L(0.2,273,0.1) #unstable
+calc_L(0.2,273,-0.1) #stable
+
+}

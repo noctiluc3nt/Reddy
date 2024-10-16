@@ -7,6 +7,8 @@
 #'@param a22 R22 element of Reynolds stress tensor: \code{v_sd^2}   (scalar or vector)
 #'@param a23 R23 element of Reynolds stress tensor: \code{cov(v,w)} (scalar or vector)
 #'@param a33 R33 element of Reynolds stress tensor: \code{w_sd^2}   (scalar or vector)
+#'@param plot should the barycentric map be plotted? default \code{plot=FALSE}
+#'
 #'@return list containing \code{xb}, \code{yb}, \code{eta}, \code{xi}, all eigenvalues and eigenvectors (\code{eta}, \code{xi} are the coordinates of the Lumley triangle and \code{xb}, \code{yb} the coordinates of the barycentric map)
 #'@export
 #'
@@ -14,7 +16,7 @@
 #'calc_anisotropy(1,0,0,1,0,1) #isotropic
 #'calc_anisotropy(1,0,1,1,0,1) #some anisotropy
 #'
-calc_anisotropy = function(a11,a12,a13,a22,a23,a33) {
+calc_anisotropy = function(a11,a12,a13,a22,a23,a33,plot=FALSE) {
 	if (length(unique(sapply(list(a11,a12,a13,a22,a23,a33),length)))>1) {
 		warning("The given elements of the Reynolds stress tensor are not of equal length.")
 	}
@@ -59,7 +61,9 @@ calc_anisotropy = function(a11,a12,a13,a22,a23,a33) {
 			}
 		}
 	}
-	return(list("xb"=xb,"yb"=yb,"eta"=eta,"xi"=xi,"eigenvalues"=evals,"eigenvectors"=evecs))
+	out=list("xb"=xb,"yb"=yb,"eta"=eta,"xi"=xi,"eigenvalues"=evals,"eigenvectors"=evecs)
+	if (plot==TRUE) plot_barycentric_map(out$xb,out$yb)
+	return(out)
 }
 
 

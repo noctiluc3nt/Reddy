@@ -15,3 +15,7 @@ E_s, saturation vapor pressure over water [Pa]
 \description{
 Calculates the saturation vapor pressure over water for given temperature and pressure
 }
+\examples{
+calc_satvaporpressure(273)
+
+}
