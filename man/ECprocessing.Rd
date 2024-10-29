@@ -58,7 +58,7 @@ ECprocessing(
 
 \item{measurement_height}{measurement height [m], only used for calculation of the stability parameter \code{zeta}}
 
-\item{do_despiking}{locigal, should the data be despiked? default \code{TRUE}}
+\item{do_despiking}{logical, should the data be despiked? default \code{TRUE}}
 
 \item{despike_u}{vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_u=c(-15,15,10,2,8)}}
 
@@ -76,15 +76,15 @@ ECprocessing(
 
 \item{do_detrending}{logical, should the data be linearly detrended? default \code{FALSE}}
 
-\item{do_double_rotation}{locigal, should the wind data be double rotated? default \code{TRUE}}
+\item{do_double_rotation}{logical, should the wind data be double rotated? default \code{TRUE}}
 
-\item{do_planar_fit}{locigal, should the data be rotated with planar fit? default \code{FALSE} (either double rotation or planar fit can be \code{TRUE})}
+\item{do_planar_fit}{logical, should the data be rotated with planar fit? default \code{FALSE} (either double rotation or planar fit can be \code{TRUE})}
 
-\item{do_flagging}{locigal, should the data be flagged? default \code{TRUE}, i.e. several flags are calculated, but no data is removed, can be used for quality analysis}
+\item{do_flagging}{logical, should the data be flagged? default \code{TRUE}, i.e. several flags are calculated, but no data is removed, can be used for quality analysis}
 
 \item{dir_blocked}{vector containing 2 elements: wind directions blocked through mast or tower, used in flow distortion flag only}
 
-\item{do_SNDcorrection}{locigal, should SND correction be applied to the buoyancy flux? default \code{TRUE}}
+\item{do_SNDcorrection}{logical, should SND correction be applied to the buoyancy flux? default \code{TRUE}}
 
 \item{A}{constant used in SND correction, default \code{A=7/8} for CSAT3 sonic}
 
@@ -96,7 +96,7 @@ ECprocessing(
 
 \item{filename}{desired output filename, default \code{NULL}, the date and runtime will be used to create a filename, only used if \code{store=TRUE}}
 
-\item{meta}{locical, should meta data be stored? default \code{TRUE}}
+\item{meta}{logical, should meta data be stored? default \code{TRUE}}
 }
 \value{
 data frame of post-processed eddy-covariance data (that is also stored in the output file by default)

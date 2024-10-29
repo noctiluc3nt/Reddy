@@ -1,4 +1,4 @@
-#' unzip .ghg files
+#' unzip directory containing .ghg files
 #'
 #'@description unzips .ghg files from input directory (\code{dir_in}) to output directory (\code{dir_out})
 #'@param dir_in input directory path (character)
@@ -7,7 +7,7 @@
 #'@return no return
 #'@export
 #'
-unzip_ghg = function(dir_in,dir_out) {
+unzip_dir = function(dir_in,dir_out) {
 	files=list.files(dir_in,pattern="ghg",full.names=TRUE)
     nf=length(files)
     for (i in 1:nf) unzip(files[i],exdir=dir_out)
@@ -29,8 +29,8 @@ unzip_ghg = function(dir_in,dir_out) {
 read_ghg_data = function(file,do_h2o=FALSE,do_co2=FALSE,do_ch4=FALSE) {
 	dat=read.table(file,sep="\t",skip=7,header=T)
     tryCatch({
-	    date=as.character(dat$Date[1])
-	    time=substr(as.character(dat$Time[1]),1,12)
+	    date=as.character(dat$Date)
+	    time=substr(as.character(dat$Time),1,12)
         out=data.frame("Ts"=dat$SOS..m.s., #sos
 			"u"=dat$U..m.s.,
 			"v"=dat$V..m.s.,
