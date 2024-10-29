@@ -111,12 +111,10 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
             w[iselect]=wind_rotated$w
         } 
         #flagging: stationarity
-        if (do_flagging == TRUE) {
-            out$flag_stationarity=flag_stationarity(temp[iselect],w[iselect],nsub=as.integer(lint/4))
-        }
+        if (do_flagging) out$flag_stationarity[i]=flag_stationarity(temp[iselect],w[iselect],nsub=as.integer(lint/4))
     }
     #planar fit
-    if (do_planar_fit) {
+    if (do_planar_fit == TRUE) {
         wind_rotated=rotate_planar(u,v,w)
         u=wind_rotated$u
         v=wind_rotated$v
@@ -203,10 +201,6 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     if (do_flagging==TRUE) {
         out$flag_itc=flag_most(out$w_sd,out$ustar,out$zeta)
         out$flag_w=flag_w(out$w_mean)
-        if (is.na(out$flag_distortion)) out$flag_distortion=2
-        if (is.na(out$flag_most)) out$flag_most=2
-        if (is.na(out$flag_itc)) out$flag_itc=2
-        if (is.na(out$w)) out$w=2
         out$flag_all=pmax(out$flag_stationarity,out$flag_distortion,out$flag_itc,out$flag_w,na.rm=TRUE)
     }
     #------------------------------------------------
