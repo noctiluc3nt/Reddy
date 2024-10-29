@@ -205,12 +205,12 @@ calc_flux_intermittency = function(ts1,ts2=NULL,nsub=6000) {
     if (!is.null(ts2)) {
 		cov_complete=cov(ts1,ts2,use="pairwise.complete.obs")
 	} else {
-		cov_complete=mean(ts1,na.rm=T)
+		cov_complete=mean(ts1,na.rm=TRUE)
 	}
     for (i in 1:nint) {
         isub=((i-1)*nsub+1):(i*nsub)
         if (!is.null(ts2)) cov_sub=cov(ts1[isub],ts1[isub],use="pairwise.complete.obs")
-		if (is.null(ts2)) cov_sub=mean(ts1[isub],na.rm=T)
+		if (is.null(ts2)) cov_sub=mean(ts1[isub],na.rm=TRUE)
         cov_subs[i]=cov_sub
     }
     return(sd(cov_subs)/cov_complete)

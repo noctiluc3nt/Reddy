@@ -15,17 +15,17 @@
 #'
 calc_spectrum = function(ts,nbins=100,plot=TRUE) {
 	s=spectrum(ts,plot=FALSE)
-    bins=seq(log(min(s$freq,na.rm=TRUE)),log(max(s$freq,na.rm=T)),length.out=nbins)
+    bins=seq(log(min(s$freq,na.rm=TRUE)),log(max(s$freq,na.rm=TRUE)),length.out=nbins)
     sbin=binning(s$spec,s$freq,10^bins)
     if (plot==TRUE) {
-        plot(bins[2:nbins],log(sbin[,2]),pch=20,main="Spectrum",xlab="frequency",ylab="spectrum",xlim=range(bins[2:nbins][!is.na(sbin[,2])],na.rm=T),xaxt="n",yaxt="n")
+        plot(bins[2:nbins],log(sbin[,2]),pch=20,main="Spectrum",xlab="frequency",ylab="spectrum",xlim=range(bins[2:nbins][!is.na(sbin[,2])],na.rm=TRUE),xaxt="n",yaxt="n")
         axis(1,at=(-10):0,10^(-10:0))
         axis(2,at=(-10):10,10^(-10:10))
         fit=lm(log(sbin[,2]) ~ bins[2:nbins])
         print(summary(fit))
-        par(new=T)
-        plot(bins,bins*(-5/3),type="l",col=4,lwd=2,lty=2,xlab="",ylab="",xaxt="n",yaxt="n",ylim=range(log(sbin[,2]),na.rm=T))
-        legend("bottomleft",legend="-5/3 slope",col=4,lwd=2,lty=2)
+        #par(new=TRUE)
+        #plot(bins,bins*(-5/3),type="l",col=4,lwd=2,lty=2,xlab="",ylab="",xaxt="n",yaxt="n",ylim=range(log(sbin[,2]),na.rm=TRUE))
+        #legend("bottomleft",legend="-5/3 slope",col=4,lwd=2,lty=2)
     }
     return(cbind(bins[2:nbins],sbin[,2]))
 }
@@ -141,7 +141,7 @@ calc_spectrum2D = function(field,xres=1000,yres=NULL,nbins=NULL,method="fft",plo
     }
     #binning
     if (is.null(nbins)) nbins=min(nx,ny)
-    kbins=exp(seq(log(min(k[which(k>0,arr.ind=TRUE)])),log(max(k[which(is.finite(k),arr.ind=T)])),length.out=nbins))
+    kbins=exp(seq(log(min(k[which(k>0,arr.ind=TRUE)])),log(max(k[which(is.finite(k),arr.ind=TRUE)])),length.out=nbins))
     xbinned=binning(c(spec),c(k),kbins)
     kmid=(kbins[2:nbins]+kbins[1:(nbins-1)])/2
     out=data.frame("wavenumber"=kmid,"spectrum"=xbinned[,2]) 

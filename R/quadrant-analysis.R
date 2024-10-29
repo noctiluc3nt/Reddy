@@ -21,8 +21,8 @@ calc_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=seq(0
     covariance_total=cov(xval,yval,use="pairwise.complete.obs")
     correlation_total=cor(xval,yval,use="pairwise.complete.obs")
     if (do_normalization==TRUE) {
-        xval = (xval-mean(xval,na.rm=T))/sd(xval,na.rm=T)
-        yval = (yval-mean(yval,na.rm=T))/sd(yval,na.rm=T)
+        xval = (xval-mean(xval,na.rm=TRUE))/sd(xval,na.rm=TRUE)
+        yval = (yval-mean(yval,na.rm=TRUE))/sd(yval,na.rm=TRUE)
     }
     nh = length(hole_sizes)
     occurrence = array(NA,dim=c(4,nh))
@@ -32,22 +32,22 @@ calc_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=seq(0
         #q1
         is.q1 = (xval>(hole_sizes[i]/xval) & yval>(-hole_sizes[i]/yval))
         occurrence[1,i] = sum(is.q1,na.rm=TRUE)
-        product[1,i] = mean(xval[is.q1] * yval[is.q1],na.rm=T)
+        product[1,i] = mean(xval[is.q1] * yval[is.q1],na.rm=TRUE)
         covariance[1,i] = cov(xval[is.q1],yval[is.q1])
         #q2
         is.q2 = (xval<(-hole_sizes[i]/xval) & yval>(-hole_sizes[i]/xval))
         occurrence[2,i] = sum(is.q2,na.rm=TRUE)
-        product[2,i] = mean(xval[is.q2] * yval[is.q2],na.rm=T)
+        product[2,i] = mean(xval[is.q2] * yval[is.q2],na.rm=TRUE)
         covariance[2,i] = cov(xval[is.q2],yval[is.q2])
         #q3
         is.q3 = (xval<(hole_sizes[i]/xval) & yval<(hole_sizes[i]/yval))
         occurrence[3,i] = sum(is.q3,na.rm=TRUE)
-        product[3,i] = mean(xval[is.q3] * yval[is.q3],na.rm=T)
+        product[3,i] = mean(xval[is.q3] * yval[is.q3],na.rm=TRUE)
         covariance[3,i] = cov(xval[is.q3],yval[is.q3])
         #q4
         is.q4 = (xval>(-hole_sizes[i]/xval) & yval<(-hole_sizes[i]/xval))
         occurrence[4,i] = sum(is.q4,na.rm=TRUE)
-        product[4,i] = mean(xval[is.q4] * yval[is.q4],rm=T)
+        product[4,i] = mean(xval[is.q4] * yval[is.q4],rm=TRUE)
         covariance[4,i] = cov(xval[is.q4],yval[is.q4])
     }
     #exuberance and organization ratio
@@ -98,8 +98,8 @@ calc_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=seq(0
 #'
 plot_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=c(1,2),contours=10^(-3:3),print_fit=TRUE,...) {
     if (do_normalization) {
-        xval=(xval-mean(xval,na.rm=T))/sd(xval)
-        yval=(yval-mean(yval,na.rm=T))/sd(yval)
+        xval=(xval-mean(xval,na.rm=TRUE))/sd(xval)
+        yval=(yval-mean(yval,na.rm=TRUE))/sd(yval)
     }
     if (!exists("pch")) pch = 20
     if (typeof(col)=="closure") col = rgb(0.6,0.6,0.6,0.1)

@@ -3,3 +3,4 @@
 run_tests.r
 ./R/dev
 build.sh
+^\.covrignore$

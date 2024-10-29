@@ -11,7 +11,7 @@
 #'@param time_resolution time resolution of the measurements [s], default 20 Hz = 0.05 s
 #'@param time_averaging desired time averaging for flux calculations [min], default 30 minutes
 #'@param measurement_height measurement height [m], only used for calculation of the stability parameter \code{zeta}
-#'@param do_despiking locigal, should the data be despiked? default \code{TRUE}
+#'@param do_despiking logical, should the data be despiked? default \code{TRUE}
 #'@param despike_u vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_u=c(-15,15,10,2,8)}
 #'@param despike_v vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_v=c(-15,15,10,2,8)}
 #'@param despike_w vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_w=c(-4,4,10,2,8)}
@@ -20,17 +20,17 @@
 #'@param despike_co2 vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_co2=c(0,12,10,2,8)}
 #'@param despike_ch4 vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_ch4=c(0,12,10,2,8)}
 #'@param do_detrending logical, should the data be linearly detrended? default \code{FALSE}
-#'@param do_double_rotation locigal, should the wind data be double rotated? default \code{TRUE}
-#'@param do_planar_fit locigal, should the data be rotated with planar fit? default \code{FALSE} (either double rotation or planar fit can be \code{TRUE})
-#'@param do_flagging locigal, should the data be flagged? default \code{TRUE}, i.e. several flags are calculated, but no data is removed, can be used for quality analysis
+#'@param do_double_rotation logical, should the wind data be double rotated? default \code{TRUE}
+#'@param do_planar_fit logical, should the data be rotated with planar fit? default \code{FALSE} (either double rotation or planar fit can be \code{TRUE})
+#'@param do_flagging logical, should the data be flagged? default \code{TRUE}, i.e. several flags are calculated, but no data is removed, can be used for quality analysis
 #'@param dir_blocked vector containing 2 elements: wind directions blocked through mast or tower, used in flow distortion flag only
-#'@param do_SNDcorrection locigal, should SND correction be applied to the buoyancy flux? default \code{TRUE}
+#'@param do_SNDcorrection logical, should SND correction be applied to the buoyancy flux? default \code{TRUE}
 #'@param A constant used in SND correction, default \code{A=7/8} for CSAT3 sonic
 #'@param B constant used in SND correction, default \code{A=7/8} for CSAT3 sonic
 #'@param store logical, should the output be stored? default \code{TRUE}
 #'@param format_out file format of the output, can be either \code{txt} or \code{rds} (for netcdf, see separate function), only used if \code{store=TRUE}
 #'@param filename desired output filename, default \code{NULL}, the date and runtime will be used to create a filename, only used if \code{store=TRUE}
-#'@param meta locical, should meta data be stored? default \code{TRUE}
+#'@param meta logical, should meta data be stored? default \code{TRUE}
 #'
 #'@importFrom pracma detrend
 #'
@@ -98,7 +98,7 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         i2=(i*lint)
         iselect=seq(i1,i2)
         #wind (before rotation, assumes that the sonic is oriented towards north as indicated on the instrument)
-        out$ws[i]=mean(calc_windSpeed2D(u[iselect],v[iselect]),na.rm=T)
+        out$ws[i]=mean(calc_windSpeed2D(u[iselect],v[iselect]),na.rm=TRUE)
         out$wd[i]=calc_circular_mean(calc_windDirection(u[iselect],v[iselect]))
         if (do_flagging) out$flag_distortion[i]=flag_distortion(u[iselect],v[iselect],dir_blocked)
         #double rotation
@@ -203,7 +203,7 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     if (do_flagging==TRUE) {
         out$flag_itc=flag_most(out$w_sd,out$ustar,out$zeta)
         out$flag_w=flag_w(out$w_mean)
-        out$flag_all=pmax(out$flag_stationarity,out$flag_distortion,out$flag_itc,out$flag_w,na.rm=T)
+        out$flag_all=pmax(out$flag_stationarity,out$flag_distortion,out$flag_itc,out$flag_w,na.rm=TRUE)
     }
     #------------------------------------------------
     #store post-processed data

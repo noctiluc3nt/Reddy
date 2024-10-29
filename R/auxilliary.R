@@ -22,13 +22,13 @@ binning=function(var1,var2,bins) {
 	    for (i in 2:nbins) {
 		    sub=var1[var2>bins[i-1] & var2<bins[i]]
 		    if (any(!is.na(sub))) {
-			    out[i-1,1]=mean(sub,na.rm=T)
-			    out[i-1,2]=median(sub,na.rm=T)
+			    out[i-1,1]=mean(sub,na.rm=TRUE)
+			    out[i-1,2]=median(sub,na.rm=TRUE)
 			    #nm=length(sub)
 			    #out[i-1,3]=median(sub,na.rm=T)+sd(sub,na.rm=T)/sqrt(nm) #using the estimation uncertainty
 			    #out[i-1,4]=median(sub,na.rm=T)-sd(sub,na.rm=T)/sqrt(nm)
-			    out[i-1,3]=quantile(sub,0.25,na.rm=T)
-			    out[i-1,4]=quantile(sub,0.75,na.rm=T)
+			    out[i-1,3]=quantile(sub,0.25,na.rm=TRUE)
+			    out[i-1,4]=quantile(sub,0.75,na.rm=TRUE)
 	    	}
 	    }
 	    return(out)
@@ -132,9 +132,9 @@ averaging=function(var,tres1=0.05,tres2=c(1,10,30)*60) {
 	averaged_mean=list()
 	averaged_sd=list()
 	for (i in 1:nt) {
-		vari=RcppRoll::roll_mean(var,nav[i],na.rm=T)[seq(1,n,nav[i])]
+		vari=RcppRoll::roll_mean(var,nav[i],na.rm=TRUE)[seq(1,n,nav[i])]
 		averaged_mean[[i]]=vari
-		vari=RcppRoll::roll_sd(var,nav[i],na.rm=T)[seq(1,n,nav[i])]
+		vari=RcppRoll::roll_sd(var,nav[i],na.rm=TRUE)[seq(1,n,nav[i])]
 		averaged_sd[[i]]=vari
 	}
 	averaged=list("mean"=averaged_mean,"sd"=averaged_sd)
@@ -158,6 +158,6 @@ averaging=function(var,tres1=0.05,tres2=c(1,10,30)*60) {
 #'
 calc_circular_mean=function(x,na.rm=TRUE) {
 	x=x*pi/180
-	if (na.rm==TRUE) return((atan2(sum(sin(x),na.rm=T),sum(cos(x),na.rm=T))*180/pi)%%360)
+	if (na.rm==TRUE) return((atan2(sum(sin(x),na.rm=TRUE),sum(cos(x),na.rm=TRUE))*180/pi)%%360)
 	if (na.rm==FALSE) return((atan2(sum(sin(x)),sum(cos(x)))*180/pi)%%360)
 }

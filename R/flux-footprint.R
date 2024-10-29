@@ -80,7 +80,7 @@ calc_flux_footprint = function(zm, u_mean=NA, h, L, v_sd, ustar, z0=NA,contours=
     nx=length(x)
     y=c(-rev(ypos),ypos[2:n2])
     ny=length(y)
-    xmat=matrix(rep(x,ny),nrow=ny,ncol=nx,byrow=T)
+    xmat=matrix(rep(x,ny),nrow=ny,ncol=nx,byrow=TRUE)
     ymat=matrix(rep(y,nx),nrow=ny,ncol=nx)
     #footprint contours
     nc=length(contours)

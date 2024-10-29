@@ -195,9 +195,9 @@ flag_distortion = function(u,v,dir_blocked,threshold_cr=0.9) {
         stop("u and v have to be of equal length.")
     }
     #horizontal wind speed
-    ws=sqrt(mean(u,na.rm=T)^2+mean(v,na.rm=T)^2)
+    ws=sqrt(mean(u,na.rm=TRUE)^2+mean(v,na.rm=TRUE)^2)
     #constancy ratio cr
-    cr=sqrt(sum(u^2,na.rm=T)+sum(v^2,na.rm=T))/(ws)
+    cr=sqrt(sum(u^2,na.rm=TRUE)+sum(v^2,na.rm=TRUE))/(ws)
     #flow distortion flag considering cr
     if (!is.na(ws) & !is.na(cr)) {
         if (ws>0.1 & cr>threshold_cr) {
@@ -276,15 +276,15 @@ WPLcorrection = function(rho_w,rho_c=NULL,w,Ts,q) {
     cov_wTs = cov(w[not_na],Ts[not_na]) 
     not_na=!is.na(w)&!is.na(rho_w)
     cov_wrhow = cov(w[not_na],rho_w[not_na]) 
-    Ts_bar=mean(Ts,na.rm=T)
-    q_bar=mean(q,na.rm=T)
-    rho_w_bar=mean(rho_w,na.rm=T)
+    Ts_bar=mean(Ts,na.rm=TRUE)
+    q_bar=mean(q,na.rm=TRUE)
+    rho_w_bar=mean(rho_w,na.rm=TRUE)
     if (is.null(rho_c)) { #water vapor flux
         return(1+1.61*q_bar)*(cov_wrhow+rho_w_bar/Ts_bar*cov_wTs) #with M_L/M_w = 1.61
     } else { #other trace gas flux
         not_na=!is.na(w)&!is.na(rho_c)
         cov_wrhoc = cov(w[not_na],rho_c[not_na]) 
-        rho_c_bar=mean(rho_c,na.rm=T)
+        rho_c_bar=mean(rho_c,na.rm=TRUE)
         return(cov_wrhoc+1.61*rho_c_bar/rho_w_bar*cov_wrhow+(1+1.61*q_bar)*rho_c_bar/Ts_bar*cov_wTs)
     }
 }

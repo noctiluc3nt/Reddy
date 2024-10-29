@@ -1,7 +1,7 @@
 # Reddy: A toolbox for analyzing eddy-covariance measurements
 <!-- badges: start 
 [![CRAN status](https://www.r-pkg.org/badges/version/Reddy)](https://cran.r-project.org/package=Reddy) -->
-[![doc](https://img.shields.io/badge/Reddy-documentation-blue)]([link](https://noctiluc3nt.github.io/ec_analyze/))
+[![doc](https://img.shields.io/badge/Reddy-documentation-blue)](https://noctiluc3nt.github.io/ec_analyze/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Last Commit](https://img.shields.io/github/last-commit/noctiluc3nt/Reddy)](https://github.com/noctiluc3nt/Reddy)
 <!--[![maintained](https://img.shields.io/badge/maintained-black)
