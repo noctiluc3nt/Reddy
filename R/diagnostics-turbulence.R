@@ -285,3 +285,4 @@ lh2et = function(lh,temp=NULL) {
 ustar2z0 = function(ustar) {
 	return(alpha()*ustar^2/g())
 }
+

@@ -155,7 +155,7 @@ calc_phit = function(T1,T2,cov_wT,ustar,zm,dz) {
 }
 
 
-#' Calculates Richardson number Ri
+#' Calculates bulk Richardson number Ri
 #'
 #'@description calculates Richardson number Ri
 #'@param U1 wind speed at the lower level [m/s]
@@ -164,17 +164,36 @@ calc_phit = function(T1,T2,cov_wT,ustar,zm,dz) {
 #'@param T2 temperature at the upper level [K]
 #'@param dz height difference of the two measurements [m]
 #'
-#'@return Ri
+#'@return Ri [-]
 #'@export
 #'
 calc_ri = function(T1,T2,U1,U2,dz) {
-	T0=273.15
+	T0=(T1+T2)/2
 	dT_dz=(T2-T1)/dz
 	dUbar_dz=(U2-U1)/dz
 	ri=g()/T0*dT_dz/(dUbar_dz^2)
 	return(ri)
 }
 
+#' Calculates flux Richardson number Ri_f
+#'
+#'@description calculates flux Richardson number Ri_f = g/T_mean*cov(w,T)/(cov(u,w)*du/dz)
+#'@param cov_wT covariance cov(w,T) [K m/s]
+#'@param cov_uw covariance cov(u,w) [m^2/s^2]
+#'@param U1 wind speed at the lower level [m/s]
+#'@param U2 wind speed at the upper level [m/s]
+#'@param dz height difference of the two measurements [m]
+#'@param T_mean mean temperature [K] (optional, used instead of T0=273.15)
+#'
+#'@return Ri_f [-]
+#'@export
+#'
+calc_rif = function(cov_wT,cov_uw,U1,U2,dz,T_mean=NULL) {
+	ifelse(is.null(T_mean),T0=273.15,T0=T_mean)
+	dUbar_dz=(U2-U1)/dz
+	rif=g()/T0*cov_wT/(cov_uw*dUbar_dz)
+	return(rif)
+}
 
 #' Calculates xstar (denominator for general flux-variance relation)
 #'
@@ -234,4 +253,56 @@ calc_windprofile = function(zs,ustar,z0=0,d=0,zeta=0,method="ecmwf") {
         uz=ustar/karman()*log((zs-d)/z0+Phi)
     }
 	return(data.frame("height"=zs,"windspeed"=uz))
+}
+
+
+
+### eddy viscosity and conductivity, Prandtl number
+
+#' Calculates eddy viscosity K_m = -cov(u,w)/(du/dz)
+#'
+#'@description Calculates eddy viscosity K_m
+#'@param cov_uw covariance cov(u,w) [m^2/s^2]
+#'@param du_dz vertical wind speed gradient [1/s]
+#'
+#'@return eddy viscosity K_m [m^2/s]
+#'@export
+#'
+#'@examples
+#'calc_Km(-0.2,2)
+#'
+calc_Km = function(cov_uw,du_dz) {
+	return(-cov_uw/du_dz)
+}
+
+#' Calculates eddy conductivity K_h = -cov(w,T)/(dT/dz)
+#'
+#'@description Calculates eddy conductivity K_h
+#'@param cov_wT covariance cov(w,T) [K m/s]
+#'@param dT_dz vertical temperature gradient [K/m]
+#'
+#'@return eddy conductivity K_h [m^2/s]
+#'@export
+#'
+#'@examples
+#'calc_Kh(0.2,-1)
+#'
+calc_Kh = function(cov_wT,dT_dz) {
+	return(-cov_wT/dT_dz)
+}
+
+#' Calculates turbulent Prandtl number Pr = K_m/K_h
+#'
+#'@description Calculates turbulent Prandtl number Pr
+#'@param K_m eddy viscosity [m^2/s]
+#'@param K_h eddy conductivity [m^2/s]
+#'
+#'@return Prandtl number [-]
+#'@export
+#'
+#'@examples
+#'calc_Pr(0.4,0.6)
+#'
+calc_Pr = function(K_m,K_h) {
+	return(K_m/K_h)
 }

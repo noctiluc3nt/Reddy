@@ -14,22 +14,22 @@ The package Reddy can be installed directly from github:
     devtools::install_git("https://github.com/noctiluc3nt/Reddy")
 ```
 
-## Documentation, examples and usage
+## Documentation, Examples and Usage
 The [manual](https://github.com/noctiluc3nt/Reddy/tree/main/inst/manual/Reddy-manual.pdf) describes all functions and the [gitbook](https://noctiluc3nt.github.io/ec_analyze/) provides background information and examples how to execute the core functions of this package. The examples are also provided as [jupyter notebooks](https://github.com/noctiluc3nt/ec_analyze/tree/main/notebooks) (based on [example data](https://github.com/noctiluc3nt/ec_analyze/tree/main/data)).
 
-## Functionality and scripts
-The Reddy package provides functions for the post-processing, analysis and evaluation of eddy-covariance measurements (see schematic), which are described in the [manual](https://github.com/noctiluc3nt/Reddy/tree/main/inst/manual/Reddy-manual.pdf) and are divided into the following scripts:
+## Functionality and Scripts
+The Reddy package provides functions for the post-processing, analysis and evaluation of eddy-covariance measurements, which are described in the [manual](https://github.com/noctiluc3nt/Reddy/tree/main/inst/manual/Reddy-manual.pdf) and are divided into the following scripts:
 - `anisotropy.R`: invariant analysis of the Reynolds stress tensor, calculation of turbulence anisotropy and visualization in a barycentric map
 - `auxilliary.R`: collection of some useful generic functions for the evaluation (e.g., discrete binning, cross-correlation maximization)
+- `bulk_closures.R`: collection of functions used to calculated bulk closures, flux-profile and flux-variance relations (e.g. Richardson number, eddy viscosity, eddy conductivity, scaling functions)
 - `constants.R`: constants used for calculations (internal)
 - `diagnostics-meteorology.R`: calculation of "background-meteorology" quantities (e.g., clear-sky index)
 - `diagnostics-turbulence.R`: calculation of some standard turbulence diagnostics (e.g., friction velocity, TKE, turbulence intensity, stability parameter)
 - `ec-processing.R`: collection of functions for post-processing and quality control of eddy-covariance measurements
 - `flux-footprint.R`: calculation and visualization of 2D flux footprint (FFP, Kljun et al., 2015)
-- `model-utils.R`:
+- `model-utils.R`: collection of function to post-process NWP model output (e.g. flux deaccumulation, conversion of sigma levels to physical height)
 - `multiresolution-decomposition.R`: calculation and visualization of multiresolution decomposition (MRD, Vickers and Mahrt, 2003)
 - `quadrant-analysis.R`: calculation and visualization of quadrant analysis to study coherent structures and their organization
-- `scaling-functions.R`: scaling functions used in flux-variance and flux-profile relations
 - `spectrum.R`: calculation and visualization of frequency (temporal) and wavenumber (spatial) spectra, possibility to bin them to compare them with theoretically expected slopes
 - `surface-energy-balance.R`: visualization of surface energy balance, residual flux and closure ratio
 
