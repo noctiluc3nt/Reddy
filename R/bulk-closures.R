@@ -189,7 +189,7 @@ calc_ri = function(T1,T2,U1,U2,dz) {
 #'@export
 #'
 calc_rif = function(cov_wT,cov_uw,U1,U2,dz,T_mean=NULL) {
-	ifelse(is.null(T_mean),T0=273.15,T0=T_mean)
+	T0=ifelse(is.null(T_mean),273.15,T_mean)
 	dUbar_dz=(U2-U1)/dz
 	rif=g()/T0*cov_wT/(cov_uw*dUbar_dz)
 	return(rif)

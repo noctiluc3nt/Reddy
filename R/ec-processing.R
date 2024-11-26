@@ -414,7 +414,7 @@ calc_cov = function(x,y) {
 #'
 RTcorrection = function(cospectrum,freq,tau=1) {
     tf=(1+(2*pi*tau*freq)^2) #transfer function that accounts for high-frequency loss due to limited sampling frequency
-    cospectrum_cor=co*sqrt(tf) #note: their is a discussion whether sqrt(tf) or tf should be applied in the correction
+    cospectrum_cor=cospectrum*sqrt(tf) #note: their is a discussion whether sqrt(tf) or tf should be applied in the correction
     rt_factor=sum(cospectrum_cor)/sum(cospectrum)
 	return(rt_factor)
 }

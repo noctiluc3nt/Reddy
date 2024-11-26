@@ -117,7 +117,7 @@ gapfilling=function(var,nmissing=4,method="linear") {
 #'@param tres2 desired time resolution(s) [s] of the averaged timeseries (scalar or vector), default \code{tres2 = c(1,10,30)*60} (for 1, 10 and 30 minutes)
 #'@return list containing mean and standard deviation of the timeseries for the desired time interval(s)
 #'@export
-#'@importFrom RcppRoll roll_mean roll_sd
+#'@importFrom RcppRoll roll_mean roll_sd roll_max
 #'
 #'@examples
 #'ts=rnorm(30*60*20) #30 minutes of 20 Hz measurements
@@ -131,13 +131,16 @@ averaging=function(var,tres1=0.05,tres2=c(1,10,30)*60) {
 	nav=tres2/tres1 #number of values to be averaged
 	averaged_mean=list()
 	averaged_sd=list()
+	averaged_max=list()
 	for (i in 1:nt) {
 		vari=RcppRoll::roll_mean(var,nav[i],na.rm=TRUE)[seq(1,n,nav[i])]
 		averaged_mean[[i]]=vari
 		vari=RcppRoll::roll_sd(var,nav[i],na.rm=TRUE)[seq(1,n,nav[i])]
 		averaged_sd[[i]]=vari
+		vari=RcppRoll::roll_max(var,nav[i],na.rm=TRUE)[seq(1,n,nav[i])]
+		averaged_max[[i]]=vari
 	}
-	averaged=list("mean"=averaged_mean,"sd"=averaged_sd)
+	averaged=list("mean"=averaged_mean[[1]],"sd"=averaged_sd[[1]],"max"=averaged_max[[1]])
 	averaged$averaging_time_min=tres2/60
 	averaged$number_of_averaged_values=nav
 	return(averaged)
