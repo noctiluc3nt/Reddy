@@ -176,6 +176,22 @@ calc_decoupling_metric = function(w_sd,N,z=2) {
 	return(LB/(sqrt(2)*z)) #Peltola et al, 2021: eq 6
 }
 
+#' Ozmidov scale (L_OZ)
+#'
+#'@description Calculates the Ozmidov length scale L_OZ = sqrt(epsilon/N^3), with epsilon: TKE dissipation rate, and N: Brunt-Vaisala frequency
+#'@param epsilon dissipation rate of TKE or w [m*s]
+#'@param N Brunt-Vaisala frequency [1/s]
+#'
+#'@return Ozmidov length scale [m]
+#'@export
+#'
+#'@examples
+#'calc_ozmidov_scale(-5/3,1*10^-4)
+#'
+calc_ozmidov_scale = function(epsilon,N) {
+	return(sqrt(epsilon/N^3))
+}
+
 ### intermittency indicator ###
 
 #' Flux intermittency
@@ -196,7 +212,7 @@ calc_decoupling_metric = function(w_sd,N,z=2) {
 #'calc_flux_intermittency(ts1*ts2,nsub=6) #the same from one variable
 #'
 calc_flux_intermittency = function(ts1,ts2=NULL,nsub=6000) {
-	n=length(ts)
+	n=length(ts1)
     nint=n%/%nsub
     if (nint<=1) {
         warning("nsub is chosen to large.")
