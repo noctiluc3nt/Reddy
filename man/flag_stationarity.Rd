@@ -4,7 +4,7 @@
 \alias{flag_stationarity}
 \title{Stationarity Flag}
 \usage{
-flag_stationarity(var1, var2, nsub = 3000)
+flag_stationarity(var1, var2, nsub = 3000, thresholds_stationarity = c(0.3, 1))
 }
 \arguments{
 \item{var1}{variable 1}
@@ -12,6 +12,8 @@ flag_stationarity(var1, var2, nsub = 3000)
 \item{var2}{variable 2 (same length as \code{var1}, usually either \code{var1} or \code{var2} represent vertical velocity)}
 
 \item{nsub}{number of elements used for subsampling (\code{nsub < length(var1)})}
+
+\item{thresholds_stationarity}{vector containing 2 elements to distinguish between flag=0 and flag=1, as well as flag=1 and flag=2, default: \code{c(0.3,1)}}
 }
 \value{
 stationarity flags (0: in full agreement with the criterion ... 2: does not fulfill the criterion)

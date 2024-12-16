@@ -56,18 +56,16 @@ calc_spectrum = function(ts,nbins=100,plot=TRUE) {
 calc_spectrum1D = function(ts,tres=0.05,nbins=NULL,method="fft",na.rm=TRUE,plot=TRUE,...) {
     if (na.rm==TRUE) ts=ts[!is.na(ts)]
     nt=length(ts) #length of time series
-    sr=1/tres #sampling rate
+    #sr=1/tres #sampling rate
     #t=seq(0,(nt-1)*tres,tres) #time vector
-    #fft and frequencies
-    if (method=="fft" | method=="FFT") {
+    if (method=="fft" | method=="FFT") {  #fft and frequencies
         spec=fft(ts)
         ssb=spec[1:(nt/2)] #single side band
         ssb[2:(nt/2)]=2*ssb[2:(nt/2)]
         spec=abs(ssb)*2/nt
         freq=seq(0,(nt/2)-1)*tres/nt #frequencies
         out=data.frame("frequency"=freq,"spectrum"=spec)
-    } else if (method=="dct" | method=="DCT") {
-        #dct and frequencies
+    } else if (method=="dct" | method=="DCT") { #dct and frequencies
         spec=abs(dct(ts))
         freq=seq(0,(nt)-1)*tres/nt #frequencies
         out=data.frame("frequency"=freq,"spectrum"=spec)

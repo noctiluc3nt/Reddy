@@ -1,7 +1,7 @@
 #' Despiking
 #'
 #'@description Applies (up to) three despiking methods based on (1) pre-defined thresholds, (2) median deviation (MAD) test and (3) skewness and kurtosis
-#'@param series timeseries that shall be despiked
+#'@param ts timeseries that shall be despiked
 #'@param thresholds vector with two elements representing lower and upper bounds for despiking (pre-defined thresholds), \code{NA} means that the respective bound is not used
 #'@param mad_factor factor for the MAD test, default \code{mad_factor = 10}
 #'@param threshold_skewness threshold for skewness test, default \code{threshold_skewness = 2}
@@ -20,30 +20,30 @@
 #'ts2=rexp(1000)
 #'despiking(ts2)
 #'
-despiking = function(series,thresholds=c(NA,NA),mad_factor=10,threshold_skewness=2,threshold_kurtosis=8) {
+despiking = function(ts,thresholds=c(NA,NA),mad_factor=10,threshold_skewness=2,threshold_kurtosis=8) {
 	#despiking based on predefined limits
     if (sum(is.na(thresholds))==0) {
-        pass = (series>thresholds[1] & series<thresholds[2])
-	    series[!pass] = NA
+        pass = (ts>thresholds[1] & ts<thresholds[2])
+	    ts[!pass] = NA
     } else if (is.na(thresholds[1])) {
-        pass = (series<thresholds[2])
-	    series[!pass] = NA
+        pass = (ts<thresholds[2])
+	    ts[!pass] = NA
     } else if (is.na(thresholds[2])) {
-        pass = (series>thresholds[1])
-	    series[!pass] = NA
+        pass = (ts>thresholds[1])
+	    ts[!pass] = NA
     }
     #despiking based on median deviation test
-    med=median(series,na.rm=TRUE)
-    mad=median(abs(series-med),na.rm=TRUE)
-    pass=(abs(series-med) <= mad_factor*mad) #pass criterion
-    series[!pass] = NA
-    #despiking based on skewness and kurtosis
-    seriesLDT=pracma::detrend(series,tt="linear") #linear detrending to eliminate trends (departures from stationarity) -> would influnece higher moments
-    skewness=mean(seriesLDT^3)/sd(seriesLDT)^3
-    kurtosis=mean(seriesLDT^4)/sd(seriesLDT)^4
+    med=median(ts,na.rm=TRUE)
+    mad=median(abs(ts-med),na.rm=TRUE)
+    pass=(abs(ts-med) <= mad_factor*mad) #pass criterion
+    ts[!pass] = NA
+    #despiking based on skewness and kurtosis for entire block
+    seriesLDT=pracma::detrend(ts,tt="linear") #linear detrending to eliminate trends (departures from stationarity) -> would influnece higher moments
+    skewness=mean(seriesLDT^3,na.rm=T)/sd(seriesLDT,na.rm=T)^3
+    kurtosis=mean(seriesLDT^4,na.rm=T)/sd(seriesLDT,na.rm=T)^4
     pass=(abs(skewness)<threshold_skewness & kurtosis<threshold_kurtosis)
-    series[!pass] = NA
-    return(series)
+    if (pass==FALSE) ts = array(NA,dim=length(ts))
+    return(ts)
 }
 
 
@@ -127,6 +127,7 @@ rotate_planar = function(u,v,w,bias=c(0,0,0)) {
 #'@param var1 variable 1 
 #'@param var2 variable 2 (same length as \code{var1}, usually either \code{var1} or \code{var2} represent vertical velocity)
 #'@param nsub number of elements used for subsampling (\code{nsub < length(var1)}) 
+#'@param thresholds_stationarity vector containing 2 elements to distinguish between flag=0 and flag=1, as well as flag=1 and flag=2, default: \code{c(0.3,1)}
 #'
 #'@return stationarity flags (0: in full agreement with the criterion ... 2: does not fulfill the criterion)
 #'@export
@@ -137,13 +138,16 @@ rotate_planar = function(u,v,w,bias=c(0,0,0)) {
 #'ts2=rnorm(30)
 #'flag_stationarity(ts1,ts2,nsub=6)
 #'
-flag_stationarity = function(var1,var2,nsub=3000) {
+flag_stationarity = function(var1,var2,nsub=3000,thresholds_stationarity=c(0.3,1)) {
     if (length(var1) != length(var2)) {
         stop("var1 and var2 have to be of equal length.")
     }
+    if (length(thresholds_stationarity)!=2) {
+        stop("thresholds_stationarity has to be a vector of length 2.")
+    }
     nint=length(var1)%/%nsub
     if (nint<=1) {
-        warning("nsub is chosen to large.")
+        stop("nsub is chosen to large.")
     }
     rnfs=array(NA,dim=nint)
     cov_complete=cov(var1,var2,use="pairwise.complete.obs")
@@ -153,15 +157,16 @@ flag_stationarity = function(var1,var2,nsub=3000) {
         rnfs[i]=abs((cov_complete-cov_sub)/cov_complete)
     }
     rnf=mean(rnfs,na.rm=T)
-    flag=ifelse(rnf<0.3,0,ifelse(rnf<1,1,2))
+    flag=ifelse(rnf<thresholds_stationarity[1],0,ifelse(rnf<thresholds_stationarity[2],1,2))
     return(flag)
 }
 
 
 #' Vertical Velocity Flag
 #'
-#'@description Vertical Velocity Flag according to Mauder et al., 2013: After rotation the vertical velocity should vanish, this flag flags high remaining vertical velocities.
-#'@param w vertical velocity 
+#'@description Vertical velocity flag according to Mauder et al., 2013: After rotation the vertical velocity should vanish, this flag flags high remaining vertical velocities.
+#'@param w vertical velocity
+#'@param thresholds_w vector containing 2 elements to distinguish between flag=0 and flag=1, as well as flag=1 and flag=2, default: \code{c(0.1,0.15)}
 #'
 #'@return vertical velocity flags (0: in full agreement with the criterion ... 2: does not fulfill the criterion)
 #'@export
@@ -169,9 +174,12 @@ flag_stationarity = function(var1,var2,nsub=3000) {
 #'@examples
 #'flag_w(0.01)
 #'
-flag_w = function(w) {
+flag_w = function(w,thresholds_w=c(0.1,0.15)) {
+    if (length(thresholds_w)!=2) {
+        stop("thresholds_w has to be a vector of length 2.")
+    }
     w=abs(w)
-    flag=ifelse(w<0.1,0,ifelse(1<0.15,1,2))
+    flag=ifelse(w<thresholds_w[1],0,ifelse(w<thresholds_w[2],1,2))
     return(flag)
 }
 
@@ -218,6 +226,7 @@ flag_distortion = function(u,v,dir_blocked,threshold_cr=0.9) {
 #'@param w_sd standard deviation of vertical velocity
 #'@param ustar friction velocity
 #'@param zeta stability parameter \code{zeta = z/L}
+#'@param thresholds_most vector containing 2 elements to distinguish between flag=0 and flag=1, as well as flag=1 and flag=2, default: \code{c(0.3,0.8)}
 #'
 #'@return integral turbulence characteristics flags (0: in full agreement with the criterion ... 2: does not fulfill the criterion)
 #'@export
@@ -225,18 +234,34 @@ flag_distortion = function(u,v,dir_blocked,threshold_cr=0.9) {
 #'@examples
 #'itc_flag=flag_most(0.2,0.4,-0.3)
 #'
-flag_most = function(w_sd,ustar,zeta) {
+flag_most = function(w_sd,ustar,zeta,thresholds_most=c(0.3,0.8)) {
+    if (length(thresholds_most)!=2) {
+        stop("thresholds_most has to be a vector of length 2.")
+    }
     parameterized=1.3*(1+2*abs(zeta))^(1/3) #w_sd/ustar parametrized according to scaling function based on zeta
     itc=abs((w_sd/ustar-parameterized)/parameterized)
-    flag=ifelse(itc<0.3,0,ifelse(itc<0.8,1,2))
+    flag=ifelse(itc<thresholds_most[1],0,ifelse(itc<thresholds_most[2],1,2))
     return(flag)
 }
 
+#' Ts2T
+#'
+#'@description Converts sonic temperature Ts to temperature T
+#'
+#'@param Ts sonic temperature [K] (similar as virtual temperature)
+#'@param q specific humidity [kg/kg]
+#'
+#'@return temperature [K]
+#'@export
+#'
+Ts2T = function(Ts,q) {  
+    return(Ts*(1+Rd()/Rv()*q))
+}
 
 #' SND and cross-wind correction of sensible heat flux
 #'
 #'@description SND and cross-wind correction of sensible heat flux: converts the buoyancy flux cov(w,Ts) (based on sonic temperature Ts) to sensible heat flux
-#'@param Ts_mean temperature [K] (averaged)
+#'@param Ts_mean sonic temperature [K] (averaged)
 #'@param u_mean u-wind [m/s] (averaged)
 #'@param v_mean v-wind [m/s] (averaged)
 #'@param cov_uw cov(u,w) [m^2/s^2]
@@ -245,47 +270,39 @@ flag_most = function(w_sd,ustar,zeta) {
 #'@param cov_qw cov(q,w) [kg/kg*m/s] (optional)
 #'@param A constant used in cross-wind correction, default \code{A = 7/8} for CSAT3
 #'@param B constant used in cross-wind correction, default \code{B = 7/8} for CSAT3
+#'@param sos speed of sound [m/s], default \code{sos = csound()} corresponding to 343 m/s
 #'
 #'@return SND correction of sensible heat flux
 #'@export
 #'
-SNDcorrection = function(Ts_mean,u_mean,v_mean,cov_uw,cov_vw,cov_wTs,cov_qw=NULL,A=7/8,B=7/8) {
+SNDcorrection = function(Ts_mean,u_mean,v_mean,cov_uw,cov_vw,cov_wTs,cov_qw=NULL,A=7/8,B=7/8,sos=csound()) {
     if (!is.null(cov_qw)) { #considering q
         #second term: SND correction, third term: cross-wind correction
-        return(cov_wTs - 0.51*cov_qw + 2*Ts_mean/clight()^2*(A*u_mean*cov_uw + B*v_mean*cov_vw))
+        return(cov_wTs - 0.51*cov_qw + 2*Ts_mean/csound()^2*(A*u_mean*cov_uw + B*v_mean*cov_vw))
     }
     #without q: only cross-wind correction
-    return(cov_wTs + 2*Ts_mean/clight()^2*(A*u_mean*cov_uw + B*v_mean*cov_vw))
+    return(cov_wTs + 2*Ts_mean/csound()^2*(A*u_mean*cov_uw + B*v_mean*cov_vw))
 }
 
 #' WPL correction
 #'
 #'@description WPL correction: density correction for trace gas fluxes (i.e., converts volume- to mass-related quantity)
-#'@param rho_w measured water vapor density [kg/m^3]
-#'@param rho_c measured trace gas density [kg/m^3] (only if WPL-correction should be applied to another flux, e.g. CO2 flux, default \code{NULL})
-#'@param w w-wind [m/s] (levelled sonic)
-#'@param Ts temperature [K] (sonic temperature or corrected temperature)
-#'@param q specific humidity [kg/kg] (if measured, default \code{NULL})
+#'@param Ts_mean temperature [K] (sonic temperature or corrected temperature)
+#'@param q_mean specific humidity [kg/kg] (if measured, default \code{NULL})
+#'@param cov_wTs covariance cov(w,Ts) [m/s*K]
+#'@param rhow_mean measured water vapor density [kg/m^3]
+#'@param cov_wrhow covariance cov (w,rhow) [m/s*kg/m^3]
+#'@param rhoc_mean measured trace gas density [kg/m^3] (only if WPL-correction should be applied to another flux, e.g. CO2 flux, default \code{NULL})
+#'@param cov_wrhoc covariance cov (w,rhoc) [m/s*kg/m^3] (only if WPL-correction should be applied to another flux, e.g. CO2 flux, default \code{NULL})
 #'
 #'@return WPL correction of respective flux
 #'@export
 #'
-WPLcorrection = function(rho_w,rho_c=NULL,w,Ts,q) {
-    #calculation of respective covariances
-    not_na=!is.na(w)&!is.na(Ts)
-    cov_wTs = cov(w[not_na],Ts[not_na]) 
-    not_na=!is.na(w)&!is.na(rho_w)
-    cov_wrhow = cov(w[not_na],rho_w[not_na]) 
-    Ts_bar=mean(Ts,na.rm=TRUE)
-    q_bar=mean(q,na.rm=TRUE)
-    rho_w_bar=mean(rho_w,na.rm=TRUE)
+WPLcorrection = function(Ts_mean,q_mean,cov_wTs,rhow_mean,cov_wrhow,rhoc_mean=NULL,cov_wrhoc=NULL) {
     if (is.null(rho_c)) { #water vapor flux
-        return(1+1.61*q_bar)*(cov_wrhow+rho_w_bar/Ts_bar*cov_wTs) #with M_L/M_w = 1.61
+        return((1+1.61*q_mean)*(cov_wrhow+rhow_mean/Ts_mean*cov_wTs)) #with M_L/M_w = 1.61
     } else { #other trace gas flux
-        not_na=!is.na(w)&!is.na(rho_c)
-        cov_wrhoc = cov(w[not_na],rho_c[not_na]) 
-        rho_c_bar=mean(rho_c,na.rm=TRUE)
-        return(cov_wrhoc+1.61*rho_c_bar/rho_w_bar*cov_wrhow+(1+1.61*q_bar)*rho_c_bar/Ts_bar*cov_wTs)
+        return(cov_wrhoc+1.61*rhoc_mean/rhow_mean*cov_wrhow+(1+1.61*q_mean)*rhoc_mean/Ts_mean*cov_wTs)
     }
 }
 
@@ -312,8 +329,7 @@ ppt2rho = function(ppt,T_mean=288.15, pres = 101325, e = 0, gas="H2O") {
         return(ppt/1000*M_CH4()/Vd)
     } else {
         warning("You selected a gas which is not available for the conversion here.")
-    }
-    
+    } 
 }
 
 

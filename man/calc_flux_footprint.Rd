@@ -6,8 +6,9 @@
 \usage{
 calc_flux_footprint(
   zm,
-  u_mean = NA,
-  h,
+  ws_mean = NA,
+  wd_mean = NA,
+  blh,
   L,
   v_sd,
   ustar,
@@ -20,9 +21,11 @@ calc_flux_footprint(
 \arguments{
 \item{zm}{measurement height [m]}
 
-\item{u_mean}{mean horizontal wind speed [m/s] (alternatively you can also use \code{z0})}
+\item{ws_mean}{mean horizontal wind speed [m/s] (alternatively you can also use \code{z0})}
 
-\item{h}{boundary-layer height [m]}
+\item{wd_mean}{mean wind direction [deg] (used to rotate flux footprint, optional)}
+
+\item{blh}{boundary-layer height [m]}
 
 \item{L}{Obukhov length [m]}
 
@@ -30,7 +33,7 @@ calc_flux_footprint(
 
 \item{ustar}{friction velocity [m/s]}
 
-\item{z0}{roughness length [m] (either \code{u_mean} or \code{z0} have to be given)}
+\item{z0}{roughness length [m] (either \code{ws_mean} or \code{z0} have to be given)}
 
 \item{contours}{which contour lines should be calculated? default: \code{contours=seq(0.9,0.1,-0.1)}}
 
@@ -45,6 +48,9 @@ list containing all relevant flux footprint information
 Calculates the Flux-Footprint Parametrization (FFP) according to Kljun et al., 2015
 }
 \examples{
-ffp=calc_flux_footprint(zm=20,u_mean=2,h=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
+#unrotated (i.e. if wind direction not given):
+ffp=calc_flux_footprint(zm=20,ws_mean=2,blh=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
+#rotated (i.e. given wind direction):
+ffp=calc_flux_footprint(zm=20,ws_mean=2,wd_mean=80,blh=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
 
 }

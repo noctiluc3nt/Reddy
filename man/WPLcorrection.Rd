@@ -4,18 +4,30 @@
 \alias{WPLcorrection}
 \title{WPL correction}
 \usage{
-WPLcorrection(rho_w, rho_c = NULL, w, Ts, q)
+WPLcorrection(
+  Ts_mean,
+  q_mean,
+  cov_wTs,
+  rhow_mean,
+  cov_wrhow,
+  rhoc_mean = NULL,
+  cov_wrhoc = NULL
+)
 }
 \arguments{
-\item{rho_w}{measured water vapor density [kg/m^3]}
+\item{Ts_mean}{temperature [K] (sonic temperature or corrected temperature)}
 
-\item{rho_c}{measured trace gas density [kg/m^3] (only if WPL-correction should be applied to another flux, e.g. CO2 flux, default \code{NULL})}
+\item{q_mean}{specific humidity [kg/kg] (if measured, default \code{NULL})}
 
-\item{w}{w-wind [m/s] (levelled sonic)}
+\item{cov_wTs}{covariance cov(w,Ts) [m/s*K]}
 
-\item{Ts}{temperature [K] (sonic temperature or corrected temperature)}
+\item{rhow_mean}{measured water vapor density [kg/m^3]}
 
-\item{q}{specific humidity [kg/kg] (if measured, default \code{NULL})}
+\item{cov_wrhow}{covariance cov (w,rhow) [m/s*kg/m^3]}
+
+\item{rhoc_mean}{measured trace gas density [kg/m^3] (only if WPL-correction should be applied to another flux, e.g. CO2 flux, default \code{NULL})}
+
+\item{cov_wrhoc}{covariance cov (w,rhoc) [m/s*kg/m^3] (only if WPL-correction should be applied to another flux, e.g. CO2 flux, default \code{NULL})}
 }
 \value{
 WPL correction of respective flux

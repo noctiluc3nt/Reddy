@@ -3,6 +3,7 @@
 export(ECprocessing)
 export(RTcorrection)
 export(SNDcorrection)
+export(Ts2T)
 export(WPLcorrection)
 export(ah2rh)
 export(averaging)

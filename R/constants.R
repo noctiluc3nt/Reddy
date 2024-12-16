@@ -31,6 +31,14 @@ clight=function(){
 	return(299792458)
 }
 
+#' csound
+#'
+#' speed of sound [m/s]
+#' @keywords internal
+csound=function(){
+	return(343)
+}
+
 #' von Karman constant
 #'
 #' @keywords internal

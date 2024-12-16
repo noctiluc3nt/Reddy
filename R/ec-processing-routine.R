@@ -1,6 +1,6 @@
 #' Eddy-covariance post-processing
 #'
-#'@description An eddy-covariance post-processing routine utilizing the functions from ec_processing.R
+#'@description An example for an eddy-covariance post-processing routine utilizing the functions from ec_processing.R
 #'@param u u-wind [m/s] (sonic)
 #'@param v v-wind [m/s] (sonic)
 #'@param w w-wind [m/s] (sonic)
@@ -29,7 +29,7 @@
 #'@param B constant used in SND correction, default \code{A=7/8} for CSAT3 sonic
 #'@param store logical, should the output be stored? default \code{TRUE}
 #'@param format_out file format of the output, can be either \code{txt} or \code{rds} (for netcdf, see separate function), only used if \code{store=TRUE}
-#'@param filename desired output filename, default \code{NULL}, the date and runtime will be used to create a filename, only used if \code{store=TRUE}
+#'@param filename desired output filename, default \code{NULL}, the date and time of the run will be used to create a filename, only used if \code{store=TRUE}
 #'@param meta logical, should meta data be stored? default \code{TRUE}
 #'
 #'@importFrom pracma detrend

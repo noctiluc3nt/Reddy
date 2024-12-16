@@ -94,7 +94,7 @@ ECprocessing(
 
 \item{format_out}{file format of the output, can be either \code{txt} or \code{rds} (for netcdf, see separate function), only used if \code{store=TRUE}}
 
-\item{filename}{desired output filename, default \code{NULL}, the date and runtime will be used to create a filename, only used if \code{store=TRUE}}
+\item{filename}{desired output filename, default \code{NULL}, the date and time of the run will be used to create a filename, only used if \code{store=TRUE}}
 
 \item{meta}{logical, should meta data be stored? default \code{TRUE}}
 }
@@ -102,5 +102,5 @@ ECprocessing(
 data frame of post-processed eddy-covariance data (that is also stored in the output file by default)
 }
 \description{
-An eddy-covariance post-processing routine utilizing the functions from ec_processing.R
+An example for an eddy-covariance post-processing routine utilizing the functions from ec_processing.R
 }

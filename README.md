@@ -23,9 +23,10 @@ The Reddy package provides functions for the post-processing, analysis and evalu
 - `auxilliary.R`: collection of some useful generic functions for the evaluation (e.g., discrete binning, cross-correlation maximization)
 - `bulk_closures.R`: collection of functions used to calculated bulk closures, flux-profile and flux-variance relations (e.g. Richardson number, eddy viscosity, eddy conductivity, scaling functions)
 - `constants.R`: constants used for calculations (internal)
-- `diagnostics-meteorology.R`: calculation of "background-meteorology" quantities (e.g., clear-sky index)
+- `diagnostics-meteorology.R`: calculation of "background-meteorology" quantities (e.g., clear-sky index, vapor pressure deficit, unit conversions of moisture variables)
 - `diagnostics-turbulence.R`: calculation of some standard turbulence diagnostics (e.g., friction velocity, TKE, turbulence intensity, stability parameter)
 - `ec-processing.R`: collection of functions for post-processing and quality control of eddy-covariance measurements
+- `ec-processing-routine.R`: an example for a post-processing and quality control routine of eddy-covariance measurements utilizing the functions in `ec-processing.R` with storing the final averaged output data in an external file
 - `flux-footprint.R`: calculation and visualization of 2D flux footprint (FFP, Kljun et al., 2015)
 - `model-utils.R`: collection of function to post-process NWP model output (e.g. flux deaccumulation, conversion of sigma levels to physical height)
 - `multiresolution-decomposition.R`: calculation and visualization of multiresolution decomposition (MRD, Vickers and Mahrt, 2003)

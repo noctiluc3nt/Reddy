@@ -4,16 +4,18 @@
 \alias{flag_w}
 \title{Vertical Velocity Flag}
 \usage{
-flag_w(w)
+flag_w(w, thresholds_w = c(0.1, 0.15))
 }
 \arguments{
 \item{w}{vertical velocity}
+
+\item{thresholds_w}{vector containing 2 elements to distinguish between flag=0 and flag=1, as well as flag=1 and flag=2, default: \code{c(0.1,0.15)}}
 }
 \value{
 vertical velocity flags (0: in full agreement with the criterion ... 2: does not fulfill the criterion)
 }
 \description{
-Vertical Velocity Flag according to Mauder et al., 2013: After rotation the vertical velocity should vanish, this flag flags high remaining vertical velocities.
+Vertical velocity flag according to Mauder et al., 2013: After rotation the vertical velocity should vanish, this flag flags high remaining vertical velocities.
 }
 \examples{
 flag_w(0.01)
