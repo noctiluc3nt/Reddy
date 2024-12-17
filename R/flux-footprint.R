@@ -177,7 +177,6 @@ plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1))) {
 }
 
 
-
 #' Flux-Footprint Climatology / Composite Flux Footprint
 #'
 #'@description Calculates a Flux Footprint Climatology based on \code{calc_flux_footprint} utilizing the Flux-Footprint Parametrization (FFP) according to Kljun et al., 2015

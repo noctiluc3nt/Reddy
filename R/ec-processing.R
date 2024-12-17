@@ -38,11 +38,16 @@ despiking = function(ts,thresholds=c(NA,NA),mad_factor=10,threshold_skewness=2,t
     pass=(abs(ts-med) <= mad_factor*mad) #pass criterion
     ts[!pass] = NA
     #despiking based on skewness and kurtosis for entire block
-    seriesLDT=pracma::detrend(ts,tt="linear") #linear detrending to eliminate trends (departures from stationarity) -> would influnece higher moments
-    skewness=mean(seriesLDT^3,na.rm=T)/sd(seriesLDT,na.rm=T)^3
-    kurtosis=mean(seriesLDT^4,na.rm=T)/sd(seriesLDT,na.rm=T)^4
-    pass=(abs(skewness)<threshold_skewness & kurtosis<threshold_kurtosis)
-    if (pass==FALSE) ts = array(NA,dim=length(ts))
+    tryCatch({
+        seriesLDT=pracma::detrend(ts,tt="linear") #linear detrending to eliminate trends (departures from stationarity) -> would influnece higher moments
+        skewness=mean(seriesLDT^3,na.rm=T)/sd(seriesLDT,na.rm=T)^3
+        kurtosis=mean(seriesLDT^4,na.rm=T)/sd(seriesLDT,na.rm=T)^4
+        pass=(abs(skewness)<threshold_skewness & kurtosis<threshold_kurtosis)
+        if (is.na(pass) | is.null(pass)) pass=FALSE
+        if (pass==FALSE) ts = ts*NA
+    }, warning=function(e){
+        message("Not all despiking method could be applied.")
+    })
     return(ts)
 }
 

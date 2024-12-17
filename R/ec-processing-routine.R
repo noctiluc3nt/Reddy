@@ -42,7 +42,7 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     time_resolution=0.05, #s
     time_averaging=30, #mins
     measurement_height=1, #m
-    do_despiking=TRUE,despike_u=c(-15,15,10,2,8),despike_v=c(-15,15,10,2,8),despike_w=c(-4,4,10,2,8),despike_temp=c(230,300,10,2,8),despike_h2o=c(0,12,10,2,8),despike_co2=c(0,12,10,2,8),despike_ch4=c(0,12,10,2,8),
+    do_despiking=TRUE,despike_u=c(-15,15,10,2,8),despike_v=c(-15,15,10,2,8),despike_w=c(-4,4,10,2,8),despike_temp=c(230,300,10,2,8),despike_h2o=c(0,12,10,2,8),despike_co2=c(300,500,10,4,10),despike_ch4=c(0,12,10,2,8),
     do_detrending=FALSE,
     do_double_rotation=TRUE,
     do_planar_fit=FALSE,
