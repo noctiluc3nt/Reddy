@@ -140,7 +140,7 @@ averaging=function(var,tres1=0.05,tres2=c(1,10,30)*60) {
 		vari=RcppRoll::roll_max(var,nav[i],na.rm=TRUE)[seq(1,n,nav[i])]
 		averaged_max[[i]]=vari
 	}
-	averaged=list("mean"=averaged_mean[[1]],"sd"=averaged_sd[[1]],"max"=averaged_max[[1]])
+	averaged=list("mean"=averaged_mean,"sd"=averaged_sd,"max"=averaged_max)
 	averaged$averaging_time_min=tres2/60
 	averaged$number_of_averaged_values=nav
 	return(averaged)

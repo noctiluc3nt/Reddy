@@ -154,6 +154,21 @@ calc_phit = function(T1,T2,cov_wT,ustar,zm,dz) {
 	return(phi)
 }
 
+#' Brunt-Vaisala frequency squared
+#'
+#'@description calculates Brunt-Vaisala frequency squared (N^2)
+#'@param T1 temperature at the lower level [K]
+#'@param T2 temperature at the upper level [K]
+#'@param dz height difference of the two measurements [m]
+#'
+#'@return N2 [1/s^2]
+#'@export
+#'
+calc_N2 = function(T1,T2,dz) {
+	T0=(T1+T2)/2
+	dT_dz=(T2-T1)/dz
+	return(T0/g()*dT_dz)
+}
 
 #' Calculates bulk Richardson number Ri
 #'

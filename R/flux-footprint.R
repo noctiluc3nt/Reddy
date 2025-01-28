@@ -64,7 +64,7 @@ calc_flux_footprint = function(zm, ws_mean=NA, wd_mean = NA, blh, L, v_sd, ustar
     } else {
         stop("You have to know either ws_mean or z0.")
     }
-    #calculate real scale sigmay
+    #calculate real scale y_sd
     ps1=min(1,abs(1/(zm/L))*1E-5 + ifelse(L<=0,0.8,0.55))
     sigmay=sigmay_star/ps1*zm*v_sd/ustar #eq. 13 inverted
     #calculate real scale f(x,y)
@@ -79,7 +79,7 @@ calc_flux_footprint = function(zm, ws_mean=NA, wd_mean = NA, blh, L, v_sd, ustar
     n2=length(ypos)
     nf=nrow(fpos)
     fmat=array(NA,dim=c(nf,2*n2-1))
-    fmat[,1:(n2-1)]=fpos[,n2:2]
+    fmat[,1:(n2-1)]=fpos[,n2:2] #symmetry
     fmat[,n2:(2*n2-1)]=fpos
     nx=length(x)
     y=c(-rev(ypos),ypos[2:n2])
@@ -100,9 +100,11 @@ calc_flux_footprint = function(zm, ws_mean=NA, wd_mean = NA, blh, L, v_sd, ustar
         ffp_cont$xcont[[i]]=cont[[1]]$x
         ffp_cont$ycont[[i]]=cont[[1]]$y
     }
+    #crop
+    
     #rotate flux footprint
     if (!is.na(wd_mean)) {
-        #rotate area (2d data)
+        #rotate area (2d data) using polar coordinates
         wd=wd_mean*pi/180
         angle=atan2(ymat,xmat)
         dist=sqrt(xmat^2+ymat^2)
@@ -156,7 +158,7 @@ calc_flux_footprint = function(zm, ws_mean=NA, wd_mean = NA, blh, L, v_sd, ustar
 #'plot_flux_footprint(ffp)
 #' 
 plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1))) {
-    if (!exists("xlim")) xlim=c(0,400)
+    if (!exists("xlim")) xlim=c(-400,400)
     if (!exists("ylim")) ylim=c(-250,250)
     #plot crosswind-integrated footprint
     plot(ffp$x,ffp$fy_mean,type="l",xlim=xlim,lwd=2,xlab="x [m]",ylab="crosswind-integrated footprint",main="Crosswind-Integrated Flux Footprint")
@@ -222,3 +224,27 @@ calc_flux_footprint_climatology = function(zm, ws_mean=NA, wd_mean=NA, blh, L, v
     ffp_clim$f2d=apply(ffp_clim_f2d,c(2,3,4),mean,na.rm=T)
     return(ffp_clim)
 }
+
+
+
+
+
+#' Flux-Footprint Parametrization (FFP) according Kormann and Meixner, 2001
+#'
+#'@description Calculates the Flux-Footprint Parametrization (FFP) according to Kormann and Meixner, 2001
+#'@param zm measurement height [m]
+#'@param ws_mean mean horizontal wind speed [m/s] (alternatively you can also use \code{z0})
+#'@param wd_mean mean wind direction [deg] (used to rotate flux footprint, optional)
+#'@param L Obukhov length [m]
+#'@param v_sd standard deviation of crosswind [m/s]
+#'@param ustar friction velocity [m/s]
+#'@param z0 roughness length [m] (either \code{ws_mean} or \code{z0} have to be given)
+#'@param contours which contour lines should be calculated? default: \code{contours=seq(0.9,0.1,-0.1)}
+#'@param nres resolution (default: \code{nres=1000})
+#'@param plot logical, should the flux footprint be plotted? default \code{plot=TRUE}
+#'
+#'@return list containing all relevant flux footprint information
+#'@export
+#'
+#'@examples
+#'

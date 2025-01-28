@@ -131,3 +131,11 @@ M_CH4 = function() {
 alpha = function() {
 	return(0.016)
 }
+
+#' Earth's radius
+#'
+#' Earth's radius
+#' @keywords internal
+R_earth = function() {
+	return(6378137)
+}
