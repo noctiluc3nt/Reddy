@@ -302,3 +302,37 @@ ustar2z0 = function(ustar) {
 	return(alpha()*ustar^2/g())
 }
 
+
+
+### Ekman layer
+
+#' Coriolis parameter
+#'
+#'@description Calculates Coriolis parameter from latitude
+#'@param phi latitude [deg]
+#'
+#'@return Coriolis parameter [1/s]
+#'@export
+#'
+#'@examples
+#'calc_coriolis(45)
+#'
+calc_coriolis = function(phi) {
+	return(2*pi*sin(phi*pi/180))
+}
+
+#' Ekman layer thickness
+#'
+#'@description Calculates Ekman layer thickness from eddy diffusivity and Coriolis parameter sqrt(2*Km/abs(f))
+#'@param Km eddy diffusivity [m^2/s]
+#'@param f Coriolis parameter [1/s] (e.g. from \code{calc_coriolis})
+#'
+#'@return Ekman layer thickness [m] (derived from boundary layer equations)
+#'@export
+#'
+#'@examples
+#'calc_ekman_layer_depth(0.1,10^(-4))
+#'
+calc_ekman_layer_depth = function(Km,f) {
+	return(sqrt(2*Km/abs(f)))
+}
