@@ -93,3 +93,31 @@ df_dy=function(fld,yres=1) {
     }
     return(df_dy)
 }
+
+
+#' Calculates distance between two points given in lon,lat
+#'
+#'@description Calculates y-derivative for equidistant grid
+#'@param lon1 longitude location 1 [deg]
+#'@param lat1 latitude location 1 [deg]
+#'@param lon2 longitude location 2 [deg]
+#'@param lat2 latitude location 2 [deg]
+#'@return distance between two points [m]
+#'@export
+#'
+#'@examples
+#'set.seed(5)
+#'field=matrix(rnorm(16),ncol=4)
+#'df_dy(field,10)
+#'
+calc_distance=function(lon1,lat1,lon2,lat2) {
+    lon1=lon1*pi/180
+    lat1=lat1*pi/180
+    lon2=lon2*pi/180
+    lat2=lat2*pi/180
+    dlon=lon2-lon1
+    dlat=lat2-lat1
+    h1=sin(dlat/2)^2+cos(lat1)*cos(lat2)*sin(dlon/2)^2
+    h2=2*atan2(sqrt(h1),sqrt(1-h1))
+    return(R_earth()*h2)
+}
