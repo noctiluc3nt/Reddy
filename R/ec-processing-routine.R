@@ -276,7 +276,7 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
 #'
 #'@importFrom pracma detrend
 #'
-#'@return quality checked data in the same dimension as the input variables
+#'@return quality checked data in the same dimensions as the input variables
 #'@export
 #'
 #'

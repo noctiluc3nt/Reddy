@@ -100,11 +100,12 @@ calc_flux_footprint = function(zm, ws_mean=NA, wd_mean = NA, blh, L, v_sd, ustar
         ffp_cont$xcont[[i]]=cont[[1]]$x
         ffp_cont$ycont[[i]]=cont[[1]]$y
     }
-    #crop
-    
     #rotate flux footprint
+    xcont_rot=list()
+    ycont_rot=list()
     if (!is.na(wd_mean)) {
         #rotate area (2d data) using polar coordinates
+        wd_mean=ifelse(wd_mean<180,wd_mean+180,wd_mean-180)
         wd=wd_mean*pi/180
         angle=atan2(ymat,xmat)
         dist=sqrt(xmat^2+ymat^2)
@@ -113,9 +114,9 @@ calc_flux_footprint = function(zm, ws_mean=NA, wd_mean = NA, blh, L, v_sd, ustar
         #rotate contours
         for (i in 1:length(contours)) {
             angle=atan2(ffp_cont$ycont[[i]],ffp_cont$xcont[[i]])
-            dist=sqrt(ffp_cont$xcont[[i]]^2+ffp_cont$ycont[[i]])^2
-            xcont_rot=dist*sin(wd-angle)
-            ycont_rot=dist*cos(wd-angle)
+            dist=sqrt(ffp_cont$xcont[[i]]^2+ffp_cont$ycont[[i]]^2)
+            xcont_rot[[i]]=dist*sin(wd-angle)
+            ycont_rot[[i]]=dist*cos(wd-angle)
         }
     }
     #output
@@ -123,7 +124,7 @@ calc_flux_footprint = function(zm, ws_mean=NA, wd_mean = NA, blh, L, v_sd, ustar
     ffp$xmax=xmax
     ffp$x=x
     ffp$fy_mean=fy_mean
-    ffp$f2d=fmat
+    ffp$f2d=t(fmat)
     if (!is.na(wd_mean)) { #rotated
         ffp$x2d=xmat_rot
         ffp$y2d=ymat_rot
@@ -136,7 +137,11 @@ calc_flux_footprint = function(zm, ws_mean=NA, wd_mean = NA, blh, L, v_sd, ustar
         ffp$ycontour=ffp_cont$ycont
     }
     ffp$contour_levels=contours
-    if (plot==TRUE) plot_flux_footprint(ffp)
+    tryCatch({
+        if (plot==TRUE) plot_flux_footprint(ffp)
+    }, warning = function(w) {
+        message("An error occurred when plotting the flux footprint.")
+    })
     return(ffp)
 }
 
@@ -151,6 +156,7 @@ calc_flux_footprint = function(zm, ws_mean=NA, wd_mean = NA, blh, L, v_sd, ustar
 #'@importFrom grDevices colorRampPalette contourLines rgb
 #'@importFrom graphics .filled.contour abline arrows axis
 #'@importFrom stats approx ccf cor cov lm median quantile sd
+#'@importFrom fields image.plot
 #'@export
 #'
 #'@examples
@@ -158,8 +164,8 @@ calc_flux_footprint = function(zm, ws_mean=NA, wd_mean = NA, blh, L, v_sd, ustar
 #'plot_flux_footprint(ffp)
 #' 
 plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1))) {
-    if (!exists("xlim")) xlim=c(-400,400)
-    if (!exists("ylim")) ylim=c(-250,250)
+    if (!exists("xlim")) xlim=c(-500,500)
+    if (!exists("ylim")) ylim=c(-500,500)
     #plot crosswind-integrated footprint
     plot(ffp$x,ffp$fy_mean,type="l",xlim=xlim,lwd=2,xlab="x [m]",ylab="crosswind-integrated footprint",main="Crosswind-Integrated Flux Footprint")
     abline(v=ffp$xmax,col=2,lwd=2,lty=2)
@@ -167,8 +173,9 @@ plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1))) {
     #filled contour plot with contour lines
     lab=colorRampPalette(c("white","blue3","yellow","orange","red3"), space = "Lab")
     nlev=length(levels)
-    plot(NA,xlim=xlim,ylim=ylim,main="2D Flux Footprint",xlab="x [m]",ylab="y [m]")
-    .filled.contour(ffp$x2d[1,],ffp$y2d[,1],ffp$f2d,levels=levels,col=lab(nlev))
+    #plot(NA,xlim=xlim,ylim=ylim,main="2D Flux Footprint",xlab="x [m]",ylab="y [m]")
+    #.filled.contour(ffp$x2d[1,],ffp$y2d[,1],ffp$f2d,levels=levels,col=lab(nlev))
+    fields::image.plot(ffp$x2d,ffp$y2d,ffp$f2d*100,xlim=xlim,ylim=ylim,xlab="x [m]",ylab="y [m]",main="Flux Footprint")
     for (i in 1:length(ffp$xcontour)) {
         lines(ffp$xcontour[[i]],ffp$ycontour[[i]],type="l",lwd=1)
     }
@@ -178,73 +185,3 @@ plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1))) {
     #persp(ffp$x2d[1,xselect],ffp$y2d[xselect,1],ffp$f2d[xselect,xselect],main="2d flux footprint as 3d plot",xlab=xlab,ylab=ylab,zlab="footprint",theta = 30, phi = 30, expand = 0.5, col = "lightblue",ltheta = 120, shade = 0.2,nticks=5)
 }
 
-
-#' Flux-Footprint Climatology / Composite Flux Footprint
-#'
-#'@description Calculates a Flux Footprint Climatology based on \code{calc_flux_footprint} utilizing the Flux-Footprint Parametrization (FFP) according to Kljun et al., 2015
-#'@param zm measurement height [m] (time vector)
-#'@param ws_mean mean horizontal wind speed [m/s] (time vector, alternatively you can also use \code{z0})
-#'@param wd_mean mean wind direction [deg] (time vector, optional, used for rotating the flux footprint)
-#'@param blh boundary-layer height [m] (time vector)
-#'@param L Obukhov length [m] (time vector)
-#'@param v_sd standard deviation of crosswind [m/s] (time vector)
-#'@param ustar friction velocity [m/s] (time vector)
-#'@param z0 roughness length [m] (time vector, either \code{ws_mean} or \code{z0} have to be given)
-#'@param contours which contour lines should be calculated? default: \code{contours=seq(0.9,0.1,-0.1)}
-#'@param nres resolution (default: \code{nres=1000})
-#'@param plot logical, should the flux footprint be plotted? default \code{plot=TRUE}
-#'
-#'@return list containing desired (averaged) contours of flux footprint climatology
-#'@export
-#'
-#'@examples
-#'
-calc_flux_footprint_climatology = function(zm, ws_mean=NA, wd_mean=NA, blh, L, v_sd, ustar, z0=NA,contours=seq(0.9,0.1,-0.1),nres=1000,plot=TRUE) {
-    nm=length(zm)
-    nc=length(contours)
-    #allocate
-    ffp_tmp=calc_flux_footprint(zm=zm[1],ws_mean=ws_mean[1],wd_mean=wd_mean[1],blh=blh[1],L=L[1],v_sd=v_sd[1],ustar=ustar[1],z0=z0[1],contours=contours,nres=nres,plot=FALSE)
-    nx=dim(ffp_tmp$f2d)[1]
-    ny=dim(ffp_tmp$f2d)[2]
-    ffp_clim_x2d=array(NA,dim=c(nm,nc,ny,nx))
-    ffp_clim_y2d=array(NA,dim=c(nm,nc,ny,nx))
-    ffp_clim_f2d=array(NA,dim=c(nm,nc,nx,ny))
-    for (i in 1:nm) {
-        #calc single flux footprint
-        ffp_tmp=calc_flux_footprint(zm=zm[1],ws_mean=ws_mean[i],wd_mean=wd_mean[i],blh=blh[i],L=L[i],v_sd=v_sd[i],ustar=ustar[i],z0=z0[i],contours=contours,nres=nres,plot=FALSE)
-        for (j in 1:nc) {
-            ffp_clim_x2d[i,j,,]=ffp_tmp$x2d
-            ffp_clim_y2d[i,j,,]=ffp_tmp$y2d
-            ffp_clim_f2d[i,j,,]=ffp_tmp$f2d
-        }
-    }
-    ffp_clim=list()
-    ffp_clim$x2d=apply(ffp_clim_x2d,c(2,3,4),mean,na.rm=T)
-    ffp_clim$y2d=apply(ffp_clim_y2d,c(2,3,4),mean,na.rm=T)
-    ffp_clim$f2d=apply(ffp_clim_f2d,c(2,3,4),mean,na.rm=T)
-    return(ffp_clim)
-}
-
-
-
-
-
-#' Flux-Footprint Parametrization (FFP) according Kormann and Meixner, 2001
-#'
-#'@description Calculates the Flux-Footprint Parametrization (FFP) according to Kormann and Meixner, 2001
-#'@param zm measurement height [m]
-#'@param ws_mean mean horizontal wind speed [m/s] (alternatively you can also use \code{z0})
-#'@param wd_mean mean wind direction [deg] (used to rotate flux footprint, optional)
-#'@param L Obukhov length [m]
-#'@param v_sd standard deviation of crosswind [m/s]
-#'@param ustar friction velocity [m/s]
-#'@param z0 roughness length [m] (either \code{ws_mean} or \code{z0} have to be given)
-#'@param contours which contour lines should be calculated? default: \code{contours=seq(0.9,0.1,-0.1)}
-#'@param nres resolution (default: \code{nres=1000})
-#'@param plot logical, should the flux footprint be plotted? default \code{plot=TRUE}
-#'
-#'@return list containing all relevant flux footprint information
-#'@export
-#'
-#'@examples
-#'

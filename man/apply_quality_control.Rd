@@ -66,7 +66,7 @@ apply_quality_control(
 \item{do_flagging}{logical, should the data be flagged? default \code{TRUE}, i.e. several flags are calculated, but no data is removed, can be used for quality analysis}
 }
 \value{
-
+quality checked data in the same dimensions as the input variables
 }
 \description{
 An example for an eddy-covariance post-processing routine utilizing the functions from ec_processing.R
