@@ -2,16 +2,28 @@
 % Please edit documentation in R/spectrum.R
 \name{calc_spectrum1D}
 \alias{calc_spectrum1D}
-\title{Spectrum of timeseries (1D)}
+\title{Frequency spectrum (1D)}
 \usage{
-calc_spectrum1D(ts, tres = 0.05, nbins = NULL, plot = TRUE, ...)
+calc_spectrum1D(
+  ts,
+  tres = 0.05,
+  nbins = NULL,
+  method = "fft",
+  na.rm = TRUE,
+  plot = TRUE,
+  ...
+)
 }
 \arguments{
-\item{ts}{timeseries}
+\item{ts}{timeseries of the variable for which the spectrum should be calculated}
 
-\item{tres}{time resolution of the given timeseries, default \code{tres=0.05} for 20 Hz}
+\item{tres}{time resolution [s] of the given timeseries, default \code{tres=0.05} for 20 Hz}
 
 \item{nbins}{number of bins used to average the spectrum, default \code{nbins=NULL}, i.e. no further binning is applied (means number of bins equals half of length of input timeseries)}
+
+\item{method}{method used to calculate the spectrum, can be either FFT (fast Fourier transform) or DCT (discrete cosine transform), default FFT}
+
+\item{na.rm}{should NA values be removed from the timeseries? default \code{na.rm=TRUE}}
 
 \item{plot}{should the spectrum be plotted? default \code{plot=TRUE}}
 

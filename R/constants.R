@@ -31,6 +31,14 @@ clight=function(){
 	return(299792458)
 }
 
+#' csound
+#'
+#' speed of sound [m/s]
+#' @keywords internal
+csound=function(){
+	return(343)
+}
+
 #' von Karman constant
 #'
 #' @keywords internal
@@ -122,4 +130,12 @@ M_CH4 = function() {
 #' @keywords internal
 alpha = function() {
 	return(0.016)
+}
+
+#' Earth's radius
+#'
+#' Earth's radius
+#' @keywords internal
+R_earth = function() {
+	return(6378137)
 }

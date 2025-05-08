@@ -5,7 +5,7 @@
 \title{Despiking}
 \usage{
 despiking(
-  series,
+  ts,
   thresholds = c(NA, NA),
   mad_factor = 10,
   threshold_skewness = 2,
@@ -13,7 +13,7 @@ despiking(
 )
 }
 \arguments{
-\item{series}{timeseries that shall be despiked}
+\item{ts}{timeseries that shall be despiked}
 
 \item{thresholds}{vector with two elements representing lower and upper bounds for despiking (pre-defined thresholds), \code{NA} means that the respective bound is not used}
 

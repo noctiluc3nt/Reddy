@@ -4,7 +4,7 @@
 \alias{flag_most}
 \title{Integral Turbulence Characteristics Flag}
 \usage{
-flag_most(w_sd, ustar, zeta)
+flag_most(w_sd, ustar, zeta, thresholds_most = c(0.3, 0.8))
 }
 \arguments{
 \item{w_sd}{standard deviation of vertical velocity}
@@ -12,6 +12,8 @@ flag_most(w_sd, ustar, zeta)
 \item{ustar}{friction velocity}
 
 \item{zeta}{stability parameter \code{zeta = z/L}}
+
+\item{thresholds_most}{vector containing 2 elements to distinguish between flag=0 and flag=1, as well as flag=1 and flag=2, default: \code{c(0.3,0.8)}}
 }
 \value{
 integral turbulence characteristics flags (0: in full agreement with the criterion ... 2: does not fulfill the criterion)

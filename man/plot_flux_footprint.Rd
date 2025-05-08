@@ -18,7 +18,7 @@ no return
 Plots Flux-Footprint Parametrization (FFP) according to Kljun et al., 2015
 }
 \examples{
-ffp=calc_flux_footprint(zm=5,u_mean=5,h=700,L=-1.3,v_sd=1.2,ustar=0.35)
+ffp=calc_flux_footprint(zm=5,ws_mean=5,blh=700,L=-1.3,v_sd=1.2,ustar=0.35)
 plot_flux_footprint(ffp)
 
 }

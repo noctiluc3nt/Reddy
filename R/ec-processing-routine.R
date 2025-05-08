@@ -1,6 +1,6 @@
 #' Eddy-covariance post-processing
 #'
-#'@description An eddy-covariance post-processing routine utilizing the functions from ec_processing.R
+#'@description An example for an eddy-covariance post-processing routine utilizing the functions from ec_processing.R
 #'@param u u-wind [m/s] (sonic)
 #'@param v v-wind [m/s] (sonic)
 #'@param w w-wind [m/s] (sonic)
@@ -29,7 +29,7 @@
 #'@param B constant used in SND correction, default \code{A=7/8} for CSAT3 sonic
 #'@param store logical, should the output be stored? default \code{TRUE}
 #'@param format_out file format of the output, can be either \code{txt} or \code{rds} (for netcdf, see separate function), only used if \code{store=TRUE}
-#'@param filename desired output filename, default \code{NULL}, the date and runtime will be used to create a filename, only used if \code{store=TRUE}
+#'@param filename desired output filename, default \code{NULL}, the date and time of the run will be used to create a filename, only used if \code{store=TRUE}
 #'@param meta logical, should meta data be stored? default \code{TRUE}
 #'
 #'@importFrom pracma detrend
@@ -42,7 +42,7 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     time_resolution=0.05, #s
     time_averaging=30, #mins
     measurement_height=1, #m
-    do_despiking=TRUE,despike_u=c(-15,15,10,2,8),despike_v=c(-15,15,10,2,8),despike_w=c(-4,4,10,2,8),despike_temp=c(230,300,10,2,8),despike_h2o=c(0,12,10,2,8),despike_co2=c(0,12,10,2,8),despike_ch4=c(0,12,10,2,8),
+    do_despiking=TRUE,despike_u=c(-15,15,10,2,8),despike_v=c(-15,15,10,2,8),despike_w=c(-4,4,10,2,8),despike_temp=c(230,300,10,2,8),despike_h2o=c(0,12,10,2,8),despike_co2=c(300,500,10,4,10),despike_ch4=c(0,12,10,2,8),
     do_detrending=FALSE,
     do_double_rotation=TRUE,
     do_planar_fit=FALSE,
@@ -62,7 +62,7 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     nint=meas_time/(time_averaging*60) #number of output values
     if (nint<1) stop("The measurement time is too short for the desired averaging time -- check time resolution and desired averaging time.")
     nint=round(nint) #needs to be integer value
-    lint=time_averaging*60/(time_resolution) #length of averaging interval, i.e. number of measurements to be averaged
+    lint=max(time_averaging)*60/(time_resolution) #length of averaging interval, i.e. number of measurements to be averaged
     #prepare output data
     cat("\n... allocate storage for output data ...")
     column_names=c("u_mean","v_mean","w_mean","Ts_mean","h2o_mean","co2_mean","ch4_mean",
@@ -247,5 +247,90 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         cat(paste0("\n\n",meta,"\n\n"))
         if (store==TRUE) writeLines(meta,paste0("metadata_ec-processing_Reddy_",systime_string,".txt"))
     }
+    return(out)
+}
+
+
+#' Apply quality control
+#'
+#'@description An example for an eddy-covariance post-processing routine utilizing the functions from ec_processing.R
+#'@param u u-wind [m/s] (sonic)
+#'@param v v-wind [m/s] (sonic)
+#'@param w w-wind [m/s] (sonic)
+#'@param temp temperature [K] (sonic)
+#'@param h2o H2O mixing ratio (gas analyzer, optional)
+#'@param co2 CO2 mixing ratio (gas analyzer, optional)
+#'@param ch4 CH4 mixing ratio (gas analyzer, optional)
+#'@param do_despiking logical, should the data be despiked? default \code{TRUE}
+#'@param despike_u vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_u=c(-15,15,10,2,8)}
+#'@param despike_v vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_v=c(-15,15,10,2,8)}
+#'@param despike_w vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_w=c(-4,4,10,2,8)}
+#'@param despike_temp vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_temp=c(230,300,10,2,8)}
+#'@param despike_h2o vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_h2o=c(0,12,10,2,8)}
+#'@param despike_co2 vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_co2=c(0,12,10,2,8)}
+#'@param despike_ch4 vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_ch4=c(0,12,10,2,8)}
+#'@param do_double_rotation logical, should the wind data be double rotated? default \code{TRUE}
+#'@param do_planar_fit logical, should the data be rotated with planar fit? default \code{FALSE} (either double rotation or planar fit can be \code{TRUE})
+#'@param do_detrending logical, should the data be linearly detrended? default \code{FALSE}
+#'@param do_flagging logical, should the data be flagged? default \code{TRUE}, i.e. several flags are calculated, but no data is removed, can be used for quality analysis
+#'
+#'@importFrom pracma detrend
+#'
+#'@return quality checked data in the same dimensions as the input variables
+#'@export
+#'
+#'
+apply_quality_control = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
+    do_despiking=TRUE,despike_u=c(-15,15,10,2,8),despike_v=c(-15,15,10,2,8),despike_w=c(-4,4,10,2,8),despike_temp=c(230,300,10,2,8),despike_h2o=c(0,12,10,2,8),despike_co2=c(300,500,10,4,10),despike_ch4=c(0,12,10,2,8),
+    do_double_rotation=TRUE,
+    do_planar_fit=FALSE,
+    do_detrending=FALSE,
+    do_flagging=TRUE
+    ) {
+    #given data
+    do_h2o=!(is.null(h2o))
+    do_co2=!(is.null(co2))
+    do_ch4=!(is.null(ch4))
+    ndata=length(u)
+    #despiking
+    if (do_despiking==TRUE) {
+        cat("\n... do despiking ...")
+        u=despiking(u,c(despike_u[1],despike_u[2]),despike_u[3],despike_u[4],despike_v[5])
+        v=despiking(v,c(despike_v[1],despike_v[2]),despike_v[3],despike_v[4],despike_v[5])
+        w=despiking(w,c(despike_w[1],despike_w[2]),despike_w[3],despike_w[4],despike_w[5])
+        temp=despiking(temp,c(despike_temp[1],despike_temp[2]),despike_temp[3],despike_temp[4],despike_temp[5])
+        if (do_h2o) h2o=despiking(h2o,c(despike_h2o[1],despike_h2o[2]),despike_h2o[3],despike_h2o[4],despike_h2o[5])
+        if (do_co2) co2=despiking(co2,c(despike_co2[1],despike_co2[2]),despike_co2[3],despike_co2[4],despike_co2[5])
+        if (do_ch4) ch4=despiking(ch4,c(despike_ch4[1],despike_ch4[2]),despike_ch4[3],despike_ch4[4],despike_ch4[5])
+    }
+    #rotation
+    if (do_double_rotation==TRUE) {
+        wind_rotated=test=rotate_double(tmp_raw$u,tmp_raw$v,tmp_raw$w)
+        u=wind_rotated$u
+        v=wind_rotated$v
+        w=wind_rotated$w
+    }
+    if (do_planar_fit==TRUE) {
+        wind_rotated=test=rotate_planar(tmp_raw$u,tmp_raw$v,tmp_raw$w)
+        u=wind_rotated$u
+        v=wind_rotated$v
+        w=wind_rotated$w    
+    }
+    #detrending
+    if (do_detrending == TRUE) {
+        u=pracma::detrend(u)
+        v=pracma::detrend(v)
+        w=pracma::detrend(w)
+        temp=pracma::detrend(temp)
+        if (do_h2o) h2o=pracma::detrend(h2o)
+        if (do_co2) co2=pracma::detrend(co2)
+        if (do_ch4) ch4=pracma::detrend(ch4)
+    }
+    #------------------------------------------------
+    # prepare return 
+    out = list("u"=u,"v"=v,"w"=w,"Ts"=temp)
+    if (do_h2o) out = list("u"=u,"v"=v,"w"=w,"Ts"=temp,"h2o"=h2o)
+    if (do_co2) out = list("u"=u,"v"=v,"w"=w,"Ts"=temp,"h2o"=h2o,"co2"=co2)
+    if (do_ch4) out = list("u"=u,"v"=v,"w"=w,"Ts"=temp,"h2o"=h2o,"co2"=co2,"ch4"=ch4)
     return(out)
 }

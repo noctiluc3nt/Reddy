@@ -31,10 +31,17 @@ read_ghg_data = function(file,do_h2o=FALSE,do_co2=FALSE,do_ch4=FALSE) {
     tryCatch({
 	    date=as.character(dat$Date)
 	    time=substr(as.character(dat$Time),1,12)
-        out=data.frame("Ts"=dat$SOS..m.s., #sos
-			"u"=dat$U..m.s.,
-			"v"=dat$V..m.s.,
-			"w"=dat$W..m.s.,
+        out=data.frame(
+            #naming in finse files:
+            "Ts"=dat$Aux.4...SOS..m.s., #sos
+			"u"=dat$Aux.1...U..m.s.,
+			"v"=dat$Aux.2...V..m.s.,
+			"w"=dat$Aux.3...W..m.s.,
+            #naming in iskoras files:
+            #"Ts"=dat$SOS..m.s., #sos
+			#"u"=dat$U..m.s., 
+			#"v"=dat$V..m.s.,
+			#"w"=dat$W..m.s.,
             "pressure"=dat$Total.Pressure..kPa.*1000)
         if (do_h2o) out$h2o=dat$H2O.dry.mmol.mol. #milli mol (name depends on device)
 	    if (do_co2) out$co2=dat$CO2.dry.umol.mol. #mikro mol		

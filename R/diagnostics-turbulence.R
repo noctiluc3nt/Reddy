@@ -176,6 +176,22 @@ calc_decoupling_metric = function(w_sd,N,z=2) {
 	return(LB/(sqrt(2)*z)) #Peltola et al, 2021: eq 6
 }
 
+#' Ozmidov scale (L_OZ)
+#'
+#'@description Calculates the Ozmidov length scale L_OZ = sqrt(epsilon/N^3), with epsilon: TKE dissipation rate, and N: Brunt-Vaisala frequency
+#'@param epsilon dissipation rate of TKE or w [m*s]
+#'@param N Brunt-Vaisala frequency [1/s]
+#'
+#'@return Ozmidov length scale [m]
+#'@export
+#'
+#'@examples
+#'calc_ozmidov_scale(-5/3,1*10^-4)
+#'
+calc_ozmidov_scale = function(epsilon,N) {
+	return(sqrt(epsilon/N^3))
+}
+
 ### intermittency indicator ###
 
 #' Flux intermittency
@@ -196,7 +212,7 @@ calc_decoupling_metric = function(w_sd,N,z=2) {
 #'calc_flux_intermittency(ts1*ts2,nsub=6) #the same from one variable
 #'
 calc_flux_intermittency = function(ts1,ts2=NULL,nsub=6000) {
-	n=length(ts)
+	n=length(ts1)
     nint=n%/%nsub
     if (nint<=1) {
         warning("nsub is chosen to large.")
@@ -286,3 +302,37 @@ ustar2z0 = function(ustar) {
 	return(alpha()*ustar^2/g())
 }
 
+
+
+### Ekman layer
+
+#' Coriolis parameter
+#'
+#'@description Calculates Coriolis parameter from latitude
+#'@param phi latitude [deg]
+#'
+#'@return Coriolis parameter [1/s]
+#'@export
+#'
+#'@examples
+#'calc_coriolis(45)
+#'
+calc_coriolis = function(phi) {
+	return(2*pi*sin(phi*pi/180))
+}
+
+#' Ekman layer thickness
+#'
+#'@description Calculates Ekman layer thickness from eddy diffusivity and Coriolis parameter sqrt(2*Km/abs(f))
+#'@param Km eddy diffusivity [m^2/s]
+#'@param f Coriolis parameter [1/s] (e.g. from \code{calc_coriolis})
+#'
+#'@return Ekman layer thickness [m] (derived from boundary layer equations)
+#'@export
+#'
+#'@examples
+#'calc_ekman_layer_depth(0.1,10^(-4))
+#'
+calc_ekman_layer_depth = function(Km,f) {
+	return(sqrt(2*Km/abs(f)))
+}
