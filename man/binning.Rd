@@ -2,7 +2,7 @@
 % Please edit documentation in R/auxilliary.R
 \name{binning}
 \alias{binning}
-\title{discrete binning}
+\title{Discrete binning}
 \usage{
 binning(var1, var2, bins)
 }

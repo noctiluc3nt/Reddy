@@ -24,7 +24,7 @@ deaccumulate1h=function(dat,factor=-1/3600) {
     return(out*factor) #time unit conversion
 }
 
-
+################ coordinates #################################
 #' Converts hybrid (terrain-following) sigma levels to physical heights 
 #'
 #'@description Converts hybrid (terrain-following) sigma levels to physical heights
@@ -94,8 +94,8 @@ df_dy=function(fld,yres=1) {
     return(df_dy)
 }
 
-
-#' Calculates distance between two points given in lon,lat
+#################### distance ######################################
+#' Calculates distance between two points on a sphere given in lon,lat
 #'
 #'@description Calculates y-derivative for equidistant grid
 #'@param lon1 longitude location 1 [deg]
@@ -106,9 +106,7 @@ df_dy=function(fld,yres=1) {
 #'@export
 #'
 #'@examples
-#'set.seed(5)
-#'field=matrix(rnorm(16),ncol=4)
-#'df_dy(field,10)
+#'calc_distance(8,60,8,61)
 #'
 calc_distance=function(lon1,lat1,lon2,lat2) {
     lon1=lon1*pi/180
@@ -120,4 +118,20 @@ calc_distance=function(lon1,lat1,lon2,lat2) {
     h1=sin(dlat/2)^2+cos(lat1)*cos(lat2)*sin(dlon/2)^2
     h2=2*atan2(sqrt(h1),sqrt(1-h1))
     return(R_earth()*h2)
+}
+
+#' Find closest grid point
+#'
+#'@description Finds the closest grid point from a given point (lon_loc, lat_loc) to a given grid (lons,lats) 
+#'@param lons longitudes of a grid (vector or matrix) [deg]
+#'@param lats latitudes of a grid (vector or matrix) [deg]
+#'@param lon_loc longitude of the location [deg]
+#'@param lat_loc latitude of the location [deg]
+#'@return array index of lons, lats that represents the closest grid point to lon_loc, lat_loc
+#'@export
+#'
+find_closest_grid_point = function(lons,lats,lon_loc,lat_loc) {
+    dist=sqrt((lons-lon_loc)^2 + (lat-lat_loc)^2)
+    ind=which(dist==min(dist),arr.ind=T)
+    return(ind)
 }

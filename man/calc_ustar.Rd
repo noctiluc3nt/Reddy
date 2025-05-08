@@ -4,12 +4,12 @@
 \alias{calc_ustar}
 \title{Friction Velocity}
 \usage{
-calc_ustar(cov_uw, cov_vw)
+calc_ustar(cov_uw, cov_vw = 0)
 }
 \arguments{
 \item{cov_uw}{covariance cov(u,w) [m^2/s^2]}
 
-\item{cov_vw}{covariance cov(v,w) [m^2/s^2]}
+\item{cov_vw}{covariance cov(v,w) [m^2/s^2] (optional)}
 }
 \value{
 friction velocity [m/s]
@@ -18,6 +18,6 @@ friction velocity [m/s]
 Calculates friction velocity from the covariances cov(u,w) and cov(v,w)
 }
 \examples{
-calc_ustar(1,1)
+calc_ustar(-0.3,0.02)
 
 }

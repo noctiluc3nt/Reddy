@@ -1,4 +1,4 @@
-#' discrete binning
+#' Discrete binning
 #'
 #'@description discrete binning of a variable \code{var1} based on another variable \code{var2} (e.g., the stability parameter \code{zeta})
 #'@param var1 vector, variable that should be binned
@@ -82,7 +82,7 @@ shift2maxccf=function(var1,var2,plot=TRUE) {
 }
 
 
-#' gap-filling
+#' Very basic constant/linear gap-filling
 #'
 #'@description gap-filling of a timeseries based on linear or constant interpolation
 #'@param var timeseries, where NA indicates missing values that should be filled
@@ -109,7 +109,7 @@ gapfilling=function(var,nmissing=4,method="linear") {
 }
 
 
-#' accumulating / averaging
+#' Accumulating / Averaging
 #'
 #'@description averaging of a timeseries
 #'@param var timeseries
@@ -147,7 +147,7 @@ averaging=function(var,tres1=0.05,tres2=c(1,10,30)*60) {
 }
 
 
-#' calculates circular mean
+#' Calculates circular mean
 #'
 #'@description calculates circular mean
 #'@param x input vector, e.g. wind directions [degree]

@@ -2,7 +2,7 @@
 % Please edit documentation in R/auxilliary.R
 \name{gapfilling}
 \alias{gapfilling}
-\title{gap-filling}
+\title{Very basic constant/linear gap-filling}
 \usage{
 gapfilling(var, nmissing = 4, method = "linear")
 }

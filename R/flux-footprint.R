@@ -105,7 +105,7 @@ calc_flux_footprint = function(zm, ws_mean=NA, wd_mean = NA, blh, L, v_sd, ustar
     ycont_rot=list()
     if (!is.na(wd_mean)) {
         #rotate area (2d data) using polar coordinates
-        wd_mean=ifelse(wd_mean<180,wd_mean+180,wd_mean-180)
+        #wd_mean=ifelse(wd_mean<180,wd_mean+180,wd_mean-180)
         wd=wd_mean*pi/180
         angle=atan2(ymat,xmat)
         dist=sqrt(xmat^2+ymat^2)
@@ -167,21 +167,26 @@ plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1))) {
     if (!exists("xlim")) xlim=c(-500,500)
     if (!exists("ylim")) ylim=c(-500,500)
     #plot crosswind-integrated footprint
-    plot(ffp$x,ffp$fy_mean,type="l",xlim=xlim,lwd=2,xlab="x [m]",ylab="crosswind-integrated footprint",main="Crosswind-Integrated Flux Footprint")
-    abline(v=ffp$xmax,col=2,lwd=2,lty=2)
-    legend("topright",legend="footprint peak location",col=2,lwd=2,lty=2)
+    tryCatch({
+        plot(ffp$x,ffp$fy_mean,type="l",xlim=xlim,lwd=2,xlab="x [m]",ylab="crosswind-integrated footprint",main="Crosswind-Integrated Flux Footprint")
+        abline(v=ffp$xmax,col=2,lwd=2,lty=2)
+        legend("topright",legend="footprint peak location",col=2,lwd=2,lty=2)
+    })
     #filled contour plot with contour lines
-    lab=colorRampPalette(c("white","blue3","yellow","orange","red3"), space = "Lab")
-    nlev=length(levels)
+    #lab=colorRampPalette(c("white","blue3","yellow","orange","red3"), space = "Lab")
+    #nlev=length(levels)
     #plot(NA,xlim=xlim,ylim=ylim,main="2D Flux Footprint",xlab="x [m]",ylab="y [m]")
     #.filled.contour(ffp$x2d[1,],ffp$y2d[,1],ffp$f2d,levels=levels,col=lab(nlev))
     fields::image.plot(ffp$x2d,ffp$y2d,ffp$f2d*100,xlim=xlim,ylim=ylim,xlab="x [m]",ylab="y [m]",main="Flux Footprint")
-    for (i in 1:length(ffp$xcontour)) {
-        lines(ffp$xcontour[[i]],ffp$ycontour[[i]],type="l",lwd=1)
-    }
+    tryCatch({
+        for (i in 1:length(ffp$xcontour)) {
+            lines(ffp$xcontour[[i]],ffp$ycontour[[i]],type="l",lwd=1)
+        }
+    })
     #3d perspective plot
     #nmid=as.integer(length(ffp$x2d[,1])/2)
     #xselect=(nmid-200):(nmid+200)
     #persp(ffp$x2d[1,xselect],ffp$y2d[xselect,1],ffp$f2d[xselect,xselect],main="2d flux footprint as 3d plot",xlab=xlab,ylab=ylab,zlab="footprint",theta = 30, phi = 30, expand = 0.5, col = "lightblue",ltheta = 120, shade = 0.2,nticks=5)
 }
+
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/auxilliary.R
 \name{averaging}
 \alias{averaging}
-\title{accumulating / averaging}
+\title{Accumulating / Averaging}
 \usage{
 averaging(var, tres1 = 0.05, tres2 = c(1, 10, 30) * 60)
 }

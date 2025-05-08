@@ -2,7 +2,7 @@
 % Please edit documentation in R/model-utils.R
 \name{calc_distance}
 \alias{calc_distance}
-\title{Calculates distance between two points given in lon,lat}
+\title{Calculates distance between two points on a sphere given in lon,lat}
 \usage{
 calc_distance(lon1, lat1, lon2, lat2)
 }
@@ -22,8 +22,6 @@ distance between two points [m]
 Calculates y-derivative for equidistant grid
 }
 \examples{
-set.seed(5)
-field=matrix(rnorm(16),ncol=4)
-df_dy(field,10)
+calc_distance(8,60,8,61)
 
 }
