@@ -214,3 +214,22 @@ calc_windprofile = function(zs,ustar,z0=0,d=0,zeta=0,method="ecmwf") {
     }
 	return(data.frame("height"=zs,"windspeed"=uz))
 }
+
+
+########################################################
+#' Transform time (difference) to space (difference) using Taylor hypothesis
+#'
+#'@description Transform time difference to space difference using Taylor hypothesis
+#'@param dt time (difference) [s]
+#'@param ws wind speed [m/s]
+#'
+#'@return space (difference) dx [m]
+#'@export
+#'
+#'@examples
+#'dx=dt2dx_taylor(0.1,3)
+#'
+dt2dx_taylor = function(dt,ws) {
+    return(dt*ws)
+}
+
