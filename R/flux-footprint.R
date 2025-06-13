@@ -190,3 +190,71 @@ plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1))) {
 }
 
 
+
+#' Flux-Footprint Climatology / Composite Flux Footprint
+#'
+#'@description Calculates a Flux Footprint Climatology based on \code{calc_flux_footprint} utilizing the Flux-Footprint Parametrization (FFP) according to Kljun et al., 2015
+#'@param zm measurement height [m] (time vector)
+#'@param ws_mean mean horizontal wind speed [m/s] (time vector, alternatively you can also use \code{z0})
+#'@param wd_mean mean wind direction [deg] (time vector, optional, used for rotating the flux footprint)
+#'@param blh boundary-layer height [m] (time vector)
+#'@param L Obukhov length [m] (time vector)
+#'@param v_sd standard deviation of crosswind [m/s] (time vector)
+#'@param ustar friction velocity [m/s] (time vector)
+#'@param z0 roughness length [m] (time vector, either \code{ws_mean} or \code{z0} have to be given)
+#'@param contours which contour lines should be calculated? default: \code{contours=seq(0.9,0.1,-0.1)}
+#'@param nres resolution (default: \code{nres=1000})
+#'@param plot logical, should the flux footprint be plotted? default \code{plot=TRUE}
+#'
+#'@return list containing desired (averaged) contours of flux footprint climatology
+#'@export
+#'
+#'@examples
+#'
+calc_flux_footprint_climatology = function(zm, ws_mean=NA, wd_mean=NA, blh, L, v_sd, ustar, z0=NA,contours=seq(0.1,0.9,0.1),nres=1000,plot=TRUE) {
+    nm=length(ustar)
+    nc=length(contours)
+    #allocate
+    ffp_tmp=calc_flux_footprint(zm=zm[1],ws_mean=ws_mean[1],wd_mean=0,blh=blh[1],L=L[1],v_sd=v_sd[1],ustar=ustar[1],z0=z0[1],contours=contours,nres=nres,plot=FALSE)
+    nx=dim(ffp_tmp$f2d)[1]
+    ny=dim(ffp_tmp$f2d)[2]
+    ffp_clim_x2d=array(NA,dim=c(nx,ny))
+    ffp_clim_y2d=array(NA,dim=c(nx,ny))
+    ffp_clim_f2d=array(NA,dim=c(nx,ny))
+    for (i in 1:nm) {
+        #calc single flux footprint
+        ffp_tmp=calc_flux_footprint(zm=zm[1],ws_mean=ws_mean[i],wd_mean=wd_mean[i],blh=blh[i],L=L[i],v_sd=v_sd[i],ustar=ustar[i],z0=z0[i],contours=contours,nres=nres,plot=FALSE)
+        ffp_clim_x2d=ffp_clim_x2d+ffp_tmp$x2d
+        ffp_clim_y2d=ffp_clim_y2d+ffp_tmp$y2d
+        ffp_clim_f2d=ffp_clim_f2d+ffp_tmp$f2d
+        #for (j in 1:nc) {
+        #    ffp_clim_x2d[i,j,,]=ffp_tmp$x2d
+        #    ffp_clim_y2d[i,j,,]=ffp_tmp$y2d
+        #    ffp_clim_f2d[i,j,,]=ffp_tmp$f2d
+        #}
+    }
+    #calc clim from single FFPs
+    ffp_clim=list()
+    ffp_clim$x2d=ffp_clim_x2d/nm
+    ffp_clim$y2d=ffp_clim_y2d/nm
+    ffp_clim$f2d=ffp_clim_f2d/nm
+    #calc contours of mean -- TODO
+    #nc=length(contours)
+    #fsort=rev(sort(c(ffp_clim$f2d)))
+    #fsort=fsort[!is.na(fsort)]
+    #dx=1
+    #fint=cumsum(fsort)*dx^2
+    #ffp_cont=list()
+    #for (i in 1:nc) {
+    #    fdiff=abs(fint-contours[i])
+    #    ind=which.min(fdiff)
+    #    fr=fsort[ind]
+    #    cont=contourLines(x,y,fmat,levels=fr)
+    #    ffp_cont$xcont[[i]]=cont[[1]]$x
+    #    ffp_cont$ycont[[i]]=cont[[1]]$y
+    #}
+    #ffp$xcontour=ffp_cont$xcont
+    #ffp$ycontour=ffp_cont$ycont
+    return(ffp_clim)
+}
+
