@@ -148,9 +148,10 @@ calc_flux_footprint = function(zm, ws_mean=NA, wd_mean = NA, blh, L, v_sd, ustar
 
 #' Plot Flux-Footprint
 #'
-#'@description Plots Flux-Footprint Parametrization (FFP) according to Kljun et al., 2015
+#'@description Plots Flux-Footprint Parametrization (FFP)
 #'@param ffp an object returned from \code{calc_flux_footprint}
 #'@param levels levels used for filled contour plot of footprint, default \code{levels=c(0,10^seq(-6,-3,0.1))}
+#'@param mode can be either \code{mode="distance"} for plotting footprint relative to station location in cartesian coordinates or \code{mode="lonlat"} for plotting in (lon,lat)-ccordinates
 #' 
 #'@return no return
 #'@importFrom grDevices colorRampPalette contourLines rgb
@@ -163,26 +164,42 @@ calc_flux_footprint = function(zm, ws_mean=NA, wd_mean = NA, blh, L, v_sd, ustar
 #'ffp=calc_flux_footprint(zm=5,ws_mean=5,blh=700,L=-1.3,v_sd=1.2,ustar=0.35)
 #'plot_flux_footprint(ffp)
 #' 
-plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1))) {
-    if (!exists("xlim")) xlim=c(-500,500)
-    if (!exists("ylim")) ylim=c(-500,500)
-    #plot crosswind-integrated footprint
-    tryCatch({
-        plot(ffp$x,ffp$fy_mean,type="l",xlim=xlim,lwd=2,xlab="x [m]",ylab="crosswind-integrated footprint",main="Crosswind-Integrated Flux Footprint")
-        abline(v=ffp$xmax,col=2,lwd=2,lty=2)
-        legend("topright",legend="footprint peak location",col=2,lwd=2,lty=2)
-    })
+plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1)),mode="distance") {
     #filled contour plot with contour lines
     #lab=colorRampPalette(c("white","blue3","yellow","orange","red3"), space = "Lab")
     #nlev=length(levels)
     #plot(NA,xlim=xlim,ylim=ylim,main="2D Flux Footprint",xlab="x [m]",ylab="y [m]")
     #.filled.contour(ffp$x2d[1,],ffp$y2d[,1],ffp$f2d,levels=levels,col=lab(nlev))
-    fields::image.plot(ffp$x2d,ffp$y2d,ffp$f2d*100,xlim=xlim,ylim=ylim,xlab="x [m]",ylab="y [m]",main="Flux Footprint")
-    tryCatch({
-        for (i in 1:length(ffp$xcontour)) {
-            lines(ffp$xcontour[[i]],ffp$ycontour[[i]],type="l",lwd=1)
+    if (mode=="distance") {
+        if (!exists("xlim")) xlim=c(-500,500)
+        if (!exists("ylim")) ylim=c(-500,500)
+        #plot crosswind-integrated footprint
+        tryCatch({
+            plot(ffp$x,ffp$fy_mean,type="l",xlim=xlim,lwd=2,xlab="x [m]",ylab="crosswind-integrated footprint",main="Crosswind-Integrated Flux Footprint")
+            abline(v=ffp$xmax,col=2,lwd=2,lty=2)
+            legend("topright",legend="footprint peak location",col=2,lwd=2,lty=2)
+        })
+        fields::image.plot(ffp$x2d,ffp$y2d,ffp$f2d*100,xlim=xlim,ylim=ylim,xlab="x [m]",ylab="y [m]",main="Flux Footprint")
+        tryCatch({
+            for (i in 1:length(ffp$xcontour)) {
+                lines(ffp$xcontour[[i]],ffp$ycontour[[i]],type="l",lwd=1)
+            }
+        })
+    } else if (mode=="lonlat") {
+        if (is.null(ffp$x2d_earth)) {
+            message("The flux footprint has so far been calculated only in cartesian coordinates --
+            you need to use locate_flux_footprint to transform it to (lon,lat)-coordinates")
+        } else {
+            if (!exists("xlim")) xlim=range(ffp$x2d_earth)
+            if (!exists("ylim")) ylim=range(ffp$y2d_earth)
+            fields::image.plot(ffp$x2d_earth,ffp$y2d_earth,ffp$f2d*100,xlab="lon",ylab="lat",main="Flux Footprint",xlim=xlim,ylim=ylim)
+            tryCatch({
+                for (i in 1:length(ffp$xcontour)) {
+                    lines(ffp$xcontour_earth[[i]],ffp$ycontour_earth[[i]],type="l",lwd=1)
+                }
+            })
         }
-    })
+    }
     #3d perspective plot
     #nmid=as.integer(length(ffp$x2d[,1])/2)
     #xselect=(nmid-200):(nmid+200)
@@ -191,70 +208,32 @@ plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1))) {
 
 
 
-#' Flux-Footprint Climatology / Composite Flux Footprint
+#' Transform flux footprint from (x,y)-coordinates to (lon,lat)-coordinates through given station location
 #'
-#'@description Calculates a Flux Footprint Climatology based on \code{calc_flux_footprint} utilizing the Flux-Footprint Parametrization (FFP) according to Kljun et al., 2015
-#'@param zm measurement height [m] (time vector)
-#'@param ws_mean mean horizontal wind speed [m/s] (time vector, alternatively you can also use \code{z0})
-#'@param wd_mean mean wind direction [deg] (time vector, optional, used for rotating the flux footprint)
-#'@param blh boundary-layer height [m] (time vector)
-#'@param L Obukhov length [m] (time vector)
-#'@param v_sd standard deviation of crosswind [m/s] (time vector)
-#'@param ustar friction velocity [m/s] (time vector)
-#'@param z0 roughness length [m] (time vector, either \code{ws_mean} or \code{z0} have to be given)
-#'@param contours which contour lines should be calculated? default: \code{contours=seq(0.9,0.1,-0.1)}
-#'@param nres resolution (default: \code{nres=1000})
-#'@param plot logical, should the flux footprint be plotted? default \code{plot=TRUE}
+#'@description 
+#'@param ffp ffp object returned by \code{calc_flux_footprint}
+#'@param lon_station lon of station location
+#'@param lat_station lat of station location
 #'
-#'@return list containing desired (averaged) contours of flux footprint climatology
+#'@return ffp object which contains ffp also in lon-lat coordinates (with extension _earth)
 #'@export
 #'
 #'@examples
+#'lon1=7.527061462
+#'lat1=60.59384155
+#'ffp=calc_flux_footprint(zm=20,ws_mean=2,blh=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
+#'ffp=locate_flux_footprint(ffp,lon1,lat1)
 #'
-calc_flux_footprint_climatology = function(zm, ws_mean=NA, wd_mean=NA, blh, L, v_sd, ustar, z0=NA,contours=seq(0.1,0.9,0.1),nres=1000,plot=TRUE) {
-    nm=length(ustar)
-    nc=length(contours)
-    #allocate
-    ffp_tmp=calc_flux_footprint(zm=zm[1],ws_mean=ws_mean[1],wd_mean=0,blh=blh[1],L=L[1],v_sd=v_sd[1],ustar=ustar[1],z0=z0[1],contours=contours,nres=nres,plot=FALSE)
-    nx=dim(ffp_tmp$f2d)[1]
-    ny=dim(ffp_tmp$f2d)[2]
-    ffp_clim_x2d=array(NA,dim=c(nx,ny))
-    ffp_clim_y2d=array(NA,dim=c(nx,ny))
-    ffp_clim_f2d=array(NA,dim=c(nx,ny))
-    for (i in 1:nm) {
-        #calc single flux footprint
-        ffp_tmp=calc_flux_footprint(zm=zm[1],ws_mean=ws_mean[i],wd_mean=wd_mean[i],blh=blh[i],L=L[i],v_sd=v_sd[i],ustar=ustar[i],z0=z0[i],contours=contours,nres=nres,plot=FALSE)
-        ffp_clim_x2d=ffp_clim_x2d+ffp_tmp$x2d
-        ffp_clim_y2d=ffp_clim_y2d+ffp_tmp$y2d
-        ffp_clim_f2d=ffp_clim_f2d+ffp_tmp$f2d
-        #for (j in 1:nc) {
-        #    ffp_clim_x2d[i,j,,]=ffp_tmp$x2d
-        #    ffp_clim_y2d[i,j,,]=ffp_tmp$y2d
-        #    ffp_clim_f2d[i,j,,]=ffp_tmp$f2d
-        #}
+locate_flux_footprint = function(ffp,lon_station,lat_station) {
+    x2lon=function(xmat,lon_s=lon_station,lat_s=lat_station) {
+        return(lon_s + xmat/R_earth()*180/pi*cos(lat_s*pi/180))
     }
-    #calc clim from single FFPs
-    ffp_clim=list()
-    ffp_clim$x2d=ffp_clim_x2d/nm
-    ffp_clim$y2d=ffp_clim_y2d/nm
-    ffp_clim$f2d=ffp_clim_f2d/nm
-    #calc contours of mean -- TODO
-    #nc=length(contours)
-    #fsort=rev(sort(c(ffp_clim$f2d)))
-    #fsort=fsort[!is.na(fsort)]
-    #dx=1
-    #fint=cumsum(fsort)*dx^2
-    #ffp_cont=list()
-    #for (i in 1:nc) {
-    #    fdiff=abs(fint-contours[i])
-    #    ind=which.min(fdiff)
-    #    fr=fsort[ind]
-    #    cont=contourLines(x,y,fmat,levels=fr)
-    #    ffp_cont$xcont[[i]]=cont[[1]]$x
-    #    ffp_cont$ycont[[i]]=cont[[1]]$y
-    #}
-    #ffp$xcontour=ffp_cont$xcont
-    #ffp$ycontour=ffp_cont$ycont
-    return(ffp_clim)
+    y2lat=function(ymat,lat_s=lat_station) {
+        return(lat_s + ymat/R_earth()*180/pi)
+    }
+    ffp$x2d_earth = x2lon(ffp$x2d)
+    ffp$y2d_earth = y2lat(ffp$y2d)
+    ffp$xcontour_earth = lapply(ffp$xcontour,x2lon)
+    ffp$ycontour_earth = lapply(ffp$ycontour,y2lat)
+    return(ffp)
 }
-
