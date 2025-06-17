@@ -238,6 +238,22 @@ calc_windprofile = function(zs,ustar,z0=0,d=0,zeta=0,method="ecmwf") {
 }
 
 
+#' Converts stability parameter zeta to Richardson Ri using Businger-Dyer relations
+#'
+#'@description converts zeta to Ri using Businger-Dyer relations
+#'@param zeta stability parameter [-]
+#'
+#'@return Richardson number [-]
+#'@export
+#'
+#'@examples
+#'Ri_transformed=zeta2Ri(0.1)
+#'
+zeta2Ri = function(zeta) {
+    return(0.74*zeta*sqrt(1-15*zeta)/sqrt(1-9*zeta))
+}
+
+
 ########################################################
 #' Transform time (difference) to space (difference) using Taylor hypothesis
 #'
