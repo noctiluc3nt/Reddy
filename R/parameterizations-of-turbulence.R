@@ -4,7 +4,7 @@
 #'
 #'@description scaling function Phi_u 
 #'@param zeta stability parameter [-]
-#'@param method defining from which paper the scaling function is used, default \code{method="PD1984"} for Panofsky and Dutton, 1984
+#'@param method defining from which paper the scaling function should be used, default \code{method="PD1984"} for Panofsky and Dutton, 1984
 #'
 #'@return Phi_u
 #'@export
@@ -23,7 +23,7 @@ scale_phiu = function(zeta,method="PD1984") {
 #'
 #'@description scaling function Phi_w
 #'@param zeta stability parameter [-]
-#'@param method defining from which paper the scaling function is used, default \code{method="PD1984"} for Panofsky and Dutton, 1984
+#'@param method defining from which paper the scaling function should be used, default \code{method="PD1984"} for Panofsky and Dutton, 1984
 #'
 #'@return Phi_w
 #'@export
@@ -71,24 +71,28 @@ scale_phiT = function(zeta,method="K1994") {
 #'
 #'@description scaling function Phi_m
 #'@param zeta stability parameter [-]
-#'@param method defining from which paper the scaling function should be used, default \code{method="ecmwf"} for the ones used in ECMWF-IFS, other option \code{method="BD"} for the linear Businger-Dyer relations
+#'@param method defining from which paper the scaling function should be used, default \code{method="ecmwf"} for the ones used in ECMWF-IFS, other options: \code{method="B1971"} for Businger et al., 1971, and \code{DH1970} for Dyer and Hicks, 1970
 #'
 #'@return Phi_m
 #'@export
 #'
+#'@examples
+#'scale_phim(-1)
+#'scale_phim(1,method="B1971")
+#'
 scale_phim = function(zeta,method="ecmwf") {
-    if (method=="ecmwf") {
+    if (method=="ecmwf" | method=="DH1970") {
         if (zeta<=0) { #unstable
             return((1-16*zeta)^(-1/4))
         } else { #stable
             return(1+5*zeta)
         }
     }
-    if (method=="BD") {
+    if (method=="B1971") {
         if (zeta<=0) { #unstable
-            return(2-zeta)
+            return((1-15*zeta)^(-1/4)) #Businger et al., 1971: Fig. 1
         } else { #stable
-            return(1+5*zeta)
+            return(1+4.7*zeta)
         }
     }	
 }
@@ -97,17 +101,35 @@ scale_phim = function(zeta,method="ecmwf") {
 #'
 #'@description scaling function Phi_h
 #'@param zeta stability parameter [-]
-#'@param method defining from which paper the scaling function should be used, default \code{method="ecmwf"} for for the ones used in ECMWF-IFS
+#'@param method defining from which paper the scaling function should be used, default \code{method="ecmwf"} for for the ones used in ECMWF-IFS, other options: \code{method="B1971"} for Businger et al., 1971, and \code{DH1970} for Dyer and Hicks, 1970
 #'
 #'@return Phi_h
 #'@export
 #'
-scale_phih = function(zeta,method="BD") {
+#'@examples
+#'scale_phih(-1)
+#'scale_phih(1,method="B1971")
+#'
+scale_phih = function(zeta,method="ecmwf") {
     if (method=="ecmwf") {
         if (zeta<=0) { #unstable
             return((1-16*zeta)^(-1/2))
         } else { #stable
             return((1+4*zeta)^2)
+        }
+    }
+    if (method=="DH1970") {
+        if (zeta<=0) { #unstable
+            return((1-16*zeta)^(-1/2))
+        } else { #stable
+            return(1+5*zeta)
+        }
+    }
+    if (method=="B1971") {
+        if (zeta<=0) { #unstable
+            return(0.74*(1-9*zeta)^(-1/2)) #Businger et al., 1971: Fig. 2
+        } else { #stable
+            return(0.74+4.7*zeta) #Businger et al., 1971: eq 14
         }
     }
 }
