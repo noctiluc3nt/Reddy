@@ -2,7 +2,7 @@
 % Please edit documentation in R/quadrant-analysis.R
 \name{calc_2point_cor}
 \alias{calc_2point_cor}
-\title{Two-point Correlation Function}
+\title{Two-point Correlation Function: Tool to study spatial characteristics of coherent structures}
 \usage{
 calc_2point_cor(ts1, ts2)
 }
@@ -15,7 +15,7 @@ calc_2point_cor(ts1, ts2)
 scalar giving the two-point correlation R(ts1,ts2)
 }
 \description{
-Two-point Correlation Function
+Two-point Correlation Function: Tool to study spatial characteristics of coherent structures
 }
 \examples{
 set.seed(5)

@@ -21,7 +21,6 @@ The [manual](https://github.com/noctiluc3nt/Reddy/tree/main/inst/manual/Reddy-ma
 The Reddy package provides functions for the post-processing, analysis and evaluation of eddy-covariance measurements, which are described in the [manual](https://github.com/noctiluc3nt/Reddy/tree/main/inst/manual/Reddy-manual.pdf) and are divided into the following scripts:
 - `anisotropy.R`: invariant analysis of the Reynolds stress tensor, calculation of turbulence anisotropy and visualization in a barycentric map
 - `auxilliary.R`: collection of some useful generic functions for the evaluation (e.g., discrete binning, cross-correlation maximization)
-- `bulk_closures.R`: collection of functions used to calculated bulk closures, flux-profile and flux-variance relations (e.g. Richardson number, eddy viscosity, eddy conductivity, scaling functions)
 - `constants.R`: constants used for calculations (internal)
 - `diagnostics-meteorology.R`: calculation of "background-meteorology" quantities (e.g., clear-sky index, vapor pressure deficit, unit conversions of moisture variables)
 - `diagnostics-turbulence.R`: calculation of some standard turbulence diagnostics (e.g., friction velocity, TKE, turbulence intensity, stability parameter)
@@ -30,8 +29,10 @@ The Reddy package provides functions for the post-processing, analysis and evalu
 - `flux-footprint.R`: calculation and visualization of 2D flux footprint (FFP, Kljun et al., 2015)
 - `model-utils.R`: collection of function to post-process NWP model output (e.g. flux deaccumulation, conversion of sigma levels to physical height)
 - `multiresolution-decomposition.R`: calculation and visualization of multiresolution decomposition (MRD, Vickers and Mahrt, 2003)
+- `parameterizations-of-turbulence.R`: collection of functions used to calculated bulk closures, flux-profile and flux-variance relations (e.g. Richardson number, eddy viscosity, eddy conductivity, scaling functions) used in turbulence parameterizations in numerical weather and climate models
 - `quadrant-analysis.R`: calculation and visualization of quadrant analysis to study coherent structures and their organization
 - `spectrum.R`: calculation and visualization of frequency (temporal) and wavenumber (spatial) spectra, possibility to bin them to compare them with theoretically expected slopes
+- `structure-functions.R`: calculation of structure functions and autocorrelation
 - `surface-energy-balance.R`: visualization of surface energy balance, residual flux and closure ratio
 
 <!--

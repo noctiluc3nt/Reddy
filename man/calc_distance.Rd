@@ -19,7 +19,7 @@ calc_distance(lon1, lat1, lon2, lat2)
 distance between two points [m]
 }
 \description{
-Calculates y-derivative for equidistant grid
+Calculates distance between to (lon, lat)-points on a spheroid
 }
 \examples{
 calc_distance(8,60,8,61)
