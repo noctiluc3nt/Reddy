@@ -4,7 +4,7 @@
 #'
 #'@description scaling function Phi_u 
 #'@param zeta stability parameter [-]
-#'@param method defining from which paper the scaling function is used, default \code{method="PD1984"} for Panofsky and Dutton, 1984
+#'@param method defining from which paper the scaling function should be used, default \code{method="PD1984"} for Panofsky and Dutton, 1984
 #'
 #'@return Phi_u
 #'@export
@@ -23,7 +23,7 @@ scale_phiu = function(zeta,method="PD1984") {
 #'
 #'@description scaling function Phi_w
 #'@param zeta stability parameter [-]
-#'@param method defining from which paper the scaling function is used, default \code{method="PD1984"} for Panofsky and Dutton, 1984
+#'@param method defining from which paper the scaling function should be used, default \code{method="PD1984"} for Panofsky and Dutton, 1984
 #'
 #'@return Phi_w
 #'@export
@@ -71,24 +71,28 @@ scale_phiT = function(zeta,method="K1994") {
 #'
 #'@description scaling function Phi_m
 #'@param zeta stability parameter [-]
-#'@param method defining from which paper the scaling function should be used, default \code{method="ecmwf"} for the ones used in ECMWF-IFS, other option \code{method="BD"} for the linear Businger-Dyer relations
+#'@param method defining from which paper the scaling function should be used, default \code{method="ecmwf"} for the ones used in ECMWF-IFS, other options: \code{method="B1971"} for Businger et al., 1971, and \code{DH1970} for Dyer and Hicks, 1970
 #'
 #'@return Phi_m
 #'@export
 #'
+#'@examples
+#'scale_phim(-1)
+#'scale_phim(1,method="B1971")
+#'
 scale_phim = function(zeta,method="ecmwf") {
-    if (method=="ecmwf") {
+    if (method=="ecmwf" | method=="DH1970") {
         if (zeta<=0) { #unstable
             return((1-16*zeta)^(-1/4))
         } else { #stable
             return(1+5*zeta)
         }
     }
-    if (method=="BD") {
+    if (method=="B1971") {
         if (zeta<=0) { #unstable
-            return(2-zeta)
+            return((1-15*zeta)^(-1/4)) #Businger et al., 1971: Fig. 1
         } else { #stable
-            return(1+5*zeta)
+            return(1+4.7*zeta)
         }
     }	
 }
@@ -97,17 +101,35 @@ scale_phim = function(zeta,method="ecmwf") {
 #'
 #'@description scaling function Phi_h
 #'@param zeta stability parameter [-]
-#'@param method defining from which paper the scaling function should be used, default \code{method="ecmwf"} for for the ones used in ECMWF-IFS
+#'@param method defining from which paper the scaling function should be used, default \code{method="ecmwf"} for for the ones used in ECMWF-IFS, other options: \code{method="B1971"} for Businger et al., 1971, and \code{DH1970} for Dyer and Hicks, 1970
 #'
 #'@return Phi_h
 #'@export
 #'
-scale_phih = function(zeta,method="BD") {
+#'@examples
+#'scale_phih(-1)
+#'scale_phih(1,method="B1971")
+#'
+scale_phih = function(zeta,method="ecmwf") {
     if (method=="ecmwf") {
         if (zeta<=0) { #unstable
             return((1-16*zeta)^(-1/2))
         } else { #stable
             return((1+4*zeta)^2)
+        }
+    }
+    if (method=="DH1970") {
+        if (zeta<=0) { #unstable
+            return((1-16*zeta)^(-1/2))
+        } else { #stable
+            return(1+5*zeta)
+        }
+    }
+    if (method=="B1971") {
+        if (zeta<=0) { #unstable
+            return(0.74*(1-9*zeta)^(-1/2)) #Businger et al., 1971: Fig. 2
+        } else { #stable
+            return(0.74+4.7*zeta) #Businger et al., 1971: eq 14
         }
     }
 }
@@ -134,9 +156,9 @@ calc_phim = function(U1,U2,ustar,zm,dz) {
 	return(phi)
 }
 
-#' Calculates Phi_t
+#' Calculates Phi_h
 #'
-#'@description calculate scaling function Phi_t (for heat)
+#'@description calculate scaling function Phi_h (for heat)
 #'@param T1 temperature at the lower level [K]
 #'@param T2 temperature at the upper level [K]
 #'@param cov_wT covariance cov(w,T) [K m/s]
@@ -144,71 +166,16 @@ calc_phim = function(U1,U2,ustar,zm,dz) {
 #'@param zm measurement/scaling height [m]
 #'@param dz height difference of the two measurements [m]
 #'
-#'@return Phi_t
+#'@return Phi_h
 #'@export
 #'
-calc_phit = function(T1,T2,cov_wT,ustar,zm,dz) {
+calc_phih = function(T1,T2,cov_wT,ustar,zm,dz) {
     tstar=calc_xstar(cov_wT,ustar)
 	dTbar_dz=(T2-T1)/dz
 	phi=karman()*zm*abs(dTbar_dz)/tstar
 	return(phi)
 }
 
-#' Brunt-Vaisala frequency squared
-#'
-#'@description calculates Brunt-Vaisala frequency squared (N^2)
-#'@param T1 temperature at the lower level [K]
-#'@param T2 temperature at the upper level [K]
-#'@param dz height difference of the two measurements [m]
-#'
-#'@return N2 [1/s^2]
-#'@export
-#'
-calc_N2 = function(T1,T2,dz) {
-	T0=(T1+T2)/2
-	dT_dz=(T2-T1)/dz
-	return(T0/g()*dT_dz)
-}
-
-#' Calculates bulk Richardson number Ri
-#'
-#'@description calculates Richardson number Ri
-#'@param U1 wind speed at the lower level [m/s]
-#'@param U2 wind speed at the upper level [m/s]
-#'@param T1 temperature at the lower level [K]
-#'@param T2 temperature at the upper level [K]
-#'@param dz height difference of the two measurements [m]
-#'
-#'@return Ri [-]
-#'@export
-#'
-calc_ri = function(T1,T2,U1,U2,dz) {
-	T0=(T1+T2)/2
-	dT_dz=(T2-T1)/dz
-	dUbar_dz=(U2-U1)/dz
-	ri=g()/T0*dT_dz/(dUbar_dz^2)
-	return(ri)
-}
-
-#' Calculates flux Richardson number Ri_f
-#'
-#'@description calculates flux Richardson number Ri_f = g/T_mean*cov(w,T)/(cov(u,w)*du/dz)
-#'@param cov_wT covariance cov(w,T) [K m/s]
-#'@param cov_uw covariance cov(u,w) [m^2/s^2]
-#'@param U1 wind speed at the lower level [m/s]
-#'@param U2 wind speed at the upper level [m/s]
-#'@param dz height difference of the two measurements [m]
-#'@param T_mean mean temperature [K] (optional, used instead of T0=273.15)
-#'
-#'@return Ri_f [-]
-#'@export
-#'
-calc_rif = function(cov_wT,cov_uw,U1,U2,dz,T_mean=NULL) {
-	T0=ifelse(is.null(T_mean),273.15,T_mean)
-	dUbar_dz=(U2-U1)/dz
-	rif=g()/T0*cov_wT/(cov_uw*dUbar_dz)
-	return(rif)
-}
 
 #' Calculates xstar (denominator for general flux-variance relation)
 #'
@@ -271,53 +238,36 @@ calc_windprofile = function(zs,ustar,z0=0,d=0,zeta=0,method="ecmwf") {
 }
 
 
-
-### eddy viscosity and conductivity, Prandtl number
-
-#' Calculates eddy viscosity K_m = -cov(u,w)/(du/dz)
+#' Converts stability parameter zeta to Richardson Ri using Businger-Dyer relations
 #'
-#'@description Calculates eddy viscosity K_m
-#'@param cov_uw covariance cov(u,w) [m^2/s^2]
-#'@param du_dz vertical wind speed gradient [1/s]
+#'@description converts zeta to Ri using Businger-Dyer relations
+#'@param zeta stability parameter [-]
 #'
-#'@return eddy viscosity K_m [m^2/s]
+#'@return Richardson number [-]
 #'@export
 #'
 #'@examples
-#'calc_Km(-0.2,2)
+#'Ri_transformed=zeta2Ri(0.1)
 #'
-calc_Km = function(cov_uw,du_dz) {
-	return(-cov_uw/du_dz)
+zeta2Ri = function(zeta) {
+    return(0.74*zeta*sqrt(1-15*zeta)/sqrt(1-9*zeta))
 }
 
-#' Calculates eddy conductivity K_h = -cov(w,T)/(dT/dz)
+
+########################################################
+#' Transform time (difference) to space (difference) using Taylor hypothesis
 #'
-#'@description Calculates eddy conductivity K_h
-#'@param cov_wT covariance cov(w,T) [K m/s]
-#'@param dT_dz vertical temperature gradient [K/m]
+#'@description Transform time difference to space difference using Taylor hypothesis
+#'@param dt time (difference) [s]
+#'@param ws wind speed [m/s]
 #'
-#'@return eddy conductivity K_h [m^2/s]
+#'@return space (difference) dx [m]
 #'@export
 #'
 #'@examples
-#'calc_Kh(0.2,-1)
+#'dx=dt2dx_taylor(0.1,3)
 #'
-calc_Kh = function(cov_wT,dT_dz) {
-	return(-cov_wT/dT_dz)
+dt2dx_taylor = function(dt,ws) {
+    return(dt*ws)
 }
 
-#' Calculates turbulent Prandtl number Pr = K_m/K_h
-#'
-#'@description Calculates turbulent Prandtl number Pr
-#'@param K_m eddy viscosity [m^2/s]
-#'@param K_h eddy conductivity [m^2/s]
-#'
-#'@return Prandtl number [-]
-#'@export
-#'
-#'@examples
-#'calc_Pr(0.4,0.6)
-#'
-calc_Pr = function(K_m,K_h) {
-	return(K_m/K_h)
-}

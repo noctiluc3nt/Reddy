@@ -9,7 +9,7 @@ plot_mrd(mrd_out, ...)
 \arguments{
 \item{mrd_out}{an object returned from \code{calc_mrd}}
 
-\item{...}{parameters passed to plot function}
+\item{...}{arguments passed to plot function}
 }
 \value{
 creates a plot of MRD with logarithmic time scale (no return)

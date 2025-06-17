@@ -78,12 +78,13 @@ calc_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=seq(0
 
 #' Plotting Quadrant Analysis
 #'
-#'@description Plots two vectors in the framework of quadrant analysis with 2d kernel density estimation
+#'@description Plots two vectors in the framework of quadrant analysis with 2d kernel density estimation (optional)
 #'@param xval values of x variable (vector)
 #'@param yval values of y variable (vector)
 #'@param do_normalization should the values be normalized? i.e. \code{(x-mean(x))/sd(x)}, default: \code{do_normalization=TRUE}
 #'@param hole_sizes vector containing desired hole sizes (integers >= 0), default: \code{hole_sizes=c(1,2)}
-#'@param contours vector containing levels of contour lines for 2d kernel density estimation, default: \code{contours=10^(-3:3)}
+#'@param plot_kde2d should the contour lines of the 2d kernel density estimation be plotted? default \code{plot_kde2d = TRUE}
+#'@param contours vector containing levels of contour lines for 2d kernel density estimation, only used if \code{plot_kde2d = TRUE}, default: \code{contours=10^(-3:3)}
 #'@param print_fit should the fit summary from the linear regression be printed? default: \code{print_fit=TRUE}
 #'@param ... arguments passed to plot function
 #'@return no return
@@ -96,7 +97,7 @@ calc_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=seq(0
 #'b=rnorm(100)
 #'plot_quadrant_analysis(a,b)
 #'
-plot_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=c(1,2),contours=10^(-3:3),print_fit=TRUE,...) {
+plot_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=c(1,2,3),plot_kde2d=TRUE,contours=10^(-3:3),print_fit=TRUE,...) {
     if (do_normalization) {
         xval=(xval-mean(xval,na.rm=TRUE))/sd(xval)
         yval=(yval-mean(yval,na.rm=TRUE))/sd(yval)
@@ -111,16 +112,41 @@ plot_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=c(1,2
     if (print_fit==TRUE) print(summary(fit))
     abline(fit,lwd=3,col="red4")
     #2d kde
-    nc=length(contours)
-    lab=colorRampPalette(c("blue3","red3"), space = "Lab")
-    kde=MASS::kde2d(xval,yval)
-    contour(kde$x,kde$y,kde$z,levels=contours,col=lab(nc)[1:nc],add=TRUE,lwd=2,drawlabels=FALSE)
+    if (plot_kde2d==TRUE) {
+        nc=length(contours)
+        lab=colorRampPalette(c("blue3","red3"), space = "Lab")
+        notna=(!is.na(xval) & !is.na(yval))
+        kde=MASS::kde2d(xval[notna],yval[notna])
+        contour(kde$x,kde$y,kde$z,levels=contours,col=lab(nc)[1:nc],add=TRUE,lwd=1,drawlabels=TRUE)
+    }
     #draw holes
     xs=seq(-10,10,0.1)
     for (h in hole_sizes) {
         points(xs,h/xs,col=1,type="l",lty=2,lwd=1,pch=pch)
         points(xs,-h/xs,col=1,type="l",lty=2,lwd=1,pch=pch)
     }
+    legend("bottomleft",legend=c("linear fit","hyperbolic holes"), col=c("darkred",1),lwd=c(2,1),lty=c(1,2))
+}
+
+
+
+#' Two-point Correlation Function: Tool to study spatial characteristics of coherent structures
+#'
+#'@description 
+#'@param ts1 timeseries at point 1 (high-resolution)
+#'@param ts2 timeseries at point 2 (high-resolution)
+#'@return scalar giving the two-point correlation R(ts1,ts2)
+#'@export
+#' 
+#'@examples
+#'set.seed(5)
+#'ts1=rnorm(100)
+#'ts2=rnorm(100)
+#'cor_2point=calc_2point_cor(ts1,ts2)
+#'
+calc_2point_cor=function(ts1,ts2) {
+    scor=cor(ts1,ts2,use="pairwise.complete.obs")
+    return(scor/(sd(ts1,na.rm=TRUE)*sd(ts2,na.rm=TRUE)))
 }
 
 

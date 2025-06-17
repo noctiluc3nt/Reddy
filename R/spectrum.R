@@ -4,6 +4,7 @@
 #'@param ts timeseries
 #'@param nbins number of bins used to average the spectrum, default \code{nbins=100}
 #'@param plot should the spectrum be plotted? default \code{plot=TRUE}
+#'@param na.rm should NA values be removed from the timeseries? default \code{na.rm=TRUE}
 #'
 #'@return binned spectrum
 #'@export
@@ -13,8 +14,8 @@
 #'ts=rnorm(1000)
 #'calc_spectrum(ts,nbins=100,plot=FALSE)
 #'
-calc_spectrum = function(ts,nbins=100,plot=TRUE) {
-	s=spectrum(ts,plot=FALSE)
+calc_spectrum = function(ts,nbins=100,plot=TRUE,na.rm=TRUE) {
+	s=spectrum(ts[!is.na(ts)],plot=FALSE)
     bins=seq(log(min(s$freq,na.rm=TRUE)),log(max(s$freq,na.rm=TRUE)),length.out=nbins)
     sbin=binning(s$spec,s$freq,10^bins)
     if (plot==TRUE) {
@@ -79,7 +80,8 @@ calc_spectrum1D = function(ts,tres=0.05,nbins=NULL,method="fft",na.rm=TRUE,plot=
         out=data.frame("frequency"=fmid,"spectrum"=xbinned[,2])
     }
     if (plot==TRUE) {
-        plot(out$frequency,out$spectrum,pch=20,log="xy",xlab="frequency [1/s]",...)
+        plot(out$frequency,out$spectrum,log="xy",xlab="frequency [1/s]",...)
+        abline(v=tres*2,lty=3,col=4) #nyquist frequency
         #points(out$frequency,out$frequency^(-5/3),type="l",lty=2)
         #fit=lm(log(out$spectrum) ~ log(out$frequency))
         #print(summary(fit))

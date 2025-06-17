@@ -8,7 +8,8 @@ plot_quadrant_analysis(
   xval,
   yval,
   do_normalization = TRUE,
-  hole_sizes = c(1, 2),
+  hole_sizes = c(1, 2, 3),
+  plot_kde2d = TRUE,
   contours = 10^(-3:3),
   print_fit = TRUE,
   ...
@@ -23,7 +24,9 @@ plot_quadrant_analysis(
 
 \item{hole_sizes}{vector containing desired hole sizes (integers >= 0), default: \code{hole_sizes=c(1,2)}}
 
-\item{contours}{vector containing levels of contour lines for 2d kernel density estimation, default: \code{contours=10^(-3:3)}}
+\item{plot_kde2d}{should the contour lines of the 2d kernel density estimation be plotted? default \code{plot_kde2d = TRUE}}
+
+\item{contours}{vector containing levels of contour lines for 2d kernel density estimation, only used if \code{plot_kde2d = TRUE}, default: \code{contours=10^(-3:3)}}
 
 \item{print_fit}{should the fit summary from the linear regression be printed? default: \code{print_fit=TRUE}}
 
@@ -33,7 +36,7 @@ plot_quadrant_analysis(
 no return
 }
 \description{
-Plots two vectors in the framework of quadrant analysis with 2d kernel density estimation
+Plots two vectors in the framework of quadrant analysis with 2d kernel density estimation (optional)
 }
 \examples{
 a=rnorm(100)

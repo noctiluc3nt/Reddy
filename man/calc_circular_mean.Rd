@@ -2,7 +2,7 @@
 % Please edit documentation in R/auxilliary.R
 \name{calc_circular_mean}
 \alias{calc_circular_mean}
-\title{calculates circular mean}
+\title{Calculates circular mean}
 \usage{
 calc_circular_mean(x, na.rm = TRUE)
 }

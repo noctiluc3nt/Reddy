@@ -1,4 +1,4 @@
-#' Eddy-covariance post-processing
+#' Eddy-covariance post-processing for near-real-time analysis
 #'
 #'@description An example for an eddy-covariance post-processing routine utilizing the functions from ec_processing.R
 #'@param u u-wind [m/s] (sonic)
@@ -21,7 +21,6 @@
 #'@param despike_ch4 vector containing 5 elements: lower and upper bound, MAD factor, threshold skewness, threshold kurtosis. Details see \code{?despiking}. Default \code{despike_ch4=c(0,12,10,2,8)}
 #'@param do_detrending logical, should the data be linearly detrended? default \code{FALSE}
 #'@param do_double_rotation logical, should the wind data be double rotated? default \code{TRUE}
-#'@param do_planar_fit logical, should the data be rotated with planar fit? default \code{FALSE} (either double rotation or planar fit can be \code{TRUE})
 #'@param do_flagging logical, should the data be flagged? default \code{TRUE}, i.e. several flags are calculated, but no data is removed, can be used for quality analysis
 #'@param dir_blocked vector containing 2 elements: wind directions blocked through mast or tower, used in flow distortion flag only
 #'@param do_SNDcorrection logical, should SND correction be applied to the buoyancy flux? default \code{TRUE}
@@ -38,14 +37,13 @@
 #'@export
 #'
 #'
-ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
+EC_processing_realtime = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     time_resolution=0.05, #s
     time_averaging=30, #mins
     measurement_height=1, #m
-    do_despiking=TRUE,despike_u=c(-15,15,10,2,8),despike_v=c(-15,15,10,2,8),despike_w=c(-4,4,10,2,8),despike_temp=c(230,300,10,2,8),despike_h2o=c(0,12,10,2,8),despike_co2=c(300,500,10,4,10),despike_ch4=c(0,12,10,2,8),
+    do_despiking=TRUE,despike_u=c(-15,15,10,2,8),despike_v=c(-15,15,10,2,8),despike_w=c(-4,4,10,2,8),despike_temp=c(230,300,10,2,8),despike_h2o=NULL,despike_co2=NULL,despike_ch4=NULL,
     do_detrending=FALSE,
     do_double_rotation=TRUE,
-    do_planar_fit=FALSE,
     do_flagging=TRUE, dir_blocked=c(0,0),
     do_SNDcorrection=TRUE,A=7/8,B=7/8,
     #do_WPLcorrection=FALSE,
@@ -71,7 +69,7 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
                     "tke","ustar","L","zeta",
                     "cov_uw","cov_vw","cov_uv","cov_wTs","cov_vTs","cov_h2ow","cov_co2w","cov_ch4w",
                     "cov_wT_snd",
-                    "sh","lh","co2_flux","methane_flux",
+                    "sh","lh","co2_flux","ch4_flux",
                     "flag_all","flag_stationarity","flag_distortion","flag_w","flag_itc",
                     "rotation_angle1","rotation_angle2")
     out=array(NA,dim=c(nint,length(column_names)))
@@ -84,13 +82,13 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         v=despiking(v,c(despike_v[1],despike_v[2]),despike_v[3],despike_v[4],despike_v[5])
         w=despiking(w,c(despike_w[1],despike_w[2]),despike_w[3],despike_w[4],despike_w[5])
         temp=despiking(temp,c(despike_temp[1],despike_temp[2]),despike_temp[3],despike_temp[4],despike_temp[5])
-        if (do_h2o) h2o=despiking(h2o,c(despike_h2o[1],despike_h2o[2]),despike_h2o[3],despike_h2o[4],despike_h2o[5])
-        if (do_co2) co2=despiking(co2,c(despike_co2[1],despike_co2[2]),despike_co2[3],despike_co2[4],despike_co2[5])
-        if (do_ch4) ch4=despiking(ch4,c(despike_ch4[1],despike_ch4[2]),despike_ch4[3],despike_ch4[4],despike_ch4[5])
+        if (do_h2o & !is.null(despike_h2o)) h2o=despiking(h2o,c(despike_h2o[1],despike_h2o[2]),despike_h2o[3],despike_h2o[4],despike_h2o[5])
+        if (do_co2 & !is.null(despike_co2)) co2=despiking(co2,c(despike_co2[1],despike_co2[2]),despike_co2[3],despike_co2[4],despike_co2[5])
+        if (do_ch4 & !is.null(despike_ch4)) ch4=despiking(ch4,c(despike_ch4[1],despike_ch4[2]),despike_ch4[3],despike_ch4[4],despike_ch4[5])
     }
     #rotation pre-check
-    if (do_double_rotation==TRUE & do_planar_fit==TRUE) warning("You have chosen two rotation types, but only one can be applied. Apply double rotation now.")
-    if (do_double_rotation==FALSE & do_planar_fit==FALSE) warning("You have chosen no rotation type, so no rotation is applied to the data.")
+    #if (do_double_rotation==TRUE & do_planar_fit==TRUE) warning("You have chosen two rotation types, but only one can be applied. Apply double rotation now.")
+    #if (do_double_rotation==FALSE & do_planar_fit==FALSE) warning("You have chosen no rotation type, so no rotation is applied to the data.")
     cat("\n... start loop over data: do double rotation and stationarity flagging (if requested) ...")
     for (i in 1:nint) {
         #cat(paste0("\n\t #index: ",i,"\t progress: ",round(i/nint*100,2)," %"))
@@ -114,14 +112,14 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         if (do_flagging) out$flag_stationarity[i]=flag_stationarity(temp[iselect],w[iselect],nsub=as.integer(lint/4))
     }
     #planar fit
-    if (do_planar_fit == TRUE) {
-        wind_rotated=rotate_planar(u,v,w)
-        u=wind_rotated$u
-        v=wind_rotated$v
-        w=wind_rotated$w
-        out$rotation_angle1=wind_rotated$alpha
-        out$rotation_angle2=wind_rotated$beta
-    }
+    #if (do_planar_fit == TRUE) {
+    #    wind_rotated=rotate_planar(u,v,w)
+    #    u=wind_rotated$u
+    #    v=wind_rotated$v
+    #    w=wind_rotated$w
+    #    out$rotation_angle1=wind_rotated$alpha
+    #    out$rotation_angle2=wind_rotated$beta
+    #}
     #detrending
     if (do_detrending == TRUE) {
         u=pracma::detrend(u)
@@ -240,7 +238,7 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
             "\ndo_despiking: ", do_despiking,
             "\ndo_detrending: ", do_detrending,
             "\ndo_double_rotation: ", do_double_rotation,
-            "\ndo_planar_fit: ", do_planar_fit,
+            #"\ndo_planar_fit: ", do_planar_fit,
             "\ndo_flagging: ", do_flagging,
             "\ndo_SNDcorrection: ", do_SNDcorrection
         )
@@ -251,9 +249,9 @@ ECprocessing = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
 }
 
 
-#' Apply quality control
+#' Apply quality control on high-frequency data (e.g. as post-processing for MRD or quadrant analysis)
 #'
-#'@description An example for an eddy-covariance post-processing routine utilizing the functions from ec_processing.R
+#'@description Applies quality control and rotation to high-frequency data (and outputs the high-frequency data)
 #'@param u u-wind [m/s] (sonic)
 #'@param v v-wind [m/s] (sonic)
 #'@param w w-wind [m/s] (sonic)

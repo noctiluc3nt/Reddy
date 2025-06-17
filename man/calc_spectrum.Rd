@@ -4,7 +4,7 @@
 \alias{calc_spectrum}
 \title{Spectrum of timeseries by wrapping rbase::spectrum()}
 \usage{
-calc_spectrum(ts, nbins = 100, plot = TRUE)
+calc_spectrum(ts, nbins = 100, plot = TRUE, na.rm = TRUE)
 }
 \arguments{
 \item{ts}{timeseries}
@@ -12,6 +12,8 @@ calc_spectrum(ts, nbins = 100, plot = TRUE)
 \item{nbins}{number of bins used to average the spectrum, default \code{nbins=100}}
 
 \item{plot}{should the spectrum be plotted? default \code{plot=TRUE}}
+
+\item{na.rm}{should NA values be removed from the timeseries? default \code{na.rm=TRUE}}
 }
 \value{
 binned spectrum
