@@ -4,6 +4,7 @@
 #'@param ts timeseries
 #'@param nbins number of bins used to average the spectrum, default \code{nbins=100}
 #'@param plot should the spectrum be plotted? default \code{plot=TRUE}
+#'@param na.rm should NA values be removed from the timeseries? default \code{na.rm=TRUE}
 #'
 #'@return binned spectrum
 #'@export

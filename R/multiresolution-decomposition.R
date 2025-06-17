@@ -6,13 +6,14 @@
 #'@param time_res time resolution of the given timeseries in seconds (e.g., \code{time_res = 0.05} for 20 Hz)
 #'@return MRD in form of a data frame containing the columns: index, scale, time, mean, median, q25, q75
 #'@param plot logical, should the MRD spectrum be plotted? default \code{plot=TRUE}
+#'@param ... arguments passed to plot function
 #'@export
 #'
 #'@examples
 #'series=c(1,3,2,5,1,2,1,3) #example used in Vickers and Mahrt, 2003
 #'calc_mrd(series)
 #'
-calc_mrd = function(var1,var2=NULL,time_res=0.05,plot=TRUE) {
+calc_mrd = function(var1,var2=NULL,time_res=0.05,plot=TRUE,...) {
     nf=length(var1)
     #calc exponent M
     pot=2^(0:100)
@@ -58,8 +59,8 @@ calc_mrd = function(var1,var2=NULL,time_res=0.05,plot=TRUE) {
             var2=c(t(var2-wn2))
         }
     }
-    out=data.frame("index"=1:(M+1),"m"=M:0,"scale"=2^(M:0),"time"=time_res*(2^(M:0)),"mean"=mrd_mean,"median"=mrd_median,"q25"=mrd_q25,"q75"=mrd_q75)
-    if (plot==TRUE) plot_mrd(out)
+    out=data.frame("index"=1:(M+1),"m"=M:0,"scale"=2^(M:0),"time"=time_res*(2^(M:0)),"mean"=rev(mrd_mean),"median"=rev(mrd_median),"q25"=rev(mrd_q25),"q75"=rev(mrd_q75))
+    if (plot==TRUE) plot_mrd(out, ...)
     return(out)
 }
 
@@ -68,7 +69,7 @@ calc_mrd = function(var1,var2=NULL,time_res=0.05,plot=TRUE) {
 #'
 #'@description Plots multiresolution decomposition (MRD)
 #'@param mrd_out an object returned from \code{calc_mrd}
-#'@param ... parameters passed to plot function
+#'@param ... arguments passed to plot function
 #'@return creates a plot of MRD with logarithmic time scale (no return)
 #'@export
 #'
