@@ -76,7 +76,8 @@ rotate_double = function(u,v,w) {
     u2=u1*cos(phi) + w1*sin(phi)
     v2=v1
     w2=-u1*sin(phi)+w1*cos(phi)
-    return(list("u"=u2,"v"=v2,"w"=w2,"theta"=(theta*180/pi+360)%%360,"phi"=(phi*180/pi+360)%%360))
+    return(list("u"=u2,"v"=smaller_than_machine_epsilon(v2),"w"=smaller_than_machine_epsilon(w2),
+        "theta"=(theta*180/pi+360)%%360,"phi"=(phi*180/pi+360)%%360))
 }
 
 
@@ -438,4 +439,23 @@ RTcorrection = function(cospectrum,freq,tau=1) {
     cospectrum_cor=cospectrum*sqrt(tf) #note: their is a discussion whether sqrt(tf) or tf should be applied in the correction
     rt_factor=sum(cospectrum_cor)/sum(cospectrum)
 	return(rt_factor)
+}
+
+
+#' Set everything smaller than machine epsilon to zero
+#'
+#'@description Calculates machine epsilon (machine-dependent) and sets everything smaller to exactly zero
+#'@param vec vector/time series
+#'
+#'@return vector of same length, just all values smaller than machine epsilon are set to exactly zero
+#'@export
+#'
+#'@examples
+#'ts=c(1,0.1,1e-15,1e-16,1e-17,1e-18,1e-19)
+#'ts=smaller_than_machine_epsilon(ts)
+#'
+smaller_than_machine_epsilon = function(vec) {
+    epsilon=.Machine$double.eps
+    vec[vec<epsilon]=0
+    return(vec)
 }
