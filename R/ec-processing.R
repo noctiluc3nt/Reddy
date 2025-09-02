@@ -52,6 +52,34 @@ despiking = function(ts,thresholds=c(NA,NA),mad_factor=10,threshold_skewness=2,t
 }
 
 
+#' Count spikes
+#'
+#'@description Counts spikes in timeseries
+#'
+#'@param ts time series
+#'@param thresholds vector with lower and upper threshold, e.g. c(0,10)
+#'
+#'@return number of spikes in timeseries (i.e. values lower than lower threshold and higher than upper threshold)
+#'@export
+#'
+count_spikes = function(ts,thresholds=c(NA,NA)) {  
+    return(sum(ts<thresholds[1] | ts>thresholds[2]))
+}
+
+
+#' Amplitude resolution
+#'
+#'@description Gives amplitude resolution of time series (i.e. number of different values in time series)
+#'
+#'@param ts time series
+#'
+#'@return number of different values in time series
+#'
+get_amplitude_resolution = function(ts) {  
+    return(length(unique(ts)))
+}
+
+
 #' Double rotation
 #'
 #'@description Double rotation (i.e., sonic coordinate system will be aligned with streamlines)
