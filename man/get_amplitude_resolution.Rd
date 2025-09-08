@@ -10,7 +10,7 @@ get_amplitude_resolution(ts)
 \item{ts}{time series}
 }
 \value{
-number of spikes in timeseries (i.e. values lower than lower threshold and higher than upper threshold)
+number of different values in time series
 }
 \description{
 Gives amplitude resolution of time series (i.e. number of different values in time series)

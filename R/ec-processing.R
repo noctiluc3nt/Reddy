@@ -46,7 +46,7 @@ despiking = function(ts,thresholds=c(NA,NA),mad_factor=10,threshold_skewness=2,t
         if (is.na(pass) | is.null(pass)) pass=FALSE
         if (pass==FALSE) ts = ts*NA
     }, warning=function(e){
-        message("Not all despiking method could be applied.")
+        message("Not all despiking methods could be applied.")
     })
     return(ts)
 }
@@ -272,7 +272,7 @@ flag_most = function(w_sd,ustar,zeta,thresholds_most=c(0.3,0.8)) {
     if (length(thresholds_most)!=2) {
         stop("thresholds_most has to be a vector of length 2.")
     }
-    parameterized=1.3*(1+2*abs(zeta))^(1/3) #w_sd/ustar parametrized according to scaling function based on zeta
+    parameterized=1.3*(1-2*abs(zeta))^(1/3) #w_sd/ustar parametrized according to scaling function based on zeta
     itc=abs((w_sd/ustar-parameterized)/parameterized)
     flag=ifelse(itc<thresholds_most[1],0,ifelse(itc<thresholds_most[2],1,2))
     return(flag)

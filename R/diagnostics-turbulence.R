@@ -318,7 +318,8 @@ ustar2z0 = function(ustar) {
 #'calc_coriolis(45)
 #'
 calc_coriolis = function(phi) {
-	return(2*pi*sin(phi*pi/180))
+	Omega=1/86400 #earth rotation frequency
+	return(2*Omega*sin(phi*pi/180))
 }
 
 #' Ekman layer thickness
