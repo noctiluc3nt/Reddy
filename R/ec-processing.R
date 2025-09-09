@@ -333,7 +333,7 @@ SNDcorrection = function(Ts_mean,u_mean,v_mean,cov_uw,cov_vw,cov_wTs,cov_qw=NULL
 #'@export
 #'
 WPLcorrection = function(Ts_mean,q_mean,cov_wTs,rhow_mean,cov_wrhow,rhoc_mean=NULL,cov_wrhoc=NULL) {
-    if (is.null(rho_c)) { #water vapor flux
+    if (is.null(rhoc_mean)) { #water vapor flux
         return((1+1.61*q_mean)*(cov_wrhow+rhow_mean/Ts_mean*cov_wTs)) #with M_L/M_w = 1.61
     } else { #other trace gas flux
         return(cov_wrhoc+1.61*rhoc_mean/rhow_mean*cov_wrhow+(1+1.61*q_mean)*rhoc_mean/Ts_mean*cov_wTs)
@@ -364,6 +364,39 @@ ppt2rho = function(ppt,T_mean=288.15, pres = 101325, e = 0, gas="H2O") {
     } else {
         warning("You selected a gas which is not available for the conversion here.")
     } 
+}
+
+#' Conversion of molar concentration to density
+#'
+#'@description Conversion of molar concentration to density
+#'@param c molar concentration in mol/m^3
+#'@param gas which gas? can be either \code{H2O}, \code{CO2}, \code{CH4}
+#'
+#'@return density of the gas [kg/m^3]
+#'@export
+#'
+molarconcentration2density = function(c, gas="H2O") {
+    if (gas == "H2O") {
+        return(c*M_H2O())
+    } else if (gas == "CO2") {
+        return(c*M_CO2())
+    } else if (gas == "CH4") {
+        return(c*M_CH4())
+    } else {
+        warning("You selected a gas which is not available for the conversion here.")
+    } 
+}
+
+#' Conversion of density to mixing ratio
+#'
+#'@description Conversion of density to mixing ratio
+#'@param rho density [kg/m^3]
+#'
+#'@return mixing ratio of the gas [kg/kg]
+#'@export
+#'
+density2mixingratio = function(rho) {
+    return(rho/rhoAir())
 }
 
 
