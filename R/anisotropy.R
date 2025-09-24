@@ -14,7 +14,7 @@
 #'
 #'@examples
 #'calc_anisotropy(1,0,0,1,0,1) #isotropic
-#'calc_anisotropy(1,0,1,1,0,1) #some anisotropy
+#'calc_anisotropy(1,0,1,1,0,1) #anisotropic
 #'
 calc_anisotropy = function(a11,a12,a13,a22,a23,a33,plot=FALSE) {
 	if (length(unique(sapply(list(a11,a12,a13,a22,a23,a33),length)))>1) {

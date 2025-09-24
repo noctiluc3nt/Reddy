@@ -28,7 +28,7 @@ calc_tke = function(u_sd,v_sd,w_sd) {
 #'@return turbulent kinetic energy velocity scale [m/s]
 #'@export
 #'
-#'@examples
+#'@examples-
 #'calc_vtke(1,1,1)
 #'
 calc_vtke = function(u_sd,v_sd,w_sd) {

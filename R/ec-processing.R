@@ -341,7 +341,7 @@ WPLcorrection = function(Ts_mean,q_mean,cov_wTs,rhow_mean,cov_wrhow,rhoc_mean=NU
 }
 
 
-#' Unit conversion of "parts-per" to density (for closed-path gas analyzer)
+#' Unit conversion of "parts-per" (molar mixing ratio) to density (for closed-path gas analyzer)
 #'
 #'@description Unit conversion of "parts-per" to density (for closed-path gas analyzer)
 #'@param ppt measurement in parts per thousand [ppt]
