@@ -78,6 +78,7 @@ EC_processing_realtime = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     #despiking
     if (do_despiking==TRUE) {
         cat("\n... do despiking ...")
+        #todo add spike counting
         u=despiking(u,c(despike_u[1],despike_u[2]),despike_u[3],despike_u[4],despike_v[5])
         v=despiking(v,c(despike_v[1],despike_v[2]),despike_v[3],despike_v[4],despike_v[5])
         w=despiking(w,c(despike_w[1],despike_w[2]),despike_w[3],despike_w[4],despike_w[5])

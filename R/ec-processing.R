@@ -74,6 +74,7 @@ count_spikes = function(ts,thresholds=c(NA,NA)) {
 #'@param ts time series
 #'
 #'@return number of different values in time series
+#'@export
 #'
 get_amplitude_resolution = function(ts) {  
     return(length(unique(ts)))

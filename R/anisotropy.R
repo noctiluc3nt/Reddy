@@ -98,6 +98,7 @@ plot_barycentric_map = function(xb,yb,contours=c(5,10,20)) {
     #2d kde
     nc=length(contours)
     lab=colorRampPalette(c("blue3","red3"), space = "Lab")
-    kde=MASS::kde2d(xb,yb)
+	notna=(!is.na(xb)&!is.na(yb))
+    kde=MASS::kde2d(xb[notna],yb[notna])
     contour(kde$x,kde$y,kde$z,levels=contours,col=lab(nc)[1:nc],add=TRUE,lwd=2,drawlabels=FALSE)
 }
