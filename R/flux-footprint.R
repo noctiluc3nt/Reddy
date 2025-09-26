@@ -71,7 +71,7 @@ calc_flux_footprint = function(zm, ws_mean=NA, wd_mean = NA, blh, L, v_sd, ustar
     sigmay=sigmay_star/ps1*zm*v_sd/ustar #eq. 13 inverted
     #calculate real scale f(x,y)
     dx=x[3]-x[2]
-    ypos=seq(0,length(x)/2*dx*1.5,dx)
+    ypos=x #seq(0,length(x)/2*dx*1.5,dx)
     fpos=matrix(NA,nrow=length(fy_mean),ncol=length(ypos))
     for (i in 1:length(fy_mean)) {
         fpos[i,]=fy_mean[i]/(sqrt(2*pi)*sigmay[i])*exp(-ypos^2/(2*sigmay[i]^2)) #eq. 10
@@ -86,16 +86,15 @@ calc_flux_footprint = function(zm, ws_mean=NA, wd_mean = NA, blh, L, v_sd, ustar
     nx=length(x)
     y=c(-rev(ypos),ypos[2:n2])
     ny=length(y)
-    xmat=matrix(rep(x,ny),nrow=ny,ncol=nx,byrow=TRUE)
-    ymat=matrix(rep(y,nx),nrow=ny,ncol=nx)
+    #xmat=matrix(rep(x,ny),nrow=ny,ncol=nx,byrow=TRUE)
+    #ymat=matrix(rep(y,nx),nrow=ny,ncol=nx)
     #cut coordinates/fmat
     ny_mid=round(ny/2)
     yselect=(ny_mid-nres/2+1):(ny_mid+nres/2)
-    y=y[yselect]
     fmat=fmat[1:(nres/2),yselect]
     fmat=rbind(fmat*0,fmat)
-    y=seq(min(y),max(y),length.out=dim(fmat)[2])
     x=seq(min(-x),max(x),length.out=dim(fmat)[1])
+    y=x
     #rotate flux footprint
     if (!is.na(wd_mean)) {
         #rotate area (2d data) using polar coordinates
@@ -137,7 +136,7 @@ calc_flux_footprint = function(zm, ws_mean=NA, wd_mean = NA, blh, L, v_sd, ustar
     ffp$x=x
     ffp$y=y
     ffp$fy_mean=fy_mean
-    ffp$f2d=fmat #t(fmat)
+    ffp$f2d=fmat
     ffp$xcontour=xcont
     ffp$ycontour=ycont
     ffp$contour_levels=contours
@@ -299,7 +298,7 @@ calc_flux_footprint_climatology = function(zm, ws_mean=NA, wd_mean = NA, blh, L,
     ffp$x=x
     ffp$y=y
     #ffp$fy_mean=fy_mean
-    ffp$f2d=fmat #t(fmat)
+    ffp$f2d=fmat
     ffp$xcontour=xcont
     ffp$ycontour=ycont
     ffp$contour_levels=contours
