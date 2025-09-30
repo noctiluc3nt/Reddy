@@ -116,20 +116,23 @@ calc_flux_footprint = function(zm, ws_mean=NA, wd_mean = NA, blh, L, v_sd, ustar
         #}
     }
     #footprint contours
-    nc=length(contours)
-    fsort=rev(sort(c(fmat)))
-    fsort=fsort[!is.na(fsort)]
-    fint=cumsum(fsort)*dx^2
-    xcont=list()
-    ycont=list()
-    for (i in 1:nc) {
-        fdiff=abs(fint-contours[i])
-        ind=which.min(fdiff)
-        fr=fsort[ind]
-        cont=contourLines(x,y,fmat,levels=fr)
-        xcont[[i]]=cont[[1]]$x
-        ycont[[i]]=cont[[1]]$y
-    }
+    fcont=get_contours_from_f2d(x,y,fmat,contours=contours)
+    xcont=fcont$xcont
+    ycont=fcont$ycont
+    #nc=length(contours)
+    #fsort=rev(sort(c(fmat)))
+    #fsort=fsort[!is.na(fsort)]
+    #fint=cumsum(fsort)*dx^2
+    #xcont=list()
+    #ycont=list()
+    #for (i in 1:nc) {
+    #    fdiff=abs(fint-contours[i])
+    #    ind=which.min(fdiff)
+    #    fr=fsort[ind]
+    #    cont=contourLines(x,y,fmat,levels=fr)
+    #    xcont[[i]]=cont[[1]]$x
+    #    ycont[[i]]=cont[[1]]$y
+    #}
     #output
     ffp=list()
     ffp$xmax=xmax
@@ -148,6 +151,36 @@ calc_flux_footprint = function(zm, ws_mean=NA, wd_mean = NA, blh, L, v_sd, ustar
     return(ffp)
 }
 
+#' Get contours from 2D flux footprint matrix
+#'
+#'@description Calculates contours for given flux footprint
+#'@param x x-coordinate (vector)
+#'@param y y-coordinate (vector)
+#'@param fmat 2D flux footprint (matrix/array with the dimensions matching nx x ny) 
+#'@param contours which contours? default \code{contours=seq(0,0.9,0.1)}
+#' 
+#'@return list with x- and y-coordinates of the contours
+#'@export
+#' 
+get_contours_from_f2d=function(x,y,fmat,contours=seq(0,0.9,0.1)) {
+    #footprint contours
+    nc=length(contours)
+    fsort=rev(sort(c(fmat)))
+    fsort=fsort[!is.na(fsort)]
+    dx=x[3]-x[2]
+    fint=cumsum(fsort)*dx^2
+    xcont=list()
+    ycont=list()
+    for (i in 1:nc) {
+        fdiff=abs(fint-contours[i])
+        ind=which.min(fdiff)
+        fr=fsort[ind]
+        cont=contourLines(x,y,fmat,levels=fr)
+        xcont[[i]]=cont[[1]]$x
+        ycont[[i]]=cont[[1]]$y
+    }
+    return(list(xcont,ycont))
+}
 
 #' Plot Flux-Footprint
 #'
@@ -155,7 +188,8 @@ calc_flux_footprint = function(zm, ws_mean=NA, wd_mean = NA, blh, L, v_sd, ustar
 #'@param ffp an object returned from \code{calc_flux_footprint}
 #'@param levels levels used for filled contour plot of footprint, default \code{levels=c(0,10^seq(-6,-3,0.1))}
 #'@param mode can be either \code{mode="distance"} for plotting footprint relative to station location in cartesian coordinates or \code{mode="lonlat"} for plotting in (lon,lat)-ccordinates
-#' 
+#'@param ... paraemters passed to image.plot function 
+#'
 #'@return no return
 #'@importFrom grDevices colorRampPalette contourLines rgb
 #'@importFrom graphics .filled.contour abline arrows axis
@@ -167,15 +201,15 @@ calc_flux_footprint = function(zm, ws_mean=NA, wd_mean = NA, blh, L, v_sd, ustar
 #'ffp=calc_flux_footprint(zm=5,ws_mean=5,blh=700,L=-1.3,v_sd=1.2,ustar=0.35)
 #'plot_flux_footprint(ffp)
 #' 
-plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1)),mode="distance") {
+plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1)),mode="distance",...) {
     #filled contour plot with contour lines
     #lab=colorRampPalette(c("white","blue3","yellow","orange","red3"), space = "Lab")
     #nlev=length(levels)
     #plot(NA,xlim=xlim,ylim=ylim,main="2D Flux Footprint",xlab="x [m]",ylab="y [m]")
     #.filled.contour(ffp$x2d[1,],ffp$y2d[,1],ffp$f2d,levels=levels,col=lab(nlev))
     if (mode=="distance") {
-        if (!exists("xlim")) xlim=c(-500,500)
-        if (!exists("ylim")) ylim=c(-500,500)
+        if (!exists("xlim")) xlim=c(-200,200)
+        if (!exists("ylim")) ylim=c(-200,200)
         #plot crosswind-integrated footprint
         #tryCatch({
         #    plot(ffp$x,ffp$fy_mean,type="l",xlim=xlim,lwd=2,xlab="x [m]",ylab="crosswind-integrated footprint",main="Crosswind-Integrated Flux Footprint")
@@ -269,29 +303,25 @@ locate_flux_footprint = function(ffp,lon_station,lat_station) {
 calc_flux_footprint_climatology = function(zm, ws_mean=NA, wd_mean = NA, blh, L, v_sd, ustar, z0=NA,contours=seq(0.9,0.1,-0.1),nres=1000,method="Kljun2015",plot=TRUE) {
     n=length(ws_mean)
     ffp_clim=array(0,dim=c(nres,nres))
+    ncount=0
     for (i in 1:n) {
-        ffp_tmp=calc_flux_footprint(zm,ws_mean[i],wd_mean[i],blh[i],L[i],v_sd[i],ustar[i],z0[i],nres=nres,plot=FALSE)
+        cat("progress: ",round(i/n*100))
+        tryCatch({
+        ffp_tmp=calc_flux_footprint(zm=zm,ws_mean=ws_mean[i],wd_mean=wd_mean[i],blh=blh[i],L=L[i],v_sd=v_sd[i],ustar=ustar[i],z0=z0[i],nres=nres,plot=FALSE)
         ffp_clim=ffp_clim+ffp_tmp$f2d
+        ncount=ncount+1
+        },
+        error = function(e) {
+            message("an error occurred.")
+        })
     }
     x=ffp_tmp$x
     y=ffp_tmp$y
-    fmat=ffp_clim/n
+    fmat=ffp_clim/ncount
     #footprint contours
-    dx=abs(x[3]-x[2])
-    nc=length(contours)
-    fsort=rev(sort(c(fmat)))
-    fsort=fsort[!is.na(fsort)]
-    fint=cumsum(fsort)*dx^2
-    xcont=list()
-    ycont=list()
-    for (i in 1:nc) {
-        fdiff=abs(fint-contours[i])
-        ind=which.min(fdiff)
-        fr=fsort[ind]
-        cont=contourLines(x,y,fmat,levels=fr)
-        xcont[[i]]=cont[[1]]$x
-        ycont[[i]]=cont[[1]]$y
-    }
+    fcont=get_contours_from_f2d(x,y,fmat,contours=contours)
+    xcont=fcont$xcont
+    ycont=fcont$ycont
     #output
     ffp=list()
     #ffp$xmax=xmax

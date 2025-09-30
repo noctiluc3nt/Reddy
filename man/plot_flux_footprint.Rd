@@ -4,7 +4,12 @@
 \alias{plot_flux_footprint}
 \title{Plot Flux-Footprint}
 \usage{
-plot_flux_footprint(ffp, levels = c(0, 10^seq(-6, -3, 0.1)), mode = "distance")
+plot_flux_footprint(
+  ffp,
+  levels = c(0, 10^seq(-6, -3, 0.1)),
+  mode = "distance",
+  ...
+)
 }
 \arguments{
 \item{ffp}{an object returned from \code{calc_flux_footprint}}
@@ -12,6 +17,8 @@ plot_flux_footprint(ffp, levels = c(0, 10^seq(-6, -3, 0.1)), mode = "distance")
 \item{levels}{levels used for filled contour plot of footprint, default \code{levels=c(0,10^seq(-6,-3,0.1))}}
 
 \item{mode}{can be either \code{mode="distance"} for plotting footprint relative to station location in cartesian coordinates or \code{mode="lonlat"} for plotting in (lon,lat)-ccordinates}
+
+\item{...}{paraemters passed to image.plot function}
 }
 \value{
 no return

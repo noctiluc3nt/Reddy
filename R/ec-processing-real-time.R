@@ -24,6 +24,7 @@
 #'@param do_flagging logical, should the data be flagged? default \code{TRUE}, i.e. several flags are calculated, but no data is removed, can be used for quality analysis
 #'@param dir_blocked vector containing 2 elements: wind directions blocked through mast or tower, used in flow distortion flag only
 #'@param do_SNDcorrection logical, should SND correction be applied to the buoyancy flux? default \code{TRUE}
+#'@param do_WPLcorrection logical, should WPL correction be applied to gas fluxes? default \code{FALSE}
 #'@param A constant used in SND correction, default \code{A=7/8} for CSAT3 sonic
 #'@param B constant used in SND correction, default \code{A=7/8} for CSAT3 sonic
 #'@param store logical, should the output be stored? default \code{TRUE}
@@ -46,7 +47,7 @@ EC_processing_realtime = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     do_double_rotation=TRUE,
     do_flagging=TRUE, dir_blocked=c(0,0),
     do_SNDcorrection=TRUE,A=7/8,B=7/8,
-    #do_WPLcorrection=FALSE,
+    do_WPLcorrection=FALSE,
     store=TRUE,format_out="txt",filename=NULL,
     meta=TRUE
     ) {
@@ -71,7 +72,9 @@ EC_processing_realtime = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
                     "cov_wT_snd",
                     "sh","lh","co2_flux","ch4_flux",
                     "flag_all","flag_stationarity","flag_distortion","flag_w","flag_itc",
-                    "rotation_angle1","rotation_angle2")
+                    "rotation_angle1","rotation_angle2",
+                    "nr_spikes_u","nr_spikes_v","nr_spikes_w","nr_spikes_Ts","nr_spikes_h2o","nr_spikes_co2","nr_spikes_ch4",
+                    "ampl_res_u","ampl_res_v","ampl_res_w","ampl_res_Ts","ampl_res_h2o","ampl_res_co2","ampl_res_ch4")
     out=array(NA,dim=c(nint,length(column_names)))
     out=as.data.frame(out)
     colnames(out)=column_names
@@ -83,9 +86,23 @@ EC_processing_realtime = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         v=despiking(v,c(despike_v[1],despike_v[2]),despike_v[3],despike_v[4],despike_v[5])
         w=despiking(w,c(despike_w[1],despike_w[2]),despike_w[3],despike_w[4],despike_w[5])
         temp=despiking(temp,c(despike_temp[1],despike_temp[2]),despike_temp[3],despike_temp[4],despike_temp[5])
+        out$nr_spikes_u=count_spikes(u,c(despike_u[1],despike_u[2]))
+        out$nr_spikes_v=count_spikes(v,c(despike_v[1],despike_v[2]))
+        out$nr_spikes_w=count_spikes(w,c(despike_w[1],despike_w[2]))
+        out$nr_spikes_Ts=count_spikes(temp,c(despike_temp[1],despike_temp[2]))
         if (do_h2o & !is.null(despike_h2o)) h2o=despiking(h2o,c(despike_h2o[1],despike_h2o[2]),despike_h2o[3],despike_h2o[4],despike_h2o[5])
         if (do_co2 & !is.null(despike_co2)) co2=despiking(co2,c(despike_co2[1],despike_co2[2]),despike_co2[3],despike_co2[4],despike_co2[5])
         if (do_ch4 & !is.null(despike_ch4)) ch4=despiking(ch4,c(despike_ch4[1],despike_ch4[2]),despike_ch4[3],despike_ch4[4],despike_ch4[5])
+        if (do_h2o & !is.null(despike_h2o)) out$nr_spikes_h2o=count_spikes(h2o,c(despike_h2o[1],despike_h2o[2]))
+        if (do_co2 & !is.null(despike_co2)) out$nr_spikes_co2=count_spikes(co2,c(despike_co2[1],despike_co2[2]))
+        if (do_ch4 & !is.null(despike_ch4)) out$nr_spikes_ch4=count_spikes(ch4,c(despike_ch4[1],despike_ch4[2]))
+        out$ampl_res_u=get_amplitude_resolution(u)
+        out$ampl_res_v=get_amplitude_resolution(v)
+        out$ampl_res_w=get_amplitude_resolution(w)
+        out$ampl_res_Ts=get_amplitude_resolution(temp)
+        if (do_h2o) out$ampl_res_h2o=get_amplitude_resolution(h2o)
+        if (do_co2) out$ampl_res_co2=get_amplitude_resolution(co2)
+        if (do_ch4) out$ampl_res_ch4=get_amplitude_resolution(ch4)
     }
     #rotation pre-check
     #if (do_double_rotation==TRUE & do_planar_fit==TRUE) warning("You have chosen two rotation types, but only one can be applied. Apply double rotation now.")
@@ -97,7 +114,7 @@ EC_processing_realtime = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         i2=(i*lint)
         iselect=seq(i1,i2)
         #wind (before rotation, assumes that the sonic is oriented towards north as indicated on the instrument)
-        out$ws[i]=mean(calc_windSpeed2D(u[iselect],v[iselect]),na.rm=TRUE)
+        out$ws[i]=mean(calc_windspeed(u[iselect],v[iselect]),na.rm=TRUE)
         out$wd[i]=calc_circular_mean(calc_windDirection(u[iselect],v[iselect]))
         if (do_flagging) out$flag_distortion[i]=flag_distortion(u[iselect],v[iselect],dir_blocked)
         #double rotation
@@ -172,7 +189,7 @@ EC_processing_realtime = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     if (do_ch4) out$cov_ch4w=averaging(w*ch4,time_resolution,time_averaging*60)$mean[[1]]
     #SND correction
     if (do_SNDcorrection==TRUE) {
-        if (do_h2o == FALSE) {
+        if (do_h2o == FALSE) { #cross-wind correction only
             out$cov_wT_snd=SNDcorrection(out$Ts_mean,out$u_mean,out$v_mean,out$cov_uw,out$cov_vw,out$cov_wTs,NULL,A,B)
         } else {
             out$cov_wT_snd=SNDcorrection(out$Ts_mean,out$u_mean,out$v_mean,out$cov_uw,out$cov_vw,out$cov_wTs,out$cov_qw,A,B)
@@ -181,16 +198,16 @@ EC_processing_realtime = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     } else {
         out$sh=cov2sh(out$cov_wTs)
     }
-    #WPL correction
-    #if (do_WPLcorrection) {
-    #    if (do_h2o) cov_h2ow_wpl=WPLcorrection(h2o,w,temp)
-    #    if (do_co2) cov_co2w_wpl=WPLcorrection(co2,w,temp)
-    #    if (do_ch4) cov_ch4w_wpl=WPLcorrection(ch4,w,temp)
-    #}
     if (do_h2o) out$lh=cov2lh(out$cov_h2ow)
-    #if (do_h2o & do_WPLcorrection) out$lh=cov2lh(cov_h2ow_wpl)
     if (do_co2) out$co2_flux=cov2cf(out$cov_co2w)
-    #if (do_co2 & do_WPLcorrection) out$co2_flux=cov2cf(cov_co2w_wpl)
+    #WPL correction
+    if (do_WPLcorrection==TRUE) {
+        if (do_h2o) cov_h2ow_wpl=WPLcorrection(h2o,w,temp)
+        if (do_co2) cov_co2w_wpl=WPLcorrection(co2,w,temp)
+        if (do_ch4) cov_ch4w_wpl=WPLcorrection(ch4,w,temp)
+        out$lh=cov2lh(cov_h2ow_wpl)
+        out$co2_flux=cov2cf(cov_co2w_wpl)
+    }
     #calculate turbulence statistics
     out$tke=calc_tke(out$u_sd,out$v_sd,out$w_sd)
     out$ustar=calc_ustar(out$cov_uw,out$cov_vw)
