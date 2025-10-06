@@ -304,7 +304,7 @@ ustar2z0 = function(ustar) {
 
 
 
-### Ekman layer
+### Boundary Layer Height and Ekman layer
 
 #' Coriolis parameter
 #'
@@ -338,6 +338,22 @@ calc_ekman_layer_depth = function(Km,f) {
 	return(sqrt(2*Km/abs(f)))
 }
 
+#' Boundary Layer Height
+#'
+#'@description Calculates boundary layer height estimate following Nieuwstadt, 1981
+#'@param L Obukhov length [m]
+#'@param ustar friction velocity [m/s]
+#'@param f Coriolis parameter [1/s] (e.g. from \code{calc_coriolis})
+#'
+#'@return Boundary layer height estimation [m]
+#'@export
+#'
+#'@examples
+#'calc_blh(-1,0.5,10^(-4))
+#'
+calc_blh = function(L,ustar,f) {
+	return(L/3.8*(sqrt(1+2.28*ustar/(f*L))-1))
+}
 
 ### Brunt-Vaisala frequency + (bulk/flux) Richardson number
 
