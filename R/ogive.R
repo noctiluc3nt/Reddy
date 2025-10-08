@@ -1,4 +1,4 @@
-#' Calculates Ogive (cumulative cospectrum) based on MRD
+#' Calculates Ogive (cumulative distribution function from cospectrum) based on MRD
 #'
 #'@description Calculates Ogive from MRD spectram
 #'@param mrd an object returned from \code{calc_mrd}
@@ -20,10 +20,11 @@ calc_ogive=function(mrd,plot=TRUE,...) {
     ogive_q25=array(NA,dim=c(nt))
     ogive_q75=array(NA,dim=c(nt))
     for (i in 1:nt) {
-        ogive_mean[i]=sum(mrd$mean[i:nt])
-        ogive_median[i]=sum(mrd$median[i:nt])
-        ogive_q25[i]=sum(mrd$q25[i:nt])
-        ogive_q75[i]=sum(mrd$q75[i:nt])
+        inds=(i:nt)
+        ogive_mean[i]=sum(mrd$mean[inds])
+        ogive_median[i]=sum(mrd$median[inds])
+        ogive_q25[i]=sum(mrd$q25[inds])
+        ogive_q75[i]=sum(mrd$q75[inds])
     }
     ogive=data.frame("index"=mrd$index,"m"=mrd$m,"scale"=mrd$scale,"time"=mrd$time,
         "mean"=ogive_mean,"median"=ogive_median,"q25"=ogive_q25,"q75"=ogive_q75)

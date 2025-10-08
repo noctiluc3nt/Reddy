@@ -7,7 +7,7 @@
 locate_flux_footprint(ffp, lon_station, lat_station)
 }
 \arguments{
-\item{ffp}{ffp object returned by \code{calc_flux_footprint}}
+\item{ffp}{ffp object returned by \code{calc_flux_footprint_[method]}}
 
 \item{lon_station}{lon of station location}
 
@@ -22,7 +22,7 @@ Transform flux footprint from (x,y)-coordinates to (lon,lat)-coordinates through
 \examples{
 lon1=7.527061462
 lat1=60.59384155
-ffp=calc_flux_footprint(zm=20,ws_mean=2,blh=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
+ffp=calc_flux_footprint_Kljun2015(zm=20,ws_mean=2,blh=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
 ffp=locate_flux_footprint(ffp,lon1,lat1)
 
 }

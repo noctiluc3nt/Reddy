@@ -18,7 +18,7 @@ calc_mrd(var1, var2 = NULL, time_res = 0.05, plot = TRUE, ...)
 \item{...}{arguments passed to plot function}
 }
 \value{
-MRD in form of a data frame containing the columns: index, scale, time, mean, median, q25, q75
+MRD in form of data.frame with columns: index, m, scale, time, mean, median, q25, q75
 }
 \description{
 Calculates multiresolution decomposition (MRD) according to Vickers and Mahrt, 2003

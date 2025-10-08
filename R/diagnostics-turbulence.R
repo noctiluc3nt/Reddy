@@ -196,7 +196,7 @@ calc_ozmidov_scale = function(epsilon,N) {
 
 #' Flux intermittency
 #'
-#'@description Calculates flux intermittency FI = flux_sd/flux (flux_sd: sd of subsampled fluxes) following Mahrt, 1998 (similar to stationarity flag \code{flag_stationarity})
+#'@description Calculates flux intermittency FI = flux_sd/abs(flux) (flux_sd: sd of subsampled fluxes) following Mahrt, 1998 (similar to stationarity flag \code{flag_stationarity})
 #'@param ts1 timeseries 1 
 #'@param ts2 timeseries 2 (optional), if the flux should be calculated based on \code{ts1*ts2} (default \code{ts2=NULL}, i.e. \code{ts2} is not used)
 #'@param nsub number of elements used for subsampling, default \code{nsub=6000}, which corrosponds to 5 minutes of measurements from 20 Hz sampled half-hour (containing 30*60*20 = 36000 measurements)
@@ -229,7 +229,7 @@ calc_flux_intermittency = function(ts1,ts2=NULL,nsub=6000) {
 		if (is.null(ts2)) cov_sub=mean(ts1[isub],na.rm=TRUE)
         cov_subs[i]=cov_sub
     }
-    return(sd(cov_subs)/cov_complete)
+    return(sd(cov_subs)/abs(cov_complete))
 }
 
 
