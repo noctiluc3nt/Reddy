@@ -4,9 +4,10 @@
 #'@param var1 timeseries of a variable
 #'@param var2 timeseries of another variable to calculate the cospectrum of \code{var1} and \code{var2}, optional (default is \code{NULL})
 #'@param time_res time resolution of the given timeseries in seconds (e.g., \code{time_res = 0.05} for 20 Hz)
-#'@return MRD in form of a data frame containing the columns: index, scale, time, mean, median, q25, q75
 #'@param plot logical, should the MRD spectrum be plotted? default \code{plot=TRUE}
 #'@param ... arguments passed to plot function
+#'@return MRD in form of data.frame with columns: index, m, scale, time, mean, median, q25, q75
+#'
 #'@export
 #'
 #'@examples
@@ -81,16 +82,17 @@ calc_mrd = function(var1,var2=NULL,time_res=0.05,plot=TRUE,...) {
 #'
 plot_mrd=function(mrd_out,...) {
     if (!exists("ylab")) { ylab="MRD" }
-    if (!exists("xlab")) { xlab="averaging time [s]"}
+    if (!exists("xlab")) { xlab="time [s]"}
     if (!exists("ylim")) { ylim=c(min(mrd_out$q25[!is.na(mrd_out$q25)]),max(mrd_out$q75[!is.na(mrd_out$q75)])) }
-    plot(log10(mrd_out$time),mrd_out$median,lwd=2,pch=3,col=4,xlab=xlab,ylab=ylab,ylim=ylim,xaxt="n",type="b",...)
+    plot(log10(mrd_out$time),mrd_out$median,lwd=2,pch=4,col=4,xlab=xlab,ylab=ylab,ylim=ylim,xaxt="n",type="b",...)
     suppressWarnings({
-	    arrows(log10(mrd_out$time),mrd_out$median,log10(mrd_out$time),mrd_out$q75,lwd=1,col=4,angle=90,length=0.05)
-	    arrows(log10(mrd_out$time),mrd_out$median,log10(mrd_out$time),mrd_out$q25,lwd=1,col=4,angle=90,length=0.05)
+	    #arrows(log10(mrd_out$time),mrd_out$median,log10(mrd_out$time),mrd_out$q75,lwd=1,col=4,angle=90,length=0.05)
+	    #arrows(log10(mrd_out$time),mrd_out$median,log10(mrd_out$time),mrd_out$q25,lwd=1,col=4,angle=90,length=0.05)
+        shade_between(log10(mrd_out$time),log10(mrd_out$time),mrd_out$q75,mrd_out$q25,col=rgb(0,0,0.9,0.1),lty=0)
     })
-	points(log10(mrd_out$time),mrd_out$mean,lwd=2,col=1,type="b")
+	points(log10(mrd_out$time),mrd_out$mean,lwd=2,col=1,type="b",pch=20)
 	axis(1,at=-1:4,labels=10^(-1:4))
-	legend("topleft",legend=c("mean","median"),col=c(1,4),lty=0,pch=c(1,3),lwd=2)
+	legend("topleft",legend=c("mean","median"),col=c(1,4),lty=0,pch=c(20,4),lwd=2)
 	abline(v=log10(60),lty=3)
 	abline(v=log10(60*30),lty=3)
     abline(h=0,lty=3)
