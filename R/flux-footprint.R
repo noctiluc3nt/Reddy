@@ -4,11 +4,11 @@
 #'@param zm measurement height [m]
 #'@param ws_mean mean horizontal wind speed [m/s] (alternatively you can also use \code{z0})
 #'@param wd_mean mean wind direction [deg] (used to rotate flux footprint, optional)
-#'@param blh boundary-layer height [m]
 #'@param L Obukhov length [m]
 #'@param v_sd standard deviation of crosswind [m/s]
 #'@param ustar friction velocity [m/s]
 #'@param z0 roughness length [m] (either \code{ws_mean} or \code{z0} have to be given)
+#'@param blh boundary-layer height [m]
 #'@param contours which contour lines should be calculated? default: \code{contours=seq(0.9,0.1,-0.1)}
 #'@param nres resolution (default: \code{nres=1000})
 #'@param plot logical, should the flux footprint be plotted? default \code{plot=TRUE}
@@ -20,11 +20,11 @@
 #'
 #'@examples
 #'#unrotated (i.e. if wind direction not given):
-#'ffp=calc_flux_footprint(zm=20,ws_mean=2,blh=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
+#'ffp=calc_flux_footprint_Kljun2015(zm=20,ws_mean=2,blh=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
 #'#rotated (i.e. given wind direction):
-#'ffp=calc_flux_footprint(zm=20,ws_mean=2,wd_mean=80,blh=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
+#'ffp=calc_flux_footprint_Kljun2015(zm=20,ws_mean=2,wd_mean=80,blh=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
 #'
-calc_flux_footprint = function(zm, ws_mean=NA, wd_mean = NA, blh, L, v_sd, ustar, z0=NA,contours=seq(0.9,0.1,-0.1),nres=1000,plot=TRUE) {
+calc_flux_footprint_Kljun2015 = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z0=NA,blh,contours=seq(0.9,0.1,-0.1),nres=1000,plot=TRUE) {
     #fitting parameters for crosswind-integrated footprint, see (Kljun et al., 2015) eq. 17
     a=1.452
     b=-1.991
@@ -151,6 +151,121 @@ calc_flux_footprint = function(zm, ws_mean=NA, wd_mean = NA, blh, L, v_sd, ustar
     return(ffp)
 }
 
+
+#' Flux-Footprint Calculation according to Korman and Meixner, 2001
+#'
+#'@description Calculates the Flux-Footprint Parametrization (FFP) according to Korman and Meixner, 2001
+#'@param zm measurement height [m]
+#'@param ws_mean mean horizontal wind speed [m/s] (alternatively you can also use \code{z0})
+#'@param wd_mean mean wind direction [deg] (used to rotate flux footprint, optional)
+#'@param L Obukhov length [m]
+#'@param v_sd standard deviation of crosswind [m/s]
+#'@param ustar friction velocity [m/s]
+#'@param z0 roughness length [m] (either \code{ws_mean} or \code{z0} have to be given)
+#'@param contours which contour lines should be calculated? default: \code{contours=seq(0.9,0.1,-0.1)}
+#'@param nres domain size (default: \code{nres=1000} to get a domain ranging from -500 to 500)
+#'@param dx resolution (default: \code{dx=1})
+#'@param plot logical, should the flux footprint be plotted? default \code{plot=TRUE}
+#'
+#'@return list containing all relevant flux footprint information
+#'@export
+#'
+#'@examples
+#'#unrotated (i.e. if wind direction not given):
+#'#ffp=calc_flux_footprint_KM2001(zm=20,ws_mean=2,blh=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
+#'#rotated (i.e. given wind direction):
+#'#ffp=calc_flux_footprint_KM2001(zm=20,ws_mean=2,wd_mean=80,blh=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
+#'
+calc_flux_footprint_KM2001 = function(zm,ws_mean=NA,wd_mean,L,v_sd,ustar,z0,contours=seq(0.9,0.1,-0.1),nres=1000,dx=1,plot=TRUE) {
+    #ctodo heck all same length
+    #init + create domain
+    ngrid=as.integer(nres/2)
+    x=seq(-ngrid,ngrid,dx)
+    y=seq(-ngrid,ngrid,dx)
+    nx=length(x)
+    grid=expand.grid(x,y)
+    x2d=matrix(grid[,1],nrow=nx,byrow=T)
+    y2d=matrix(grid[,2],nrow=nx,byrow=T)
+    f2d=array(NA,dim=c(nx,nx))
+    zeta=zm/L
+    if (zeta>0) { #stable
+        phi=1+5*zeta #eq 33
+        if (!is.na(ws_mean)) { #real wind
+            u=ws_mean
+        } else { #MOST windprofile
+            u=ustar/karman()*(log(zm/z0)+5*zeta) #eq 31 with 35 for psi
+        }
+        m=ustar/karman()*phi/u #eq 36
+        n=1/phi #eq 36
+    } else if (zeta==0) { #neutral
+        phi=1
+        if (!is.na(ws_mean)) { #real wind
+            u=ws_mean
+        } else { #MOST windprofile
+            u=ustar/karman()*log(zm/z0)
+        }
+        m=ustar/karman()/u
+        n=1
+    } else { #unstable
+        zeta2=(1-16*zeta)^0.25 #eq 35 below
+        psi=-2*log((1+zeta2)/2)-log((1+zeta2^2)/2)+2*atan(zeta2)-pi/2 #eq 35
+        phi=(1-16*zeta)^(-0.25) #eq 33
+        if (!is.na(ws_mean)) { #real wind
+            u=ws_mean
+        } else { #MOST windprofile
+            u=ustar/karman()*(log(zm/z0)+psi) #eq 31
+        }
+        m=ustar/karman()*phi/u
+        n=(1-24*zeta)/(1-16*zeta) #eq 36
+    }
+    r=2+m-n #table 1 / shape factor
+    mu=(1+m)/r #table 1 continued
+    U=u/(zm^m) #eq 11 / A1
+    K=karman()*ustar*zm/phi/zm^n #A2
+    xi=U*zm^r/(r^2*K) #eq 19 / flux length scale
+    gamma_mu=ifelse(mu==0,0,gamma(mu))
+    gamma_1r=ifelse(1/r==0,0,gamma(1/r))      
+    #parameters from ART footprint tool from Neftel et al, 2007
+    A=1+mu #A9
+    B=U*(zm^r)/(r^2*K) #A10
+    C=(B^mu)/gamma_mu #A11
+    D=v_sd*gamma_1r*(r^2*K/U)^(m/r)/(gamma_mu*U) #A12
+    E=(r-m)/r #A13
+    #wind direction
+    wd=wd_mean #(wd_mean-90)%%360 #ifelse(wd<180,wd+180,wd-180)
+    x_tmp=x2d*cos(wd*pi/180)+y2d*sin(wd*pi/180)
+    y_tmp=-x2d*sin(wd*pi/180)+y2d*cos(wd*pi/180)
+    x_mask=(x_tmp>0)
+    x_masked=x_mask*x_tmp
+    #calculation        
+    h0=D*x_masked^E
+    f2d=1/(sqrt(2*pi)*h0)*exp(-y_tmp^2/(2*h0^2))*C*x_masked^(-A)*exp(-B/x_masked) #eq 2 in Neftel et al, 2007
+    f2d[which(is.na(f2d))]=0
+    #output
+    ffp=list()
+    ffp$x=x
+    ffp$y=y
+    ffp$f2d=f2d
+    tryCatch({
+        #get contours
+        fcont=get_contours_from_f2d(x,y,fmat,contours=contours)
+        xcont=fcont$xcont
+        ycont=fcont$ycont
+        ffp$xcontour=xcont
+        ffp$ycontour=ycont
+        ffp$contour_levels=contours
+    }, error = function(w) {
+        message("An error occurred when calculating the contours.")
+    })
+    tryCatch({
+        if (plot==TRUE) plot_flux_footprint(ffp)
+    }, warning = function(w) {
+        message("An error occurred when plotting the flux footprint.")
+    })
+    return(ffp)
+}
+
+
 #' Get contours from 2D flux footprint matrix
 #'
 #'@description Calculates contours for given flux footprint
@@ -185,7 +300,7 @@ get_contours_from_f2d=function(x,y,fmat,contours=seq(0,0.9,0.1)) {
 #' Plot Flux-Footprint
 #'
 #'@description Plots Flux-Footprint Parametrization (FFP)
-#'@param ffp an object returned from \code{calc_flux_footprint}
+#'@param ffp an object returned from \code{calc_flux_footprint_[method]}
 #'@param levels levels used for filled contour plot of footprint, default \code{levels=c(0,10^seq(-6,-3,0.1))}
 #'@param mode can be either \code{mode="distance"} for plotting footprint relative to station location in cartesian coordinates or \code{mode="lonlat"} for plotting in (lon,lat)-ccordinates
 #'@param ... paraemters passed to image.plot function 
@@ -198,7 +313,7 @@ get_contours_from_f2d=function(x,y,fmat,contours=seq(0,0.9,0.1)) {
 #'@export
 #'
 #'@examples
-#'ffp=calc_flux_footprint(zm=5,ws_mean=5,blh=700,L=-1.3,v_sd=1.2,ustar=0.35)
+#'ffp=calc_flux_footprint_Kljun2015(zm=5,ws_mean=5,blh=700,L=-1.3,v_sd=1.2,ustar=0.35)
 #'plot_flux_footprint(ffp)
 #' 
 plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1)),mode="distance",...) {
@@ -218,6 +333,7 @@ plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1)),mode="distance"
         #})
         #fields::image.plot(ffp$x2d,ffp$y2d,ffp$f2d*100,xlim=xlim,ylim=ylim,xlab="x [m]",ylab="y [m]",main="Flux Footprint")
         fields::image.plot(ffp$x,ffp$y,ffp$f2d*100,xlim=xlim,ylim=ylim,xlab="x [m]",ylab="y [m]",main="Flux Footprint")
+        points(0,0,pch=20)
         tryCatch({
             for (i in 1:length(ffp$xcontour)) {
                 lines(ffp$xcontour[[i]],ffp$ycontour[[i]],type="l",lwd=1)
@@ -249,7 +365,7 @@ plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1)),mode="distance"
 #' Transform flux footprint from (x,y)-coordinates to (lon,lat)-coordinates through given station location
 #'
 #'@description 
-#'@param ffp ffp object returned by \code{calc_flux_footprint}
+#'@param ffp ffp object returned by \code{calc_flux_footprint_[method]}
 #'@param lon_station lon of station location
 #'@param lat_station lat of station location
 #'
@@ -259,7 +375,7 @@ plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1)),mode="distance"
 #'@examples
 #'lon1=7.527061462
 #'lat1=60.59384155
-#'ffp=calc_flux_footprint(zm=20,ws_mean=2,blh=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
+#'ffp=calc_flux_footprint_Kljun2015(zm=20,ws_mean=2,blh=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
 #'ffp=locate_flux_footprint(ffp,lon1,lat1)
 #'
 locate_flux_footprint = function(ffp,lon_station,lat_station) {
@@ -289,7 +405,7 @@ locate_flux_footprint = function(ffp,lon_station,lat_station) {
 #'@param z0 roughness length [m] (either \code{ws_mean} or \code{z0} have to be given)
 #'@param contours which contour lines should be calculated? default: \code{contours=seq(0.9,0.1,-0.1)}
 #'@param nres resolution (scalar) (default: \code{nres=1000})
-#'@param method method used to calculate FFP (default \code{method="Kljun2015"})
+#'@param method method used to calculate FFP: can be either \code{method="Kljun2015"} (default) or \code{method="KM2001"}
 #'@param plot logical, should the flux footprint be plotted? default \code{plot=TRUE}
 #'
 #'@return list containing all relevant flux footprint information
@@ -297,19 +413,27 @@ locate_flux_footprint = function(ffp,lon_station,lat_station) {
 #'
 #'@examples
 #'nit=2
-#'ffp=calc_flux_footprint_climatology(zm=20,ws_mean=rep(2,nit),blh=rep(200,nit),L=rep(-1.5,nit),
-#'          v_sd=rep(0.6,nit),ustar=rep(0.4,nit),contours=0.8,wd_mean=c(50,240))
+#'#ffp=calc_flux_footprint_climatology(zm=20,ws_mean=rep(2,nit),blh=rep(200,nit),L=rep(-1.5,nit),
+#'#          v_sd=rep(0.6,nit),ustar=rep(0.4,nit),contours=0.8,wd_mean=c(50,240)) #todo
 #'
-calc_flux_footprint_climatology = function(zm, ws_mean=NA, wd_mean = NA, blh, L, v_sd, ustar, z0=NA,contours=seq(0.9,0.1,-0.1),nres=1000,method="Kljun2015",plot=TRUE) {
+calc_flux_footprint_climatology = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z0=NA,blh=NA,contours=seq(0.9,0.1,-0.1),nres=1000,method="Kljun2015",plot=TRUE) {
     n=length(ws_mean)
     ffp_clim=array(0,dim=c(nres,nres))
     ncount=0
     for (i in 1:n) {
         cat("progress: ",round(i/n*100))
         tryCatch({
-        ffp_tmp=calc_flux_footprint(zm=zm,ws_mean=ws_mean[i],wd_mean=wd_mean[i],blh=blh[i],L=L[i],v_sd=v_sd[i],ustar=ustar[i],z0=z0[i],nres=nres,plot=FALSE)
-        ffp_clim=ffp_clim+ffp_tmp$f2d
-        ncount=ncount+1
+            if (method=="Kljun2015") {
+                ffp_tmp=calc_flux_footprint_Kljun2015(zm=zm,ws_mean=ws_mean[i],wd_mean=wd_mean[i],blh=blh[i],L=L[i],v_sd=v_sd[i],ustar=ustar[i],z0=z0[i],nres=nres,plot=FALSE)
+            } else if (method=="KM2001") {
+                ffp_tmp=calc_flux_footprint_KM2001(zm=zm,ws_mean=ws_mean[i],wd_mean=wd_mean[i],L=L[i],v_sd=v_sd[i],ustar=ustar[i],z0=z0[i],nres=nres,plot=FALSE)
+            } else {
+                warning("The requested flux footprint calculation method is not implemented: method has to be either Kljun2015 or KM2001.")
+            }
+            f2d_tmp=ffp_tmp$f2d
+            f2d_tmp[which(is.na(f2d_tmp),arr.ind=TRUE)]=0
+            ffp_clim=ffp_clim+f2d_tmp
+            ncount=ncount+1
         },
         error = function(e) {
             message("an error occurred.")
@@ -318,20 +442,22 @@ calc_flux_footprint_climatology = function(zm, ws_mean=NA, wd_mean = NA, blh, L,
     x=ffp_tmp$x
     y=ffp_tmp$y
     fmat=ffp_clim/ncount
-    #footprint contours
-    fcont=get_contours_from_f2d(x,y,fmat,contours=contours)
-    xcont=fcont$xcont
-    ycont=fcont$ycont
     #output
     ffp=list()
     #ffp$xmax=xmax
     ffp$x=x
     ffp$y=y
-    #ffp$fy_mean=fy_mean
-    ffp$f2d=fmat
-    ffp$xcontour=xcont
-    ffp$ycontour=ycont
-    ffp$contour_levels=contours
+    tryCatch({
+        #get contours
+        fcont=get_contours_from_f2d(x,y,fmat,contours=contours)
+        xcont=fcont$xcont
+        ycont=fcont$ycont
+        ffp$xcontour=xcont
+        ffp$ycontour=ycont
+        ffp$contour_levels=contours
+    }, error = function(w) {
+        message("An error occurred when calculating the contours.")
+    })
     tryCatch({
         if (plot==TRUE) plot_flux_footprint(ffp)
     }, warning = function(w) {
