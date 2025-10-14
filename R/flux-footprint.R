@@ -172,9 +172,9 @@ calc_flux_footprint_Kljun2015 = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z
 #'
 #'@examples
 #'#unrotated (i.e. if wind direction not given):
-#'#ffp=calc_flux_footprint_KM2001(zm=20,ws_mean=2,blh=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
+#'#ffp=calc_flux_footprint_KM2001(zm=20,ws_mean=2,blh=200,L=-1.5,v_sd=0.6,ustar=0.4,z0=0.1,contours=0.8)
 #'#rotated (i.e. given wind direction):
-#'#ffp=calc_flux_footprint_KM2001(zm=20,ws_mean=2,wd_mean=80,blh=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
+#'#ffp=calc_flux_footprint_KM2001(zm=20,ws_mean=2,wd_mean=80,L=-1.5,v_sd=0.6,ustar=0.4,z0=0.1,contours=0.8)
 #'
 calc_flux_footprint_KM2001 = function(zm,ws_mean=NA,wd_mean,L,v_sd,ustar,z0,contours=seq(0.9,0.1,-0.1),nres=1000,dx=1,plot=TRUE) {
     #ctodo heck all same length
@@ -385,8 +385,8 @@ locate_flux_footprint = function(ffp,lon_station,lat_station) {
     y2lat=function(ymat,lat_s=lat_station) {
         return(lat_s + ymat/R_earth()*180/pi)
     }
-    ffp$x2d_earth = x2lon(ffp$x2d)
-    ffp$y2d_earth = y2lat(ffp$y2d)
+    ffp$x_earth = x2lon(ffp$x)
+    ffp$y_earth = y2lat(ffp$y)
     ffp$xcontour_earth = lapply(ffp$xcontour,x2lon)
     ffp$ycontour_earth = lapply(ffp$ycontour,y2lat)
     return(ffp)
@@ -407,6 +407,7 @@ locate_flux_footprint = function(ffp,lon_station,lat_station) {
 #'@param nres resolution (scalar) (default: \code{nres=1000})
 #'@param method method used to calculate FFP: can be either \code{method="Kljun2015"} (default) or \code{method="KM2001"}
 #'@param plot logical, should the flux footprint be plotted? default \code{plot=TRUE}
+#'@param ... paraemters passed to image.plot function
 #'
 #'@return list containing all relevant flux footprint information
 #'@export
@@ -416,7 +417,7 @@ locate_flux_footprint = function(ffp,lon_station,lat_station) {
 #'#ffp=calc_flux_footprint_climatology(zm=20,ws_mean=rep(2,nit),blh=rep(200,nit),L=rep(-1.5,nit),
 #'#          v_sd=rep(0.6,nit),ustar=rep(0.4,nit),contours=0.8,wd_mean=c(50,240)) #todo
 #'
-calc_flux_footprint_climatology = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z0=NA,blh=NA,contours=seq(0.9,0.1,-0.1),nres=1000,method="Kljun2015",plot=TRUE) {
+calc_flux_footprint_climatology = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z0=NA,blh=NA,contours=seq(0.9,0.1,-0.1),nres=1000,method="Kljun2015",plot=TRUE,...) {
     n=length(ws_mean)
     ffp_clim=array(0,dim=c(nres,nres))
     ncount=0
@@ -459,7 +460,7 @@ calc_flux_footprint_climatology = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar
         message("An error occurred when calculating the contours.")
     })
     tryCatch({
-        if (plot==TRUE) plot_flux_footprint(ffp)
+        if (plot==TRUE) plot_flux_footprint(ffp,...)
     }, warning = function(w) {
         message("An error occurred when plotting the flux footprint.")
     })

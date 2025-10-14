@@ -2,7 +2,7 @@
 % Please edit documentation in R/ogive.R
 \name{calc_ogive}
 \alias{calc_ogive}
-\title{Calculates Ogive (cumulative cospectrum) based on MRD}
+\title{Calculates Ogive (cumulative distribution function from cospectrum) based on MRD}
 \usage{
 calc_ogive(mrd, plot = TRUE, ...)
 }

@@ -73,6 +73,7 @@ calc_anisotropy = function(a11,a12,a13,a22,a23,a33,plot=FALSE) {
 #'@param xb xb coordinate (e.g., from \code{calc_anisotropy})
 #'@param yb yb coordinate (e.g., from \code{calc_anisotropy})
 #'@param contours vector containing levels of contour lines for 2d kernel density estimation, default: \code{contours=c(5,10,20)}
+#'@param ... arguments passed to plot function
 #'
 #'@return plots (xb, yb) in barycentric map with 2d kernel density estimation (no return)
 #'@export
@@ -86,8 +87,8 @@ calc_anisotropy = function(a11,a12,a13,a22,a23,a33,plot=FALSE) {
 #'		rep(1,nm),rep(0,nm),runif(nm,1,1.5))
 #'plot_barycentric_map(example1$xb,example1$yb)
 #'
-plot_barycentric_map = function(xb,yb,contours=c(5,10,20)) {
-    plot(xb,yb,pch=20,col=rgb(0,0,0,0.1),xlim=c(0,1),ylim=c(0,sqrt(3)/2),asp=1,xlab="x",ylab="y",main="Barycentric Map")
+plot_barycentric_map = function(xb,yb,contours=c(5,10,20),...) {
+    plot(xb,yb,pch=20,col=rgb(0,0,0,0.1),xlim=c(0,1),ylim=c(0,sqrt(3)/2),asp=1,xlab="x",ylab="y",...)
     segments(0,0,1,0,lwd=2)
 	segments(0,0,0.5,sqrt(3)/2,lwd=2)
 	segments(1,0,0.5,sqrt(3)/2,lwd=2)
