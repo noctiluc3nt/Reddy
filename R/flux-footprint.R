@@ -20,9 +20,11 @@
 #'
 #'@examples
 #'#unrotated (i.e. if wind direction not given):
-#'ffp=calc_flux_footprint_Kljun2015(zm=20,ws_mean=2,blh=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
+#'ffp=calc_flux_footprint_Kljun2015(zm=20,ws_mean=2,blh=200,L=-1.5,
+#'      v_sd=0.6,ustar=0.4,contours=0.8)
 #'#rotated (i.e. given wind direction):
-#'ffp=calc_flux_footprint_Kljun2015(zm=20,ws_mean=2,wd_mean=80,blh=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
+#'ffp=calc_flux_footprint_Kljun2015(zm=20,ws_mean=2,wd_mean=80,blh=200,L=-1.5,
+#'      v_sd=0.6,ustar=0.4,contours=0.8)
 #'
 calc_flux_footprint_Kljun2015 = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z0=NA,blh,contours=seq(0.9,0.1,-0.1),nres=1000,plot=TRUE) {
     #fitting parameters for crosswind-integrated footprint, see (Kljun et al., 2015) eq. 17
@@ -172,11 +174,13 @@ calc_flux_footprint_Kljun2015 = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z
 #'
 #'@examples
 #'#unrotated (i.e. if wind direction not given):
-#'#ffp=calc_flux_footprint_KM2001(zm=20,ws_mean=2,blh=200,L=-1.5,v_sd=0.6,ustar=0.4,z0=0.1,contours=0.8)
+#'ffp=calc_flux_footprint_KM2001(zm=20,ws_mean=2,L=-1.5,
+#'      v_sd=0.6,ustar=0.4,z0=0.1,contours=0.8)
 #'#rotated (i.e. given wind direction):
-#'#ffp=calc_flux_footprint_KM2001(zm=20,ws_mean=2,wd_mean=80,L=-1.5,v_sd=0.6,ustar=0.4,z0=0.1,contours=0.8)
+#'ffp=calc_flux_footprint_KM2001(zm=20,ws_mean=2,wd_mean=80,L=-1.5,
+#'      v_sd=0.6,ustar=0.4,z0=0.1,contours=0.8)
 #'
-calc_flux_footprint_KM2001 = function(zm,ws_mean=NA,wd_mean,L,v_sd,ustar,z0,contours=seq(0.9,0.1,-0.1),nres=1000,dx=1,plot=TRUE) {
+calc_flux_footprint_KM2001 = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z0,contours=seq(0.9,0.1,-0.1),nres=1000,dx=1,plot=TRUE) {
     #ctodo heck all same length
     #init + create domain
     ngrid=as.integer(nres/2)
@@ -232,7 +236,7 @@ calc_flux_footprint_KM2001 = function(zm,ws_mean=NA,wd_mean,L,v_sd,ustar,z0,cont
     D=v_sd*gamma_1r*(r^2*K/U)^(m/r)/(gamma_mu*U) #A12
     E=(r-m)/r #A13
     #wind direction
-    wd=wd_mean #(wd_mean-90)%%360 #ifelse(wd<180,wd+180,wd-180)
+    wd=ifelse(!is.na(wd_mean),wd_mean,0) #(wd_mean-90)%%360 #ifelse(wd<180,wd+180,wd-180)
     x_tmp=x2d*cos(wd*pi/180)+y2d*sin(wd*pi/180)
     y_tmp=-x2d*sin(wd*pi/180)+y2d*cos(wd*pi/180)
     x_mask=(x_tmp>0)
@@ -248,7 +252,7 @@ calc_flux_footprint_KM2001 = function(zm,ws_mean=NA,wd_mean,L,v_sd,ustar,z0,cont
     ffp$f2d=f2d
     tryCatch({
         #get contours
-        fcont=get_contours_from_f2d(x,y,fmat,contours=contours)
+        fcont=get_contours_from_f2d(x,y,f2d,contours=contours)
         xcont=fcont$xcont
         ycont=fcont$ycont
         ffp$xcontour=xcont
@@ -332,7 +336,8 @@ plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1)),mode="distance"
         #    legend("topright",legend="footprint peak location",col=2,lwd=2,lty=2)
         #})
         #fields::image.plot(ffp$x2d,ffp$y2d,ffp$f2d*100,xlim=xlim,ylim=ylim,xlab="x [m]",ylab="y [m]",main="Flux Footprint")
-        fields::image.plot(ffp$x,ffp$y,ffp$f2d*100,xlim=xlim,ylim=ylim,xlab="x [m]",ylab="y [m]",main="Flux Footprint")
+        collab=colorRampPalette(c("white","gray80","blue3","red3"), space = "Lab")
+        fields::image.plot(ffp$x,ffp$y,ffp$f2d*100,xlim=xlim,ylim=ylim,xlab="x [m]",ylab="y [m]",main="Flux Footprint",col=collab(64))
         points(0,0,pch=20)
         tryCatch({
             for (i in 1:length(ffp$xcontour)) {

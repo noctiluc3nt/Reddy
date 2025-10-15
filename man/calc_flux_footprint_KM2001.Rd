@@ -7,7 +7,7 @@
 calc_flux_footprint_KM2001(
   zm,
   ws_mean = NA,
-  wd_mean,
+  wd_mean = NA,
   L,
   v_sd,
   ustar,
@@ -49,8 +49,10 @@ Calculates the Flux-Footprint Parametrization (FFP) according to Korman and Meix
 }
 \examples{
 #unrotated (i.e. if wind direction not given):
-#ffp=calc_flux_footprint_KM2001(zm=20,ws_mean=2,blh=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
+ffp=calc_flux_footprint_KM2001(zm=20,ws_mean=2,L=-1.5,
+     v_sd=0.6,ustar=0.4,z0=0.1,contours=0.8)
 #rotated (i.e. given wind direction):
-#ffp=calc_flux_footprint_KM2001(zm=20,ws_mean=2,wd_mean=80,blh=200,L=-1.5,v_sd=0.6,ustar=0.4,contours=0.8)
+ffp=calc_flux_footprint_KM2001(zm=20,ws_mean=2,wd_mean=80,L=-1.5,
+     v_sd=0.6,ustar=0.4,z0=0.1,contours=0.8)
 
 }
