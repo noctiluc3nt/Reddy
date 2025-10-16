@@ -2,6 +2,8 @@
 % Please edit documentation in R/package-description.R
 \docType{package}
 \name{Reddy package}
+\alias{Reddy}
+\alias{Reddy-package}
 \alias{Reddy package}
 \title{Introduction}
 \description{

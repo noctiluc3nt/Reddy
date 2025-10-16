@@ -160,8 +160,7 @@ calc_csi = function(temp,lw_in,rh=NULL,e=NULL) {
         es = calc_satvaporpressure(temp)
         e = rh * es/100
     }
-    sigma=5.67*10^(-8)
-    epsilon_A = lw_in/(sigma*temp^4) #actual atmospheric emissivity
+    epsilon_A = lw_in/(sigma()*temp^4) #actual atmospheric emissivity
     epsilon = 0.23 + 0.47*(100*e/temp)^(1/8) #(theoretical) clear sky emissivity, Marty and Philiponna, 2002
     return(epsilon_A/epsilon)
 }
@@ -184,37 +183,25 @@ calc_windDirection = function(u,v) {
 	return((180+180/pi*atan2(v,u))%%360) #from ERA5 doc: https://confluence.ecmwf.int/pages/viewpage.action?pageId=133262398
 }
 
-#' Horizontal Wind Speed
+#' Wind Speed
 #'
-#'@description Calculates horizontal wind speed
+#'@description Calculates wind speed (2D or 3D)
 #'@param u u-wind [m/s]
 #'@param v v-wind [m/s]
+#'@param w w-wind [m/s] (optional), default \code{w=NULL} for horizontal wind speed
 #'
 #'@return wind speed [m/s]
 #'@export
 #'
 #'@examples
-#'calc_windSpeed2D(3,3)
+#'calc_windspeed(3,3,0.1)
 #'
-calc_windSpeed2D = function(u,v) {
-	return(sqrt(u^2+v^2))
-}
-
-#' Wind Speed (3D)
-#'
-#'@description Calculates wind speed (3D)
-#'@param u u-wind [m/s]
-#'@param v v-wind [m/s]
-#'@param w w-wind [m/s]
-#'
-#'@return wind speed (3D) [m/s]
-#'@export
-#'
-#'@examples
-#'calc_windSpeed3D(3,3,0.1)
-#'
-calc_windSpeed3D = function(u,v,w) {
-	return(sqrt(u^2+v^2+w^2))
+calc_windspeed = function(u,v,w=NULL) {
+    if (is.null(w)) {
+        return(sqrt(u^2+v^2))
+    } else {
+        return(sqrt(u^2+v^2+w^2))
+    }
 }
 
 #' Gust Factor

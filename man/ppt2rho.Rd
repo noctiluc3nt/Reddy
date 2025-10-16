@@ -2,7 +2,7 @@
 % Please edit documentation in R/ec-processing.R
 \name{ppt2rho}
 \alias{ppt2rho}
-\title{Unit conversion of "parts-per" to density (for closed-path gas analyzer)}
+\title{Unit conversion of "parts-per" (molar mixing ratio) to density (for closed-path gas analyzer)}
 \usage{
 ppt2rho(ppt, T_mean = 288.15, pres = 101325, e = 0, gas = "H2O")
 }

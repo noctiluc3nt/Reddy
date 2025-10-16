@@ -17,7 +17,7 @@ calc_flux_intermittency(ts1, ts2 = NULL, nsub = 6000)
 flux intermittency [-]
 }
 \description{
-Calculates flux intermittency FI = flux_sd/flux (flux_sd: sd of subsampled fluxes) following Mahrt, 1998 (similar to stationarity flag \code{flag_stationarity})
+Calculates flux intermittency FI = flux_sd/abs(flux) (flux_sd: sd of subsampled fluxes) following Mahrt, 1998 (similar to stationarity flag \code{flag_stationarity})
 }
 \examples{
 set.seed(5)

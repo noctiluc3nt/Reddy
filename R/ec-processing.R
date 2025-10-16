@@ -46,9 +46,38 @@ despiking = function(ts,thresholds=c(NA,NA),mad_factor=10,threshold_skewness=2,t
         if (is.na(pass) | is.null(pass)) pass=FALSE
         if (pass==FALSE) ts = ts*NA
     }, warning=function(e){
-        message("Not all despiking method could be applied.")
+        message("Not all despiking methods could be applied.")
     })
     return(ts)
+}
+
+
+#' Count spikes
+#'
+#'@description Counts spikes in timeseries
+#'
+#'@param ts time series
+#'@param thresholds vector with lower and upper threshold, e.g. c(0,10)
+#'
+#'@return number of spikes in timeseries (i.e. values lower than lower threshold and higher than upper threshold)
+#'@export
+#'
+count_spikes = function(ts,thresholds=c(NA,NA)) {  
+    return(sum(ts<thresholds[1] | ts>thresholds[2]))
+}
+
+
+#' Amplitude resolution
+#'
+#'@description Gives amplitude resolution of time series (i.e. number of different values in time series)
+#'
+#'@param ts time series
+#'
+#'@return number of different values in time series
+#'@export
+#'
+get_amplitude_resolution = function(ts) {  
+    return(length(unique(ts)))
 }
 
 
@@ -76,7 +105,8 @@ rotate_double = function(u,v,w) {
     u2=u1*cos(phi) + w1*sin(phi)
     v2=v1
     w2=-u1*sin(phi)+w1*cos(phi)
-    return(list("u"=u2,"v"=v2,"w"=w2,"theta"=(theta*180/pi+360)%%360,"phi"=(phi*180/pi+360)%%360))
+    return(list("u"=u2,"v"=smaller_than_machine_epsilon(v2),"w"=smaller_than_machine_epsilon(w2),
+        "theta"=(theta*180/pi+360)%%360,"phi"=(phi*180/pi+360)%%360))
 }
 
 
@@ -243,7 +273,7 @@ flag_most = function(w_sd,ustar,zeta,thresholds_most=c(0.3,0.8)) {
     if (length(thresholds_most)!=2) {
         stop("thresholds_most has to be a vector of length 2.")
     }
-    parameterized=1.3*(1+2*abs(zeta))^(1/3) #w_sd/ustar parametrized according to scaling function based on zeta
+    parameterized=1.3*(1-2*abs(zeta))^(1/3) #w_sd/ustar parametrized according to scaling function based on zeta
     itc=abs((w_sd/ustar-parameterized)/parameterized)
     flag=ifelse(itc<thresholds_most[1],0,ifelse(itc<thresholds_most[2],1,2))
     return(flag)
@@ -304,7 +334,7 @@ SNDcorrection = function(Ts_mean,u_mean,v_mean,cov_uw,cov_vw,cov_wTs,cov_qw=NULL
 #'@export
 #'
 WPLcorrection = function(Ts_mean,q_mean,cov_wTs,rhow_mean,cov_wrhow,rhoc_mean=NULL,cov_wrhoc=NULL) {
-    if (is.null(rho_c)) { #water vapor flux
+    if (is.null(rhoc_mean)) { #water vapor flux
         return((1+1.61*q_mean)*(cov_wrhow+rhow_mean/Ts_mean*cov_wTs)) #with M_L/M_w = 1.61
     } else { #other trace gas flux
         return(cov_wrhoc+1.61*rhoc_mean/rhow_mean*cov_wrhow+(1+1.61*q_mean)*rhoc_mean/Ts_mean*cov_wTs)
@@ -312,7 +342,7 @@ WPLcorrection = function(Ts_mean,q_mean,cov_wTs,rhow_mean,cov_wrhow,rhoc_mean=NU
 }
 
 
-#' Unit conversion of "parts-per" to density (for closed-path gas analyzer)
+#' Unit conversion of "parts-per" (molar mixing ratio) to density (for closed-path gas analyzer)
 #'
 #'@description Unit conversion of "parts-per" to density (for closed-path gas analyzer)
 #'@param ppt measurement in parts per thousand [ppt]
@@ -335,6 +365,39 @@ ppt2rho = function(ppt,T_mean=288.15, pres = 101325, e = 0, gas="H2O") {
     } else {
         warning("You selected a gas which is not available for the conversion here.")
     } 
+}
+
+#' Conversion of molar concentration to density
+#'
+#'@description Conversion of molar concentration to density
+#'@param c molar concentration in mol/m^3
+#'@param gas which gas? can be either \code{H2O}, \code{CO2}, \code{CH4}
+#'
+#'@return density of the gas [kg/m^3]
+#'@export
+#'
+molarconcentration2density = function(c, gas="H2O") {
+    if (gas == "H2O") {
+        return(c*M_H2O())
+    } else if (gas == "CO2") {
+        return(c*M_CO2())
+    } else if (gas == "CH4") {
+        return(c*M_CH4())
+    } else {
+        warning("You selected a gas which is not available for the conversion here.")
+    } 
+}
+
+#' Conversion of density to mixing ratio
+#'
+#'@description Conversion of density to mixing ratio
+#'@param rho density [kg/m^3]
+#'
+#'@return mixing ratio of the gas [kg/kg]
+#'@export
+#'
+density2mixingratio = function(rho) {
+    return(rho/rhoAir())
 }
 
 
@@ -438,4 +501,23 @@ RTcorrection = function(cospectrum,freq,tau=1) {
     cospectrum_cor=cospectrum*sqrt(tf) #note: their is a discussion whether sqrt(tf) or tf should be applied in the correction
     rt_factor=sum(cospectrum_cor)/sum(cospectrum)
 	return(rt_factor)
+}
+
+
+#' Set everything smaller than machine epsilon to zero
+#'
+#'@description Calculates machine epsilon (machine-dependent) and sets everything smaller to exactly zero
+#'@param vec vector/time series
+#'
+#'@return vector of same length, just all values smaller than machine epsilon are set to exactly zero
+#'@export
+#'
+#'@examples
+#'ts=c(1,0.1,1e-15,1e-16,1e-17,1e-18,1e-19)
+#'ts=smaller_than_machine_epsilon(ts)
+#'
+smaller_than_machine_epsilon = function(vec) {
+    epsilon=.Machine$double.eps
+    vec[vec<epsilon]=0
+    return(vec)
 }

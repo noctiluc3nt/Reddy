@@ -131,7 +131,7 @@ calc_distance=function(lon1,lat1,lon2,lat2) {
 #'@export
 #'
 find_closest_grid_point = function(lons,lats,lon_loc,lat_loc) {
-    dist=sqrt((lons-lon_loc)^2 + (lat-lat_loc)^2)
+    dist=sqrt((lons-lon_loc)^2 + (lats-lat_loc)^2)
     ind=which(dist==min(dist),arr.ind=T)
     return(ind)
 }

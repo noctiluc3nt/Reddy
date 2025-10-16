@@ -164,3 +164,19 @@ calc_circular_mean=function(x,na.rm=TRUE) {
 	if (na.rm==TRUE) return((atan2(sum(sin(x),na.rm=TRUE),sum(cos(x),na.rm=TRUE))*180/pi)%%360)
 	if (na.rm==FALSE) return((atan2(sum(sin(x)),sum(cos(x)))*180/pi)%%360)
 }
+
+
+#' Shades area between two functions
+#'
+#'@description Shades area between two functions given in form of x1, x2, f1, f2 
+#'@param x1 x-coordintes of f1
+#'@param x2 x-coordintes of f2
+#'@param f1 y-coordintes of f1
+#'@param f2 y-coordintes of f2
+#'@param ... arguments passed to plot function
+#'@return no return
+#'@export
+#'
+shade_between = function(x1, x2, f1, f2, ...) { 
+    polygon(c(x1, rev(x2)), c(f1, rev(f2)), ...)
+}

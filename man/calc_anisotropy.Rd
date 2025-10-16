@@ -29,6 +29,6 @@ Invariant analysis of Reynolds stress tensor, calculation of Lumley and barycent
 }
 \examples{
 calc_anisotropy(1,0,0,1,0,1) #isotropic
-calc_anisotropy(1,0,1,1,0,1) #some anisotropy
+calc_anisotropy(1,0,1,1,0,1) #anisotropic
 
 }

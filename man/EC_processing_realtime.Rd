@@ -30,6 +30,7 @@ EC_processing_realtime(
   do_SNDcorrection = TRUE,
   A = 7/8,
   B = 7/8,
+  do_WPLcorrection = FALSE,
   store = TRUE,
   format_out = "txt",
   filename = NULL,
@@ -86,6 +87,8 @@ EC_processing_realtime(
 \item{A}{constant used in SND correction, default \code{A=7/8} for CSAT3 sonic}
 
 \item{B}{constant used in SND correction, default \code{A=7/8} for CSAT3 sonic}
+
+\item{do_WPLcorrection}{logical, should WPL correction be applied to gas fluxes? default \code{FALSE}}
 
 \item{store}{logical, should the output be stored? default \code{TRUE}}
 

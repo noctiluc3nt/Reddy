@@ -28,7 +28,7 @@ calc_tke = function(u_sd,v_sd,w_sd) {
 #'@return turbulent kinetic energy velocity scale [m/s]
 #'@export
 #'
-#'@examples
+#'@examples-
 #'calc_vtke(1,1,1)
 #'
 calc_vtke = function(u_sd,v_sd,w_sd) {
@@ -196,7 +196,7 @@ calc_ozmidov_scale = function(epsilon,N) {
 
 #' Flux intermittency
 #'
-#'@description Calculates flux intermittency FI = flux_sd/flux (flux_sd: sd of subsampled fluxes) following Mahrt, 1998 (similar to stationarity flag \code{flag_stationarity})
+#'@description Calculates flux intermittency FI = flux_sd/abs(flux) (flux_sd: sd of subsampled fluxes) following Mahrt, 1998 (similar to stationarity flag \code{flag_stationarity})
 #'@param ts1 timeseries 1 
 #'@param ts2 timeseries 2 (optional), if the flux should be calculated based on \code{ts1*ts2} (default \code{ts2=NULL}, i.e. \code{ts2} is not used)
 #'@param nsub number of elements used for subsampling, default \code{nsub=6000}, which corrosponds to 5 minutes of measurements from 20 Hz sampled half-hour (containing 30*60*20 = 36000 measurements)
@@ -229,7 +229,7 @@ calc_flux_intermittency = function(ts1,ts2=NULL,nsub=6000) {
 		if (is.null(ts2)) cov_sub=mean(ts1[isub],na.rm=TRUE)
         cov_subs[i]=cov_sub
     }
-    return(sd(cov_subs)/cov_complete)
+    return(sd(cov_subs)/abs(cov_complete))
 }
 
 
@@ -304,7 +304,7 @@ ustar2z0 = function(ustar) {
 
 
 
-### Ekman layer
+### Boundary Layer Height and Ekman layer
 
 #' Coriolis parameter
 #'
@@ -318,7 +318,8 @@ ustar2z0 = function(ustar) {
 #'calc_coriolis(45)
 #'
 calc_coriolis = function(phi) {
-	return(2*pi*sin(phi*pi/180))
+	Omega=1/86400 #earth rotation frequency
+	return(2*Omega*sin(phi*pi/180))
 }
 
 #' Ekman layer thickness
@@ -337,6 +338,22 @@ calc_ekman_layer_depth = function(Km,f) {
 	return(sqrt(2*Km/abs(f)))
 }
 
+#' Boundary Layer Height
+#'
+#'@description Calculates boundary layer height estimate following Nieuwstadt, 1981
+#'@param L Obukhov length [m]
+#'@param ustar friction velocity [m/s]
+#'@param f Coriolis parameter [1/s] (e.g. from \code{calc_coriolis})
+#'
+#'@return Boundary layer height estimation [m]
+#'@export
+#'
+#'@examples
+#'calc_blh(-1,0.5,10^(-4))
+#'
+calc_blh = function(L,ustar,f) {
+	return(L/3.8*(sqrt(1+2.28*ustar/(f*L))-1))
+}
 
 ### Brunt-Vaisala frequency + (bulk/flux) Richardson number
 
