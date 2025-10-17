@@ -336,7 +336,7 @@ plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1)),mode="distance"
         #    legend("topright",legend="footprint peak location",col=2,lwd=2,lty=2)
         #})
         #fields::image.plot(ffp$x2d,ffp$y2d,ffp$f2d*100,xlim=xlim,ylim=ylim,xlab="x [m]",ylab="y [m]",main="Flux Footprint")
-        collab=colorRampPalette(c("white","gray80","blue3","red3"), space = "Lab")
+        collab=colorRampPalette(c("white","lightblue","blue3","red3"), space = "Lab")
         fields::image.plot(ffp$x,ffp$y,ffp$f2d*100,xlim=xlim,ylim=ylim,xlab="x [m]",ylab="y [m]",main="Flux Footprint",col=collab(64))
         points(0,0,pch=20)
         tryCatch({
@@ -424,7 +424,7 @@ locate_flux_footprint = function(ffp,lon_station,lat_station) {
 #'
 calc_flux_footprint_climatology = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z0=NA,blh=NA,contours=seq(0.9,0.1,-0.1),nres=1000,method="Kljun2015",plot=TRUE,...) {
     n=length(ws_mean)
-    ffp_clim=array(0,dim=c(nres,nres))
+    ffp_clim=array(0,dim=c(nres+1,nres+1))
     ncount=0
     for (i in 1:n) {
         cat("progress: ",round(i/n*100))

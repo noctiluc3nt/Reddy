@@ -29,6 +29,7 @@ The Reddy package provides functions for the post-processing, analysis and evalu
 - `flux-footprint.R`: calculation and visualization of 2D flux footprint (FFP, Kljun et al., 2015)
 - `model-utils.R`: collection of function to post-process NWP model output (e.g. flux deaccumulation, conversion of sigma levels to physical height)
 - `multiresolution-decomposition.R`: calculation and visualization of multiresolution decomposition (MRD, Vickers and Mahrt, 2003)
+- `ogive.R`: calculation and visualization of ogives, i.e. cumulative distribution functions
 - `parameterizations-of-turbulence.R`: collection of functions used to calculated bulk closures, flux-profile and flux-variance relations (e.g. Richardson number, eddy viscosity, eddy conductivity, scaling functions) used in turbulence parameterizations in numerical weather and climate models
 - `quadrant-analysis.R`: calculation and visualization of quadrant analysis to study coherent structures and their organization
 - `spectrum.R`: calculation and visualization of frequency (temporal) and wavenumber (spatial) spectra, possibility to bin them to compare them with theoretically expected slopes
