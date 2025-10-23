@@ -60,16 +60,37 @@ calc_mrd = function(var1,var2=NULL,time_res=0.05,plot=TRUE,...) {
             var2=c(t(var2-wn2))
         }
     }
-    out=data.frame("index"=1:(M+1),"m"=M:0,"scale"=2^(M:0),"time"=time_res*(2^(M:0)),"mean"=rev(mrd_mean),"median"=rev(mrd_median),"q25"=rev(mrd_q25),"q75"=rev(mrd_q75))
+    mrd_times=time_res*(2^(M:0))
+    out=data.frame("index"=1:(M+1),"m"=M:0,"scale"=2^(M:0),"time"=mrd_times,"mean"=rev(mrd_mean),"median"=rev(mrd_median),"q25"=rev(mrd_q25),"q75"=rev(mrd_q75))
     if (plot==TRUE) plot_mrd(out, ...)
     return(out)
 }
 
+#' Suggestion of Averaging Time from Multiresolution Decomposition
+#'
+#'@description Suggested averaging time, i.e. first zero-crossing of MRD
+#'@param mrd_out an object returned from \code{calc_mrd}
+#'@return vector or scalar containing all zero crossing
+#'@export
+#'
+#'@importFrom rootSolve uniroot.all
+#'
+#'@examples
+#'set.seed(5)
+#'series=rnorm(2^10)
+#'mrd_test=calc_mrd(c(series))
+#'suggest_avgtime_from_mrd(mrd_test)
+#'
+suggest_avgtime_from_mrd=function(mrd_out) {
+    zerox=rootSolve::uniroot.all(approxfun(mrd_out$time,mrd_out$median),interval=range(mrd_out$time))
+    return(zerox)
+}
 
 #' Plotting Multiresolution Decomposition
 #'
 #'@description Plots multiresolution decomposition (MRD)
 #'@param mrd_out an object returned from \code{calc_mrd}
+#'@param suggest_avgtime logical, should the suggested averaging time be plotted? default \code{TRUE}
 #'@param ... arguments passed to plot function
 #'@return creates a plot of MRD with logarithmic time scale (no return)
 #'@export
@@ -80,7 +101,7 @@ calc_mrd = function(var1,var2=NULL,time_res=0.05,plot=TRUE,...) {
 #'mrd_test=calc_mrd(c(series))
 #'plot_mrd(mrd_test)
 #'
-plot_mrd=function(mrd_out,...) {
+plot_mrd=function(mrd_out,suggest_avgtime=TRUE,...) {
     if (!exists("ylab")) { ylab="MRD" }
     if (!exists("xlab")) { xlab="time [s]"}
     if (!exists("ylim")) { ylim=c(min(mrd_out$q25[!is.na(mrd_out$q25)]),max(mrd_out$q75[!is.na(mrd_out$q75)])) }
@@ -96,4 +117,8 @@ plot_mrd=function(mrd_out,...) {
 	abline(v=log10(60),lty=3)
 	abline(v=log10(60*30),lty=3)
     abline(h=0,lty=3)
+    if (suggest_avgtime==TRUE) {
+        zerox=suggest_avgtime_from_mrd(mrd_out)
+        abline(v=min(log10(zerox)),col="orangered")
+    }
 }

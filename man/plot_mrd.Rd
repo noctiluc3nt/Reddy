@@ -4,10 +4,12 @@
 \alias{plot_mrd}
 \title{Plotting Multiresolution Decomposition}
 \usage{
-plot_mrd(mrd_out, ...)
+plot_mrd(mrd_out, suggest_avgtime = TRUE, ...)
 }
 \arguments{
 \item{mrd_out}{an object returned from \code{calc_mrd}}
+
+\item{suggest_avgtime}{logical, should the suggested averaging time be plotted? default \code{TRUE}}
 
 \item{...}{arguments passed to plot function}
 }
