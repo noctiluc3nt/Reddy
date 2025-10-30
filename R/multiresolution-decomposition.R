@@ -118,7 +118,12 @@ plot_mrd=function(mrd_out,suggest_avgtime=TRUE,...) {
 	abline(v=log10(60*30),lty=3)
     abline(h=0,lty=3)
     if (suggest_avgtime==TRUE) {
-        zerox=suggest_avgtime_from_mrd(mrd_out)
-        abline(v=min(log10(zerox)),col="orangered")
+        zerox=suggest_avgtime_from_mrd(mrd_out)[1]
+        if (!is.na(zerox)) {
+            abline(v=min(log10(zerox)),col="orangered")
+            print(paste("suggested averaging time (i.e. first zero-crossing):",round(zerox/60,2),"min"))
+        } else {
+            print("No zero-crossing of the MRD (co)spectrum was detected.")
+        }
     }
 }
