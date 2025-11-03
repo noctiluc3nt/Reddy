@@ -62,8 +62,6 @@ calc_flux_footprint_Kljun2015 = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z
         xmax=xstarmax*aux2
         if ((log(zm/z0)-psim)>0) {
             fy_mean=fstar/aux2 #eq. 9
-        } else {
-            error = -1
         }
     } else {
         stop("You have to know either ws_mean or z0.")
@@ -298,7 +296,7 @@ get_contours_from_f2d=function(x,y,fmat,contours=seq(0,0.9,0.1)) {
         xcont[[i]]=cont[[1]]$x
         ycont[[i]]=cont[[1]]$y
     }
-    return(list(xcont,ycont))
+    return(list("xcont"=xcont,"ycont"=ycont,"contour_levels"=contours))
 }
 
 #' Plot Flux-Footprint
@@ -307,6 +305,8 @@ get_contours_from_f2d=function(x,y,fmat,contours=seq(0,0.9,0.1)) {
 #'@param ffp an object returned from \code{calc_flux_footprint_[method]}
 #'@param levels levels used for filled contour plot of footprint, default \code{levels=c(0,10^seq(-6,-3,0.1))}
 #'@param mode can be either \code{mode="distance"} for plotting footprint relative to station location in cartesian coordinates or \code{mode="lonlat"} for plotting in (lon,lat)-ccordinates
+#'@param xlim range of x-axis in plot
+#'@param ylim range of y-axis in plot
 #'@param ... paraemters passed to image.plot function 
 #'
 #'@return no return
@@ -320,15 +320,15 @@ get_contours_from_f2d=function(x,y,fmat,contours=seq(0,0.9,0.1)) {
 #'ffp=calc_flux_footprint_Kljun2015(zm=5,ws_mean=5,blh=700,L=-1.3,v_sd=1.2,ustar=0.35)
 #'plot_flux_footprint(ffp)
 #' 
-plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1)),mode="distance",...) {
+plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1)),mode="distance",xlim=NULL,ylim=NULL,...) {
     #filled contour plot with contour lines
     #lab=colorRampPalette(c("white","blue3","yellow","orange","red3"), space = "Lab")
     #nlev=length(levels)
     #plot(NA,xlim=xlim,ylim=ylim,main="2D Flux Footprint",xlab="x [m]",ylab="y [m]")
     #.filled.contour(ffp$x2d[1,],ffp$y2d[,1],ffp$f2d,levels=levels,col=lab(nlev))
     if (mode=="distance") {
-        if (!exists("xlim")) xlim=c(-200,200)
-        if (!exists("ylim")) ylim=c(-200,200)
+        if (is.null(xlim)) xlim=c(-200,200)
+        if (is.null(ylim)) ylim=c(-200,200)
         #plot crosswind-integrated footprint
         #tryCatch({
         #    plot(ffp$x,ffp$fy_mean,type="l",xlim=xlim,lwd=2,xlab="x [m]",ylab="crosswind-integrated footprint",main="Crosswind-Integrated Flux Footprint")
@@ -336,7 +336,7 @@ plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1)),mode="distance"
         #    legend("topright",legend="footprint peak location",col=2,lwd=2,lty=2)
         #})
         #fields::image.plot(ffp$x2d,ffp$y2d,ffp$f2d*100,xlim=xlim,ylim=ylim,xlab="x [m]",ylab="y [m]",main="Flux Footprint")
-        collab=colorRampPalette(c("white","lightblue","blue3","red3"), space = "Lab")
+        collab=colorRampPalette(c("white","cornflowerblue","blue3","red3"), space = "Lab")
         fields::image.plot(ffp$x,ffp$y,ffp$f2d*100,xlim=xlim,ylim=ylim,xlab="x [m]",ylab="y [m]",main="Flux Footprint",col=collab(64))
         points(0,0,pch=20)
         tryCatch({
@@ -427,7 +427,7 @@ calc_flux_footprint_climatology = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar
     ffp_clim=array(0,dim=c(nres+1,nres+1))
     ncount=0
     for (i in 1:n) {
-        cat("progress: ",round(i/n*100))
+        #cat("progress: ",round(i/n*100))
         tryCatch({
             if (method=="Kljun2015") {
                 ffp_tmp=calc_flux_footprint_Kljun2015(zm=zm,ws_mean=ws_mean[i],wd_mean=wd_mean[i],blh=blh[i],L=L[i],v_sd=v_sd[i],ustar=ustar[i],z0=z0[i],nres=nres,plot=FALSE)
@@ -453,6 +453,7 @@ calc_flux_footprint_climatology = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar
     #ffp$xmax=xmax
     ffp$x=x
     ffp$y=y
+    ffp$f2d=fmat
     tryCatch({
         #get contours
         fcont=get_contours_from_f2d(x,y,fmat,contours=contours)
