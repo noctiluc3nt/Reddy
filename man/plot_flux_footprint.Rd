@@ -8,6 +8,7 @@ plot_flux_footprint(
   ffp,
   levels = c(0, 10^seq(-6, -3, 0.1)),
   mode = "distance",
+  version = "2d",
   xlim = NULL,
   ylim = NULL,
   ...
@@ -19,6 +20,8 @@ plot_flux_footprint(
 \item{levels}{levels used for filled contour plot of footprint, default \code{levels=c(0,10^seq(-6,-3,0.1))}}
 
 \item{mode}{can be either \code{mode="distance"} for plotting footprint relative to station location in cartesian coordinates or \code{mode="lonlat"} for plotting in (lon,lat)-ccordinates}
+
+\item{version}{plot 2d or 1d flux footprint? default \code{version="2d"}}
 
 \item{xlim}{range of x-axis in plot}
 

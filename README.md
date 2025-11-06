@@ -23,12 +23,13 @@ The Reddy package provides functions for the post-processing, analysis and evalu
 - `auxilliary.R`: collection of some useful generic functions for the evaluation (e.g., discrete binning, cross-correlation maximization)
 - `constants.R`: constants used for calculations (internal)
 - `diagnostics-meteorology.R`: calculation of "background-meteorology" quantities (e.g., clear-sky index, vapor pressure deficit, unit conversions of moisture variables)
+- `diagnostics-topography.R`: calculation of topographic and surface properties (e.g. topographic position index, slope-based parameter, roughness length)
 - `diagnostics-turbulence.R`: calculation of some standard turbulence diagnostics (e.g., friction velocity, TKE, turbulence intensity, stability parameter)
 - `ec-processing.R`: collection of functions for post-processing and quality control of eddy-covariance measurements
 - `ec-processing-routine.R`: an example for a post-processing and quality control routine of eddy-covariance measurements utilizing the functions in `ec-processing.R` with storing the final averaged output data in an external file
-- `flux-footprint.R`: calculation and visualization of 2D flux footprint (FFP, Kljun et al., 2015)
+- `flux-footprint.R`: calculation and visualization of 2D flux footprint based on the parameterization from Kormann & Meixner, 2001 and Kljun et al., 2015
 - `model-utils.R`: collection of function to post-process NWP model output (e.g. flux deaccumulation, conversion of sigma levels to physical height)
-- `multiresolution-decomposition.R`: calculation and visualization of multiresolution decomposition (MRD, Vickers and Mahrt, 2003)
+- `multiresolution-decomposition.R`: calculation and visualization of multiresolution decomposition (MRD) following Vickers & Mahrt, 2003
 - `ogive.R`: calculation and visualization of ogives, i.e. cumulative distribution functions
 - `parameterizations-of-turbulence.R`: collection of functions used to calculated bulk closures, flux-profile and flux-variance relations (e.g. Richardson number, eddy viscosity, eddy conductivity, scaling functions) used in turbulence parameterizations in numerical weather and climate models
 - `quadrant-analysis.R`: calculation and visualization of quadrant analysis to study coherent structures and their organization
@@ -49,12 +50,10 @@ The Reddy package provides functions for the post-processing, analysis and evalu
 
 **Any issues or comments?** Create an issue [here](https://github.com/noctiluc3nt/Reddy/issues).
 
+Contact: laura.mack@geo.uio.no
+
 ## Literature
-- Foken, T. (2017). Micrometeorology, Springer, Berlin, Heidelberg. DOI: https://doi.org/10.1007/978-3-642-25440-6.
-- Kljun, N., Calanca, P., Rotach, M. W., Schmid, H. P. (2015). A simple two-dimensional parameterisation for Flux Footprint
-Prediction (FFP), Geoscientific Model Development, 8, 3695-3713. DOI: https://doi.org/10.5194/gmd-8-3695-2015
 - Mack, L., Berntsen, T.K., Vercauteren, N., Pirk, N. (2024). Transfer Efficiency and Organization in Turbulent Transport over Alpine Tundra. Boundary-Layer Meteorology 190, 38. DOI: https://doi.org/10.1007/s10546-024-00879-5
-- Vickers, D., Mahrt, L. (2003). The Cospectral Gap and Turbulent Flux Calculations. Journal of Atmospheric and Oceanic Technology, 20:660-672. DOI: 
-[https://doi.org/10.1175/1520-0426(2003)20<660:TCGATF>2.0.CO;2](https://doi.org/10.1175/1520-0426(2003)20<660:TCGATF>2.0.CO;2)
+
 
 

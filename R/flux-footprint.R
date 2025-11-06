@@ -86,8 +86,6 @@ calc_flux_footprint_Kljun2015 = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z
     nx=length(x)
     y=c(-rev(ypos),ypos[2:n2])
     ny=length(y)
-    #xmat=matrix(rep(x,ny),nrow=ny,ncol=nx,byrow=TRUE)
-    #ymat=matrix(rep(y,nx),nrow=ny,ncol=nx)
     #cut coordinates/fmat
     ny_mid=round(ny/2)
     yselect=(ny_mid-nres/2+1):(ny_mid+nres/2)
@@ -95,6 +93,7 @@ calc_flux_footprint_Kljun2015 = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z
     fmat=rbind(fmat*0,fmat)
     x=seq(min(-x),max(x),length.out=dim(fmat)[1])
     y=x
+    crosswind_integrated=apply(fmat,1,mean,na.rm=TRUE)
     #rotate flux footprint
     if (!is.na(wd_mean)) {
         #rotate area (2d data) using polar coordinates
@@ -119,30 +118,16 @@ calc_flux_footprint_Kljun2015 = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z
     fcont=get_contours_from_f2d(x,y,fmat,contours=contours)
     xcont=fcont$xcont
     ycont=fcont$ycont
-    #nc=length(contours)
-    #fsort=rev(sort(c(fmat)))
-    #fsort=fsort[!is.na(fsort)]
-    #fint=cumsum(fsort)*dx^2
-    #xcont=list()
-    #ycont=list()
-    #for (i in 1:nc) {
-    #    fdiff=abs(fint-contours[i])
-    #    ind=which.min(fdiff)
-    #    fr=fsort[ind]
-    #    cont=contourLines(x,y,fmat,levels=fr)
-    #    xcont[[i]]=cont[[1]]$x
-    #    ycont[[i]]=cont[[1]]$y
-    #}
     #output
     ffp=list()
-    ffp$xmax=xmax
     ffp$x=x
     ffp$y=y
-    ffp$fy_mean=fy_mean
     ffp$f2d=fmat
     ffp$xcontour=xcont
     ffp$ycontour=ycont
     ffp$contour_levels=contours
+    ffp$crosswind_integrated=crosswind_integrated
+    ffp$xmax=x[which(crosswind_integrated==max(crosswind_integrated,na.rm=TRUE))]
     tryCatch({
         if (plot==TRUE) plot_flux_footprint(ffp)
     }, warning = function(w) {
@@ -152,9 +137,9 @@ calc_flux_footprint_Kljun2015 = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z
 }
 
 
-#' Flux-Footprint Calculation according to Korman and Meixner, 2001
+#' Flux-Footprint Calculation according to Kormann and Meixner, 2001
 #'
-#'@description Calculates the Flux-Footprint Parametrization (FFP) according to Korman and Meixner, 2001
+#'@description Calculates the Flux-Footprint Parametrization (FFP) according to Kormann and Meixner, 2001
 #'@param zm measurement height [m]
 #'@param ws_mean mean horizontal wind speed [m/s] (alternatively you can also use \code{z0})
 #'@param wd_mean mean wind direction [deg] (used to rotate flux footprint, optional)
@@ -186,8 +171,8 @@ calc_flux_footprint_KM2001 = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z0,c
     y=seq(-ngrid,ngrid,dx)
     nx=length(x)
     grid=expand.grid(x,y)
-    x2d=matrix(grid[,1],nrow=nx,byrow=T)
-    y2d=matrix(grid[,2],nrow=nx,byrow=T)
+    x2d=matrix(grid[,1],nrow=nx,byrow=TRUE)
+    y2d=matrix(grid[,2],nrow=nx,byrow=TRUE)
     f2d=array(NA,dim=c(nx,nx))
     zeta=zm/L
     if (zeta>0) { #stable
@@ -233,6 +218,9 @@ calc_flux_footprint_KM2001 = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z0,c
     C=(B^mu)/gamma_mu #A11
     D=v_sd*gamma_1r*(r^2*K/U)^(m/r)/(gamma_mu*U) #A12
     E=(r-m)/r #A13
+    #crosswind-integrated flux footprint (unrotated)
+    h0=D*x2d^E
+    crosswind_integrated=apply(1/(sqrt(2*pi)*h0)*exp(-y2d^2/(2*h0^2))*C*x2d^(-A)*exp(-B/x2d),2,mean,na.rm=TRUE)
     #wind direction
     wd=ifelse(!is.na(wd_mean),wd_mean,0) #(wd_mean-90)%%360 #ifelse(wd<180,wd+180,wd-180)
     x_tmp=x2d*cos(wd*pi/180)+y2d*sin(wd*pi/180)
@@ -251,14 +239,14 @@ calc_flux_footprint_KM2001 = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z0,c
     tryCatch({
         #get contours
         fcont=get_contours_from_f2d(x,y,f2d,contours=contours)
-        xcont=fcont$xcont
-        ycont=fcont$ycont
-        ffp$xcontour=xcont
-        ffp$ycontour=ycont
+        ffp$xcontour=fcont$xcont
+        ffp$ycontour=fcont$ycont
         ffp$contour_levels=contours
     }, error = function(w) {
         message("An error occurred when calculating the contours.")
     })
+    ffp$crosswind_integrated=crosswind_integrated
+    ffp$xmax=x[which(crosswind_integrated==max(crosswind_integrated,na.rm=TRUE))]
     tryCatch({
         if (plot==TRUE) plot_flux_footprint(ffp)
     }, warning = function(w) {
@@ -305,6 +293,7 @@ get_contours_from_f2d=function(x,y,fmat,contours=seq(0,0.9,0.1)) {
 #'@param ffp an object returned from \code{calc_flux_footprint_[method]}
 #'@param levels levels used for filled contour plot of footprint, default \code{levels=c(0,10^seq(-6,-3,0.1))}
 #'@param mode can be either \code{mode="distance"} for plotting footprint relative to station location in cartesian coordinates or \code{mode="lonlat"} for plotting in (lon,lat)-ccordinates
+#'@param version plot 2d or 1d flux footprint? default \code{version="2d"}
 #'@param xlim range of x-axis in plot
 #'@param ylim range of y-axis in plot
 #'@param ... paraemters passed to image.plot function 
@@ -320,12 +309,13 @@ get_contours_from_f2d=function(x,y,fmat,contours=seq(0,0.9,0.1)) {
 #'ffp=calc_flux_footprint_Kljun2015(zm=5,ws_mean=5,blh=700,L=-1.3,v_sd=1.2,ustar=0.35)
 #'plot_flux_footprint(ffp)
 #' 
-plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1)),mode="distance",xlim=NULL,ylim=NULL,...) {
+plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1)),mode="distance",version="2d",xlim=NULL,ylim=NULL,...) {
     #filled contour plot with contour lines
     #lab=colorRampPalette(c("white","blue3","yellow","orange","red3"), space = "Lab")
     #nlev=length(levels)
     #plot(NA,xlim=xlim,ylim=ylim,main="2D Flux Footprint",xlab="x [m]",ylab="y [m]")
     #.filled.contour(ffp$x2d[1,],ffp$y2d[,1],ffp$f2d,levels=levels,col=lab(nlev))
+    if (version == "2d" | version == "2D" | version == 2) { #2d flux footprint
     if (mode=="distance") {
         if (is.null(xlim)) xlim=c(-200,200)
         if (is.null(ylim)) ylim=c(-200,200)
@@ -358,6 +348,13 @@ plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1)),mode="distance"
                 }
             })
         }
+    }
+    } else if (version=="1d" | version=="1D" | version==1) {
+        plot(ffp$x,ffp$crosswind_integrated,type="l",lwd=1.5,xlim=xlim,ylim=ylim,main="1d flux footprint (crosswind-integrated)",xlab="x [m]",
+            ylab="crosswind-integrated flux footprint",...)
+        abline(v=ffp$xmax,col="red3")
+    } else {
+        warning("You have selected a plot version that is not available: It has to be either version='2d' or version='1d'.")
     }
     #3d perspective plot
     #nmid=as.integer(length(ffp$x2d[,1])/2)
