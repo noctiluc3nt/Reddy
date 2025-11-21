@@ -16,7 +16,7 @@ deaccumulate1h=function(dat,factor=-1/3600) {
 	} else {
 		dims=dim(dat)
 		n=dims[3]
-		field_out=dat
+		out=dat
    		for (i in 2:n) {
         	out[,,i]=dat[,,i]-dat[,,i-1] #deaccumulate hourly
     	}
