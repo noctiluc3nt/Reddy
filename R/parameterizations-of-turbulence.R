@@ -30,11 +30,7 @@ scale_phiu = function(zeta,method="PD1984") {
 #'
 scale_phiw = function(zeta,method="PD1984") {
     if (method=="PD1984") {
-	    if (zeta<=0) { #unstable
-            return(1.25*(1-3*zeta)^(1/3))
-        } else { #stable
-          return(1.25*(1+3*zeta)^(1/3))
-        }
+        ifelse(zeta<=,1.25*(1-3*zeta)^(1/3),1.25*(1+3*zeta)^(1/3))
     }
 }
 
@@ -47,19 +43,11 @@ scale_phiw = function(zeta,method="PD1984") {
 #'@return Phi_T
 #'@export
 #'
-scale_phiT = function(zeta,method="K1994") {
+scale_phiT = function(zeta,method="SC2018") {
     if (method=="K1994") {
-        if (zeta<=0) { #unstable
-            return(0.95*(-zeta)^(-1/3))
-        } else { #stable
-            return(0.95*(zeta)^(-1/3))
-        }
+        ifelse(zeta<=0,0.95*(-zeta)^(-1/3),0.95*(zeta)^(-1/3))
     } else if (method=="SC2018") {
-        if (zeta<=0) { #unstable
-            return(0.99*(0.067-zeta)^(-1/3))
-        } else { #stable
-            return(1.76+0.15*(zeta)^(-1))
-        }
+        ifelse(zeta<=0,0.99*(0.067-zeta)^(-1/3),1.76+0.15*(zeta)^(-1))
     }	
 }
 
@@ -82,18 +70,10 @@ scale_phiT = function(zeta,method="K1994") {
 #'
 scale_phim = function(zeta,method="ecmwf") {
     if (method=="ecmwf" | method=="DH1970") {
-        if (zeta<=0) { #unstable
-            return((1-16*zeta)^(-1/4))
-        } else { #stable
-            return(1+5*zeta)
-        }
+        ifelse(zeta<=0,(1-16*zeta)^(-1/4),1+5*zeta)
     }
     if (method=="B1971") {
-        if (zeta<=0) { #unstable
-            return((1-15*zeta)^(-1/4)) #Businger et al., 1971: Fig. 1
-        } else { #stable
-            return(1+4.7*zeta)
-        }
+        ifelse(zeta<=0,(1-15*zeta)^(-1/4),1+4.7*zeta)
     }	
 }
 
@@ -112,25 +92,13 @@ scale_phim = function(zeta,method="ecmwf") {
 #'
 scale_phih = function(zeta,method="ecmwf") {
     if (method=="ecmwf") {
-        if (zeta<=0) { #unstable
-            return((1-16*zeta)^(-1/2))
-        } else { #stable
-            return((1+4*zeta)^2)
-        }
+        ifelse(zeta<=0,(1-16*zeta)^(-1/2),(1+4*zeta)^2)
     }
     if (method=="DH1970") {
-        if (zeta<=0) { #unstable
-            return((1-16*zeta)^(-1/2))
-        } else { #stable
-            return(1+5*zeta)
-        }
+        ifelse(zeta<=0,(1-16*zeta)^(-1/2),1+5*zeta)
     }
     if (method=="B1971") {
-        if (zeta<=0) { #unstable
-            return(0.74*(1-9*zeta)^(-1/2)) #Businger et al., 1971: Fig. 2
-        } else { #stable
-            return(0.74+4.7*zeta) #Businger et al., 1971: eq 14
-        }
+        ifelse(zeta<=0,0.74*(1-9*zeta)^(-1/2),0.74+4.7*zeta)
     }
 }
 
