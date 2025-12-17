@@ -132,7 +132,7 @@ plot_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=c(1,2
 
 #' Two-point Correlation Function: Tool to study spatial characteristics of coherent structures
 #'
-#'@description 
+#'@description Calculates two-poin correlation
 #'@param ts1 timeseries at point 1 (high-resolution)
 #'@param ts2 timeseries at point 2 (high-resolution)
 #'@return scalar giving the two-point correlation R(ts1,ts2)

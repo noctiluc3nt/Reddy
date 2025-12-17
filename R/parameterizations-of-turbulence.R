@@ -11,11 +11,7 @@
 #'
 scale_phiu = function(zeta,method="PD1984") {
     if (method=="PD1984") {
-        if (zeta<=0) { #unstable
-            return(2.55*(1-3*zeta)^(1/3))
-        } else { #stable
-            return(2.55*(1+3*zeta)^(1/3))
-        }
+        return(ifelse(zeta<=0,2.55*(1-3*zeta)^(1/3),2.55*(1+3*zeta)^(1/3)))
     }
 }
 
@@ -30,7 +26,7 @@ scale_phiu = function(zeta,method="PD1984") {
 #'
 scale_phiw = function(zeta,method="PD1984") {
     if (method=="PD1984") {
-        ifelse(zeta<=,1.25*(1-3*zeta)^(1/3),1.25*(1+3*zeta)^(1/3))
+        return(ifelse(zeta<=0,1.25*(1-3*zeta)^(1/3),1.25*(1+3*zeta)^(1/3)))
     }
 }
 
@@ -45,12 +41,26 @@ scale_phiw = function(zeta,method="PD1984") {
 #'
 scale_phiT = function(zeta,method="SC2018") {
     if (method=="K1994") {
-        ifelse(zeta<=0,0.95*(-zeta)^(-1/3),0.95*(zeta)^(-1/3))
+        return(ifelse(zeta<=0,0.95*(-zeta)^(-1/3),0.95*(zeta)^(-1/3)))
     } else if (method=="SC2018") {
-        ifelse(zeta<=0,0.99*(0.067-zeta)^(-1/3),1.76+0.15*(zeta)^(-1))
+        return(ifelse(zeta<=0,0.99*(0.067-zeta)^(-1/3),1.76+0.15*(zeta)^(-1)))
     }	
 }
 
+#' Scaling function for scalar concentrations Phi_C
+#'
+#'@description scaling function Phi_C
+#'@param zeta stability parameter [-]
+#'@param method defining from which paper the scaling function should be used ...
+#'
+#'@return Phi_C
+#'@export
+#'
+scale_phic = function(zeta,method="") {
+    if (method=="") {
+        return(ifelse(zeta<=0,(1-16*zeta)^(-1/3),1+5*zeta))
+    }
+}
 
 
 ### Scaling functions for flux-profile relations ###
@@ -70,10 +80,10 @@ scale_phiT = function(zeta,method="SC2018") {
 #'
 scale_phim = function(zeta,method="ecmwf") {
     if (method=="ecmwf" | method=="DH1970") {
-        ifelse(zeta<=0,(1-16*zeta)^(-1/4),1+5*zeta)
+        return(ifelse(zeta<0,(1-16*zeta)^(-1/4),1+5*zeta))
     }
     if (method=="B1971") {
-        ifelse(zeta<=0,(1-15*zeta)^(-1/4),1+4.7*zeta)
+        return(ifelse(zeta<0,(1-15*zeta)^(-1/4),1+4.7*zeta))
     }	
 }
 
@@ -92,13 +102,13 @@ scale_phim = function(zeta,method="ecmwf") {
 #'
 scale_phih = function(zeta,method="ecmwf") {
     if (method=="ecmwf") {
-        ifelse(zeta<=0,(1-16*zeta)^(-1/2),(1+4*zeta)^2)
+        return(ifelse(zeta<=0,(1-16*zeta)^(-1/2),(1+4*zeta)^2))
     }
     if (method=="DH1970") {
-        ifelse(zeta<=0,(1-16*zeta)^(-1/2),1+5*zeta)
+        return(ifelse(zeta<=0,(1-16*zeta)^(-1/2),1+5*zeta))
     }
     if (method=="B1971") {
-        ifelse(zeta<=0,0.74*(1-9*zeta)^(-1/2),0.74+4.7*zeta)
+        return(ifelse(zeta<=0,0.74*(1-9*zeta)^(-1/2),0.74+4.7*zeta))
     }
 }
 
@@ -162,16 +172,16 @@ calc_xstar = function(x,ustar) {
 #' Calculates Phi_x (general flux-variance relation)
 #'
 #'@description calculates Phi_x = sigma_x/xstar (for general flux-variance relation)
-#'@param sigma_x standard deviation of x
+#'@param x_sd standard deviation of x
 #'@param x variable that should be scaled, e.g. vertical flux of x with x = T or x = q
 #'@param ustar friction velocity [m/s]
 #'
 #'@return Phi_x = sigma_x/xstar
 #'@export
 #'
-calc_phix = function(sigma_x,x,ustar) {
+calc_phix = function(x_sd,x,ustar) {
     xstar=calc_xstar(x,ustar)
-	return(sigma_x/xstar)
+	return(x_sd/xstar)
 }
 
 
@@ -196,6 +206,7 @@ calc_phix = function(sigma_x,x,ustar) {
 #'u_stable=calc_windprofile(zs,ustar,zeta=0.2)
 #'
 calc_windprofile = function(zs,ustar,z0=0,d=0,zeta=0,method="ecmwf") {
+    zs=c(zs)
     Phi=scale_phim(zeta,method)
     if (z0==0) {
         uz=ustar/karman()*(log(zs-d)+Phi)

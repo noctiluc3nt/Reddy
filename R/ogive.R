@@ -4,7 +4,7 @@
 #'@param mrd an object returned from \code{calc_mrd}
 #'@param plot logical, should the ogive be plotted? default \code{plot=TRUE}
 #'@param ... arguments passed to plot function
-#'@return 
+#'@return ogive as list containing index, m, scale, time, ogive based on mean, and ogive based on median with quantiles q25, q75
 #'@export
 #'
 #'@examples

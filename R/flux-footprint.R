@@ -366,7 +366,7 @@ plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1)),mode="distance"
 
 #' Transform flux footprint from (x,y)-coordinates to (lon,lat)-coordinates through given station location
 #'
-#'@description 
+#'@description Transform flux footprint from (x,y)-coordinates to (lon,lat)-coordinates through given station location (geo-reference)
 #'@param ffp ffp object returned by \code{calc_flux_footprint_[method]}
 #'@param lon_station lon of station location
 #'@param lat_station lat of station location
