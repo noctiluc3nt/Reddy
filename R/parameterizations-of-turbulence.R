@@ -44,10 +44,12 @@ scale_phiT = function(zeta,method="SC2018") {
         return(ifelse(zeta<=0,0.95*(-zeta)^(-1/3),0.95*(zeta)^(-1/3)))
     } else if (method=="SC2018") {
         return(ifelse(zeta<=0,0.99*(0.067-zeta)^(-1/3),1.76+0.15*(zeta)^(-1)))
-    }	
+    } else if (method=="W1971") {
+        return(ifelse(zeta<=0,0.99*(2.5-zeta)^(-1/3),1.76+0.15*(zeta)^(-1)))
+    }
 }
 
-#' Scaling function for scalar concentrations Phi_C
+#' Scaling function for passive scalar concentrations Phi_C
 #'
 #'@description scaling function Phi_C
 #'@param zeta stability parameter [-]
@@ -193,7 +195,6 @@ calc_phix = function(x_sd,x,ustar) {
 #'@param z0 surface roughness length [m], default \code{z0=0} (note: it could be an option to calculate z0 from ustar with \code{ustar2z0()})
 #'@param d displacement height [m], optional, default \code{d=0} (i.e. no displacement)
 #'@param zeta stability parameter [-] to correct for stability effects, default \code{zeta=0} (i.e. no stability correction, resulting in classical logarithmic wind profile)
-#'@param method "method" for calculating stability correction function (only relevant if zeta is non-zero), default \code{method="ecmwf"} for using Phi_m from ECMWF-IFS
 #'
 #'@return data frame containing the requested heights \code{zs} and the calculated wind speed [m/s] there
 #'@export
@@ -205,19 +206,49 @@ calc_phix = function(x_sd,x,ustar) {
 #'u_unstable=calc_windprofile(zs,ustar,zeta=-0.2)
 #'u_stable=calc_windprofile(zs,ustar,zeta=0.2)
 #'
-calc_windprofile = function(zs,ustar,z0=0,d=0,zeta=0,method="ecmwf") {
+calc_windprofile = function(zs,ustar,z0=0,d=0,zeta=0) {
     zs=c(zs)
-    Phi=scale_phim(zeta,method)
+    Psi=-5.3*zeta #integral form of Phim folowing BD relation
     if (z0==0) {
-        uz=ustar/karman()*(log(zs-d)+Phi)
+        uz=ustar/karman()*(log(zs-d)-Psi)
     } else {
-        uz=ustar/karman()*log((zs-d)/z0+Phi)
+        uz=ustar/karman()*log((zs-d)/z0-Psi)
     }
 	return(data.frame("height"=zs,"windspeed"=uz))
 }
 
+#' Temperatyre profile from Monin-Obukhov similarity theory
+#'
+#'@description Calculates vertical profile of horizontal wind speed following Monin-Obukhov similarity theory
+#'@param zs scalar or vector, heights [m] at which the horizontal wind speed should be calculate 
+#'@param ustar friction velocity [m/s]
+#'@param z0 surface roughness length [m], default \code{z0=0} (note: it could be an option to calculate z0 from ustar with \code{ustar2z0()})
+#'@param d displacement height [m], optional, default \code{d=0} (i.e. no displacement)
+#'@param zeta stability parameter [-] to correct for stability effects, default \code{zeta=0} (i.e. no stability correction, resulting in classical logarithmic wind profile)
+#'@param T0 reference temperature [K], default \code{T0=273.15}
+#'
+#'@return data frame containing the requested heights \code{zs} and the calculated temperature [K] there
+#'@export
+#'
+#'@examples
+#'zs=seq(1,100)
+#'ustar=0.2
+#'T_neutral=calc_tempprofile(zs,ustar)
+#'T_unstable=calc_tempprofile(zs,ustar,zeta=-0.2)
+#'T_stable=calc_tempprofile(zs,ustar,zeta=0.2)
+#'
+calc_tempprofile = function(zs,ustar,z0=0,d=0,zeta=0,T0=273.15) {
+    zs=c(zs)
+    Psi=-8/0.95*zeta #integral form of Phim folowing BD relation
+    if (z0==0) {
+        Tz=T0+ustar/karman()*(log(zs-d)-Psi)
+    } else {
+        Tz=T0+ustar/karman()*log((zs-d)/z0-Psi)
+    }
+	return(data.frame("height"=zs,"temperature"=Tz))
+}
 
-#' Converts stability parameter zeta to Richardson Ri using Businger-Dyer relations
+#' Converts stability parameter zeta to Richardson number Ri using Businger-Dyer relations
 #'
 #'@description converts zeta to Ri using Businger-Dyer relations
 #'@param zeta stability parameter [-]

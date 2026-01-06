@@ -2,7 +2,7 @@
 % Please edit documentation in R/parameterizations-of-turbulence.R
 \name{zeta2Ri}
 \alias{zeta2Ri}
-\title{Converts stability parameter zeta to Richardson Ri using Businger-Dyer relations}
+\title{Converts stability parameter zeta to Richardson number Ri using Businger-Dyer relations}
 \usage{
 zeta2Ri(zeta)
 }

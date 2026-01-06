@@ -2,7 +2,7 @@
 % Please edit documentation in R/parameterizations-of-turbulence.R
 \name{scale_phic}
 \alias{scale_phic}
-\title{Scaling function for scalar concentrations Phi_C}
+\title{Scaling function for passive scalar concentrations Phi_C}
 \usage{
 scale_phic(zeta, method = "")
 }
