@@ -41,6 +41,21 @@ sigma2height=function(hybrid,Tv=273.15) {
     return(-Rd()*Tv/g()*log(hybrid))
 }
 
+#' Converts height ot pressure  
+#'
+#'@description Converts physical height to pressure based on given surface pressure and temperature
+#'@param height height/elevation [m]
+#'@param pres0 surface pressure [Pa], default \code{pres0=101315}
+#'@param temp0 reference temperature [k], default \code{temp0=273.15}
+#'@return pressure [Pa] (at the given height levels)
+#'@export
+#'
+#'@examples
+#'height2pres(c(10,100,1000),pres=99900)
+#'
+height2pres=function(height,pres0=101315,temp0=273.15) {
+    return(pres0*(1-height*0.0065/temp0)^5.255)
+}
 
 ###################### derivatives ###########################
 

@@ -180,7 +180,7 @@ calc_csi = function(temp,lw_in,rh=NULL,e=NULL) {
 #'calc_windDirection(3,3)
 #'
 calc_windDirection = function(u,v) {
-	return((180+180/pi*atan2(v,u))%%360) #from ERA5 doc: https://confluence.ecmwf.int/pages/viewpage.action?pageId=133262398
+	return((180+180/pi*atan2(u,v))%%360) #from ERA5 doc: https://confluence.ecmwf.int/pages/viewpage.action?pageId=133262398
 }
 
 #' Wind Speed
