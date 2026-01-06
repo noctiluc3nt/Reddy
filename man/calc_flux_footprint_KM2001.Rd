@@ -2,7 +2,7 @@
 % Please edit documentation in R/flux-footprint.R
 \name{calc_flux_footprint_KM2001}
 \alias{calc_flux_footprint_KM2001}
-\title{Flux-Footprint Calculation according to Korman and Meixner, 2001}
+\title{Flux-Footprint Calculation according to Kormann and Meixner, 2001}
 \usage{
 calc_flux_footprint_KM2001(
   zm,
@@ -45,7 +45,7 @@ calc_flux_footprint_KM2001(
 list containing all relevant flux footprint information
 }
 \description{
-Calculates the Flux-Footprint Parametrization (FFP) according to Korman and Meixner, 2001
+Calculates the Flux-Footprint Parametrization (FFP) according to Kormann and Meixner, 2001
 }
 \examples{
 #unrotated (i.e. if wind direction not given):

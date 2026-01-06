@@ -4,10 +4,10 @@
 \alias{calc_phix}
 \title{Calculates Phi_x (general flux-variance relation)}
 \usage{
-calc_phix(sigma_x, x, ustar)
+calc_phix(x_sd, x, ustar)
 }
 \arguments{
-\item{sigma_x}{standard deviation of x}
+\item{x_sd}{standard deviation of x}
 
 \item{x}{variable that should be scaled, e.g. vertical flux of x with x = T or x = q}
 

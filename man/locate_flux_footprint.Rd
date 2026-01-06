@@ -17,7 +17,7 @@ locate_flux_footprint(ffp, lon_station, lat_station)
 ffp object which contains ffp also in lon-lat coordinates (with extension _earth)
 }
 \description{
-Transform flux footprint from (x,y)-coordinates to (lon,lat)-coordinates through given station location
+Transform flux footprint from (x,y)-coordinates to (lon,lat)-coordinates through given station location (geo-reference)
 }
 \examples{
 lon1=7.527061462

@@ -4,7 +4,7 @@
 \alias{scale_phiT}
 \title{Scaling function for temperature Phi_T}
 \usage{
-scale_phiT(zeta, method = "K1994")
+scale_phiT(zeta, method = "SC2018")
 }
 \arguments{
 \item{zeta}{stability parameter [-]}

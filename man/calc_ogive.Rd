@@ -13,6 +13,9 @@ calc_ogive(mrd, plot = TRUE, ...)
 
 \item{...}{arguments passed to plot function}
 }
+\value{
+ogive as list containing index, m, scale, time, ogive based on mean, and ogive based on median with quantiles q25, q75
+}
 \description{
 Calculates Ogive from MRD spectram
 }

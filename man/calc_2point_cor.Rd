@@ -15,7 +15,7 @@ calc_2point_cor(ts1, ts2)
 scalar giving the two-point correlation R(ts1,ts2)
 }
 \description{
-Two-point Correlation Function: Tool to study spatial characteristics of coherent structures
+Calculates two-poin correlation
 }
 \examples{
 set.seed(5)

@@ -285,24 +285,6 @@ lh2et = function(lh,temp=NULL) {
 }
 
 
-### surface roughness and related concepts ###
-
-#' Calculates surface roughness length z0 from friction velocity using the simple estimate from Charnock, 1955
-#'
-#'@description Calculates surface roughness z0 from friction velocity using the simple estimate from Charnock, 1955: z0 = alpha*ustar^2/g with alpha=0.016 and g=9.81 m/s^2
-#'@param ustar friction velocity [m/s]
-#'
-#'@return surface roughness length [m]
-#'@export
-#'
-#'@examples
-#'ustar2z0(0.2)
-#'
-ustar2z0 = function(ustar) {
-	return(alpha()*ustar^2/g())
-}
-
-
 
 ### Boundary Layer Height and Ekman layer
 
