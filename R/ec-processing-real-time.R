@@ -150,43 +150,43 @@ EC_processing_realtime = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     }
     #averaging
     cat("\n... do time averaging ...")
-    u_avg=averaging(u,time_resolution,time_averaging*60)
+    u_avg=accumulate_timeseries(u,time_resolution,time_averaging*60)
     out$u_mean=u_avg$mean[[1]]
     out$u_sd=u_avg$sd[[1]]
-    v_avg=averaging(v,time_resolution,time_averaging*60)
+    v_avg=accumulate_timeseries(v,time_resolution,time_averaging*60)
     out$v_mean=v_avg$mean[[1]]
     out$v_sd=v_avg$sd[[1]]
-    w_avg=averaging(w,time_resolution,time_averaging*60)
+    w_avg=accumulate_timeseries(w,time_resolution,time_averaging*60)
     out$w_mean=w_avg$mean[[1]]
     out$w_sd=w_avg$sd[[1]]
-    Ts_avg=averaging(temp,time_resolution,time_averaging*60)
+    Ts_avg=accumulate_timeseries(temp,time_resolution,time_averaging*60)
     out$Ts_mean=Ts_avg$mean[[1]]
     out$Ts_sd=Ts_avg$sd[[1]]
     if (do_h2o) {
-        h2o_avg=averaging(h2o,time_resolution,time_averaging*60)
+        h2o_avg=accumulate_timeseries(h2o,time_resolution,time_averaging*60)
         out$h2o_mean=h2o_avg$mean[[1]]
         out$h2o_sd=h2o_avg$sd[[1]]
     }
     if (do_co2) {
-        co2_avg=averaging(co2,time_resolution,time_averaging*60)
+        co2_avg=accumulate_timeseries(co2,time_resolution,time_averaging*60)
         out$co2_mean=co2_avg$mean[[1]]
         out$co2_sd=co2_avg$sd[[1]]
     }
     if (do_ch4) {
-        ch4_avg=averaging(ch4,time_resolution,time_averaging*60)
+        ch4_avg=accumulate_timeseries(ch4,time_resolution,time_averaging*60)
         out$ch4_mean=ch4_avg$mean[[1]]
         out$ch4_sd=ch4_avg$sd[[1]]
     }
     #flux calculation
     cat("\n... do flux calculation ...")
-    out$cov_uw=averaging(u*w,time_resolution,time_averaging*60)$mean[[1]]
-    out$cov_uv=averaging(u*v,time_resolution,time_averaging*60)$mean[[1]]
-    out$cov_vw=averaging(v*w,time_resolution,time_averaging*60)$mean[[1]]
-    out$cov_wTs=averaging(w*temp,time_resolution,time_averaging*60)$mean[[1]]
-    out$cov_vTs=averaging(v*temp,time_resolution,time_averaging*60)$mean[[1]]
-    if (do_h2o) out$cov_h2ow=averaging(w*h2o,time_resolution,time_averaging*60)$mean[[1]]
-    if (do_co2) out$cov_co2w=averaging(w*co2,time_resolution,time_averaging*60)$mean[[1]]
-    if (do_ch4) out$cov_ch4w=averaging(w*ch4,time_resolution,time_averaging*60)$mean[[1]]
+    out$cov_uw=accumulate_timeseries(u*w,time_resolution,time_averaging*60)$mean[[1]]
+    out$cov_uv=accumulate_timeseries(u*v,time_resolution,time_averaging*60)$mean[[1]]
+    out$cov_vw=accumulate_timeseries(v*w,time_resolution,time_averaging*60)$mean[[1]]
+    out$cov_wTs=accumulate_timeseries(w*temp,time_resolution,time_averaging*60)$mean[[1]]
+    out$cov_vTs=accumulate_timeseries(v*temp,time_resolution,time_averaging*60)$mean[[1]]
+    if (do_h2o) out$cov_h2ow=accumulate_timeseries(w*h2o,time_resolution,time_averaging*60)$mean[[1]]
+    if (do_co2) out$cov_co2w=accumulate_timeseries(w*co2,time_resolution,time_averaging*60)$mean[[1]]
+    if (do_ch4) out$cov_ch4w=accumulate_timeseries(w*ch4,time_resolution,time_averaging*60)$mean[[1]]
     #SND correction
     if (do_SNDcorrection==TRUE) {
         if (do_h2o == FALSE) { #cross-wind correction only

@@ -111,7 +111,7 @@ gapfilling=function(var,nmissing=4,method="linear") {
 
 #' Accumulating / Averaging
 #'
-#'@description averaging of a timeseries
+#'@description accumulating/averaging of a timeseries
 #'@param var timeseries
 #'@param tres1 time resolution [s] of the given timeseries \code{var}, default \code{tres1 = 0.05} (for 20 Hz)
 #'@param tres2 desired time resolution(s) [s] of the averaged timeseries (scalar or vector), default \code{tres2 = c(1,10,30)*60} (for 1, 10 and 30 minutes)
@@ -120,10 +120,10 @@ gapfilling=function(var,nmissing=4,method="linear") {
 #'@importFrom RcppRoll roll_mean roll_sd roll_max
 #'
 #'@examples
-#'ts=rnorm(30*60*20) #30 minutes of 20 Hz measurements
-#'averaging(ts)
+#'ts=rnorm(10*60*20) #10 minutes of 20 Hz measurements
+#'accumulate_timeseries(ts,0.05,10*60)
 #'
-averaging=function(var,tres1=0.05,tres2=c(1,10,30)*60) {
+accumulate_timeseries=function(var,tres1=0.05,tres2=c(1,10,30)*60) {
 	n=length(var)
 	nt=length(tres2)
     maxt=max(tres2)
@@ -132,6 +132,9 @@ averaging=function(var,tres1=0.05,tres2=c(1,10,30)*60) {
 	averaged_mean=list()
 	averaged_sd=list()
 	averaged_max=list()
+	averaged_min=list()
+	averaged_median=list()
+	averaged_sum=list()
 	for (i in 1:nt) {
 		vari=RcppRoll::roll_mean(var,nav[i],na.rm=TRUE)[seq(1,n,nav[i])]
 		averaged_mean[[i]]=vari
@@ -139,8 +142,14 @@ averaging=function(var,tres1=0.05,tres2=c(1,10,30)*60) {
 		averaged_sd[[i]]=vari
 		vari=RcppRoll::roll_max(var,nav[i],na.rm=TRUE)[seq(1,n,nav[i])]
 		averaged_max[[i]]=vari
+		vari=RcppRoll::roll_min(var,nav[i],na.rm=TRUE)[seq(1,n,nav[i])]
+		averaged_min[[i]]=vari
+		vari=RcppRoll::roll_median(var,nav[i],na.rm=TRUE)[seq(1,n,nav[i])]
+		averaged_median[[i]]=vari
+		vari=RcppRoll::roll_sum(var,nav[i],na.rm=TRUE)[seq(1,n,nav[i])]
+		averaged_sum[[i]]=vari
 	}
-	averaged=list("mean"=averaged_mean,"sd"=averaged_sd,"max"=averaged_max)
+	averaged=list("mean"=averaged_mean,"sd"=averaged_sd,"max"=averaged_max,"min"=averaged_min,"median"=averaged_median,"sum"=averaged_sum)
 	averaged$averaging_time_min=tres2/60
 	averaged$number_of_averaged_values=nav
 	return(averaged)
