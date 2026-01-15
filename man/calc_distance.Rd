@@ -2,7 +2,7 @@
 % Please edit documentation in R/model-utils.R
 \name{calc_distance}
 \alias{calc_distance}
-\title{Calculates distance between two points on a sphere given in lon,lat}
+\title{Calculates distance between two points on a sphere given in (lon, lat)-coordinates}
 \usage{
 calc_distance(lon1, lat1, lon2, lat2)
 }
@@ -19,7 +19,7 @@ calc_distance(lon1, lat1, lon2, lat2)
 distance between two points [m]
 }
 \description{
-Calculates distance between to (lon, lat)-points on a spheroid
+Calculates distance between two (lon, lat)-points on a spheroid
 }
 \examples{
 calc_distance(8,60,8,61)
