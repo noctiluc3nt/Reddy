@@ -27,16 +27,17 @@ plot_seb = function(sw_in,sw_out,lw_in,lw_out,sh=NULL,lh=NULL,gh=NULL,time_vecto
     #plot
     n=length(rad_balance)
     if (is.null(time_vector)) time_vector = 1:n
-    if (!exists("ylim")) ylim=c(-100,500)
-    if (!exists("pch")) pch=20
-    if (!exists("cex")) cex=2
-    plot(time_vector,rad_balance,type="l",lwd=2,col="gray50",main="Surface Energy Balance",ylim=ylim,ylab="surface energy balance fluxes",xlab="index",...)
-    points(time_vector,seb_balance,type="l",lwd=3,col=1)
-    points(time_vector,sh,type="l",lwd=2,col="orangered")
-    points(time_vector,lh,type="l",lwd=2,col="blue3")
-    points(time_vector,gh,type="l",lwd=2,col="brown")
-    legend("topright",legend=c("R","GH","SH","LH","Res"),col=c("gray50","brown","orangered","blue3",1),lwd=c(2,2,2,2,3),lty=1,bg="white")
-    plot(rad_balance-gh,sh+lh,col=rgb(0,0,0,0.4),pch=pch,cex=cex,main="Surface Energy Balance Closure",xlab="R-G",ylab="SH+LH",...)
+    #if (!exists("ylim")) ylim=c(-100,500)
+    #if (!exists("pch")) pch=20
+    #if (!exists("cex")) cex=2
+    plot(time_vector,rad_balance,type="l",lwd=2,col="gray50",main="Surface Energy Balance",ylab="surface energy balance fluxes",xlab="index",...)
+    points(time_vector,seb_balance,type="p",lwd=3,col=1,pch=20)
+    points(time_vector,sh,type="p",lwd=2,col=rgb(0.4,0,0.5,0.5),pch=3)
+    points(time_vector,lh,type="p",lwd=2,col=rgb(0,0.7,0,0.5),pch=4)
+    points(time_vector,gh,type="l",lwd=2,col="orange3")
+    abline(h=0,lty=2)
+    legend("topright",legend=c("R","GH","SH","LH","Res"),col=c("gray50","orange3","purple","green2",1),lwd=c(2,2,2,2,3),lty=c(1,1,0,0,0),pch=c(NA,NA,3,4,20),bg="white")
+    plot(rad_balance-gh,sh+lh,col=rgb(0,0,0,0.4),pch=20,cex=2,main="Surface Energy Balance Closure",xlab="R-G",ylab="SH+LH",...)
     y=sh+lh
     x=rad_balance-gh
     fit=lm(y ~ x)
@@ -44,6 +45,7 @@ plot_seb = function(sw_in,sw_out,lw_in,lw_out,sh=NULL,lh=NULL,gh=NULL,time_vecto
     abline(fit,lwd=2,col=2,lty=2)
     abline(0,1,lwd=2,lty=1)
     grid()
-    #if (print_fit==TRUE) print(paste("mean closure ratio: ", mean(cr,na.rm=TRUE)))
-    #if (print_fit==TRUE) print(paste("mean residual flux: ", mean(seb_balance,na.rm=TRUE)))
+    legend("topleft",legend=c("1:1","lineare regression"),col=c(1,2),lty=c(1,2),lwd=2)
+    if (print_fit==TRUE) print(paste("mean closure ratio: ", round(mean(cr,na.rm=TRUE))))
+    if (print_fit==TRUE) print(paste("mean residual flux: ", round(mean(seb_balance,na.rm=TRUE)),"W/m^2"))
 }
