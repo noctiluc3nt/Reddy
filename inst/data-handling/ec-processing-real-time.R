@@ -104,9 +104,6 @@ EC_processing_realtime = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         if (do_co2) out$ampl_res_co2=get_amplitude_resolution(co2)
         if (do_ch4) out$ampl_res_ch4=get_amplitude_resolution(ch4)
     }
-    #rotation pre-check
-    #if (do_double_rotation==TRUE & do_planar_fit==TRUE) warning("You have chosen two rotation types, but only one can be applied. Apply double rotation now.")
-    #if (do_double_rotation==FALSE & do_planar_fit==FALSE) warning("You have chosen no rotation type, so no rotation is applied to the data.")
     cat("\n... start loop over data: do double rotation and stationarity flagging (if requested) ...")
     for (i in 1:nint) {
         #cat(paste0("\n\t #index: ",i,"\t progress: ",round(i/nint*100,2)," %"))
@@ -129,15 +126,6 @@ EC_processing_realtime = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         #flagging: stationarity
         if (do_flagging) out$flag_stationarity[i]=flag_stationarity(temp[iselect],w[iselect],nsub=as.integer(lint/4))
     }
-    #planar fit
-    #if (do_planar_fit == TRUE) {
-    #    wind_rotated=rotate_planar(u,v,w)
-    #    u=wind_rotated$u
-    #    v=wind_rotated$v
-    #    w=wind_rotated$w
-    #    out$rotation_angle1=wind_rotated$alpha
-    #    out$rotation_angle2=wind_rotated$beta
-    #}
     #detrending
     if (do_detrending == TRUE) {
         u=pracma::detrend(u)
@@ -179,14 +167,14 @@ EC_processing_realtime = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     }
     #flux calculation
     cat("\n... do flux calculation ...")
-    out$cov_uw=accumulate_timeseries(u*w,time_resolution,time_averaging*60)$mean[[1]]
-    out$cov_uv=accumulate_timeseries(u*v,time_resolution,time_averaging*60)$mean[[1]]
-    out$cov_vw=accumulate_timeseries(v*w,time_resolution,time_averaging*60)$mean[[1]]
-    out$cov_wTs=accumulate_timeseries(w*temp,time_resolution,time_averaging*60)$mean[[1]]
-    out$cov_vTs=accumulate_timeseries(v*temp,time_resolution,time_averaging*60)$mean[[1]]
-    if (do_h2o) out$cov_h2ow=accumulate_timeseries(w*h2o,time_resolution,time_averaging*60)$mean[[1]]
-    if (do_co2) out$cov_co2w=accumulate_timeseries(w*co2,time_resolution,time_averaging*60)$mean[[1]]
-    if (do_ch4) out$cov_ch4w=accumulate_timeseries(w*ch4,time_resolution,time_averaging*60)$mean[[1]]
+    out$cov_uw=accumulate_timeseries(u*w,time_resolution,time_averaging*60)$mean[[1]]-out$u_mean*out$w_mean
+    out$cov_uv=accumulate_timeseries(u*v,time_resolution,time_averaging*60)$mean[[1]]-out$u_mean*out$v_mean
+    out$cov_vw=accumulate_timeseries(v*w,time_resolution,time_averaging*60)$mean[[1]]-out$v_mean*out$w_mean
+    out$cov_wTs=accumulate_timeseries(w*temp,time_resolution,time_averaging*60)$mean[[1]]-out$Ts_mean*out$w_mean
+    out$cov_vTs=accumulate_timeseries(v*temp,time_resolution,time_averaging*60)$mean[[1]]-out$Ts_mean*out$v_mean
+    if (do_h2o) out$cov_h2ow=accumulate_timeseries(w*h2o,time_resolution,time_averaging*60)$mean[[1]]-out$h2o_mean*out$w_mean
+    if (do_co2) out$cov_co2w=accumulate_timeseries(w*co2,time_resolution,time_averaging*60)$mean[[1]]-out$co2_mean*out$w_mean
+    if (do_ch4) out$cov_ch4w=accumulate_timeseries(w*ch4,time_resolution,time_averaging*60)$mean[[1]]-out$ch4_mean*out$w_mean
     #SND correction
     if (do_SNDcorrection==TRUE) {
         if (do_h2o == FALSE) { #cross-wind correction only
