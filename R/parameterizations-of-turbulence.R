@@ -53,14 +53,17 @@ scale_phiT = function(zeta,method="SC2018") {
 #'
 #'@description scaling function Phi_C
 #'@param zeta stability parameter [-]
-#'@param method defining from which paper the scaling function should be used ...
+#'@param C scaling constants used in K1994 stability correction function: C * abs(zeta)^(-1/3), default \code{C=0.95}
+#'@param method defining from which paper the scaling function should be used, default \code{method="K1994"}
 #'
 #'@return Phi_C
 #'@export
 #'
-scale_phic = function(zeta,method="") {
+scale_phic = function(zeta,C=0.09,method="K1994") {
     if (method=="") {
         return(ifelse(zeta<=0,(1-16*zeta)^(-1/3),1+5*zeta))
+    } else if (method=="K1994") {
+        return(C*abs(zeta)^(-1/3))
     }
 }
 

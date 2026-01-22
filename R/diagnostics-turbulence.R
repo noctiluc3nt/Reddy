@@ -367,7 +367,7 @@ calc_N2 = function(T1,T2,dz) {
 #'@return Ri [-]
 #'@export
 #'
-calc_ri = function(T1,T2,U1,U2,dz) {
+calc_Ri = function(T1,T2,U1,U2,dz) {
 	T0=(T1+T2)/2
 	dT_dz=(T2-T1)/dz
 	dUbar_dz=(U2-U1)/dz
@@ -388,7 +388,7 @@ calc_ri = function(T1,T2,U1,U2,dz) {
 #'@return Ri_f [-]
 #'@export
 #'
-calc_rif = function(cov_wT,cov_uw,U1,U2,dz,T_mean=NULL) {
+calc_Rif = function(cov_wT,cov_uw,U1,U2,dz,T_mean=NULL) {
 	T0=ifelse(is.null(T_mean),273.15,T_mean)
 	dUbar_dz=(U2-U1)/dz
 	rif=g()/T0*cov_wT/(cov_uw*dUbar_dz)

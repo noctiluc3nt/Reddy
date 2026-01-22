@@ -4,12 +4,14 @@
 \alias{scale_phic}
 \title{Scaling function for passive scalar concentrations Phi_C}
 \usage{
-scale_phic(zeta, method = "")
+scale_phic(zeta, C = 0.09, method = "K1994")
 }
 \arguments{
 \item{zeta}{stability parameter [-]}
 
-\item{method}{defining from which paper the scaling function should be used ...}
+\item{C}{scaling constants used in K1994 stability correction function: C * abs(zeta)^(-1/3), default \code{C=0.95}}
+
+\item{method}{defining from which paper the scaling function should be used, default \code{method="K1994"}}
 }
 \value{
 Phi_C

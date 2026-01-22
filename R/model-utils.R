@@ -110,9 +110,9 @@ df_dy=function(fld,yres=1) {
 }
 
 #################### distance ######################################
-#' Calculates distance between two points on a sphere given in lon,lat
+#' Calculates distance between two points on a sphere given in (lon, lat)-coordinates
 #'
-#'@description Calculates distance between to (lon, lat)-points on a spheroid
+#'@description Calculates distance between two (lon, lat)-points on a spheroid
 #'@param lon1 longitude location 1 [deg]
 #'@param lat1 latitude location 1 [deg]
 #'@param lon2 longitude location 2 [deg]
