@@ -2,7 +2,7 @@
 % Please edit documentation in R/parameterizations-of-turbulence.R
 \name{calc_tempprofile}
 \alias{calc_tempprofile}
-\title{Temperatyre profile from Monin-Obukhov similarity theory}
+\title{Temperature profile from Monin-Obukhov similarity theory}
 \usage{
 calc_tempprofile(zs, ustar, z0 = 0, d = 0, zeta = 0, T0 = 273.15)
 }
