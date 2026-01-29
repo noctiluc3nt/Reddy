@@ -231,9 +231,7 @@ calc_FM = function(Ri,method="LTG") {
         return(1+5*zeta*(1+5/0.8*zeta)^(0.2))
     } else {
         warning("The chosen method to calculate FM is not available.")
-    }  
-    #BH, 1991
-    #todo
+    }
 }
 
 #' Stability correction function for heat (FH), used for calculating heat diffusivity
@@ -255,7 +253,7 @@ calc_FH = function(Ri,method="LTG") {
         #Louis, 1979
         #return(ifelse(Ri<0,,1/(1+4.7*Ri)^2))
         return(1/(1+4.7*Ri)^2)
-    } else if (method == "LTG" | method=="LTG1982" | method =="AROME" | method == "arome") {
+    } else if (method == "LTG" | method=="LTG1982") {
         #LTG / HARMONIE-AROME
         #Ch=75*karman()*sqrt(1+z/z0)/(log(1+z/z0))^2 #in the surface layer
         #return(ifelse(Ri<0,1-15*Ri/(1+Ch*sqrt(-Ri)),1/(1+15*Ri*(sqrt(1+5*Ri)))))
@@ -272,19 +270,13 @@ calc_FH = function(Ri,method="LTG") {
         #Geleyn, 1988 / Businger-Dyer relation
         zeta=Ri2zeta(Ri)
         return(1+5*zeta)
-    #} else if (method == "BH1991") {
-        #Beljaars and Holtslag, 1991
-        #zeta=Ri2zeta(Ri)
-        #return()
     } else if (method == "D1991" | method == "Duynkerke1991") {
         #Duynkerke, 1991 -- uses orignally local stability parameter
         zeta=Ri2zeta(Ri)
         return(1+5*zeta*(1+5/0.8*zeta)^(0.2))
     } else {
         warning("The chosen method to calculate FM is not available.")
-    }  
-    #BH, 1991
-    #todo
+    }
 }
 
 
