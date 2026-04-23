@@ -231,6 +231,8 @@ calc_flux_footprint_KM2001 = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z0,c
     h0=D*x_masked^E
     f2d=1/(sqrt(2*pi)*h0)*exp(-y_tmp^2/(2*h0^2))*C*x_masked^(-A)*exp(-B/x_masked) #eq 2 in Neftel et al, 2007
     f2d[which(is.na(f2d))]=0
+    #normalize
+    f2d=f2d/(sum(f2d))
     #output
     ffp=list()
     ffp$x=x

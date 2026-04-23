@@ -269,11 +269,11 @@ calc_FH = function(Ri,method="LTG") {
     } else if (method == "G1988" | method == "Geleyn1988" | method == "BD") {
         #Geleyn, 1988 / Businger-Dyer relation
         zeta=Ri2zeta(Ri)
-        return(1+5*zeta)
+        return(1/(1+5*zeta))
     } else if (method == "D1991" | method == "Duynkerke1991") {
         #Duynkerke, 1991 -- uses orignally local stability parameter
         zeta=Ri2zeta(Ri)
-        return(1+5*zeta*(1+5/0.8*zeta)^(0.2))
+        return(1/(1+5*zeta*(1+5/0.8*zeta)^(0.2)))
     } else {
         warning("The chosen method to calculate FM is not available.")
     }
