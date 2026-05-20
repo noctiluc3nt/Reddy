@@ -289,6 +289,30 @@ get_contours_from_f2d=function(x,y,fmat,contours=seq(0,0.9,0.1)) {
     return(list("xcont"=xcont,"ycont"=ycont,"contour_levels"=contours))
 }
 
+
+#' Get flux footprint area from f2d
+#'
+#'@description Calculates flux footprint area
+#'@param fmat 2D flux footprint (matrix/array from one of the \code{calc_flux_footprint()} functions) 
+#'@param alpha threshold for area calculation, default \code{alpha=0.8} for taking the 80 percent contour line as boundary for flux footprint area
+#'@param dx x-resolution [m]
+#'@param dy y-resolution [m]
+#' 
+#'@return flux footprint area [m^2]
+#'@export
+#'
+get_ffp_area=function(fmat,alpha=0.8,dx=1,dy=1) {
+    gridcell_area=dx*dy
+    vals=as.vector(fmat)
+    order_idx=order(vals,decreasing=T)
+    vals_sorted=vals[order_idx]
+    f_norm=vals_sorted/sum(vals_sorted*gridcell_area)
+    cum_contrib=cumsum(f_norm*gridcell_area)
+    k=which(cum_contrib>=alpha)[1]
+    return(k*gridcell_area)
+}
+
+
 #' Plot Flux-Footprint
 #'
 #'@description Plots Flux-Footprint Parametrization (FFP)
