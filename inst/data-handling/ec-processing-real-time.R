@@ -82,7 +82,7 @@ EC_processing_realtime = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     if (do_despiking==TRUE) {
         cat("\n... do despiking ...")
         #todo add spike counting
-        u=despiking(u,c(despike_u[1],despike_u[2]),despike_u[3],despike_u[4],despike_v[5])
+        u=despiking(u,c(despike_u[1],despike_u[2]),despike_u[3],despike_u[4],despike_u[5])
         v=despiking(v,c(despike_v[1],despike_v[2]),despike_v[3],despike_v[4],despike_v[5])
         w=despiking(w,c(despike_w[1],despike_w[2]),despike_w[3],despike_w[4],despike_w[5])
         temp=despiking(temp,c(despike_temp[1],despike_temp[2]),despike_temp[3],despike_temp[4],despike_temp[5])
@@ -180,7 +180,7 @@ EC_processing_realtime = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         if (do_h2o == FALSE) { #cross-wind correction only
             out$cov_wT_snd=SNDcorrection(out$Ts_mean,out$u_mean,out$v_mean,out$cov_uw,out$cov_vw,out$cov_wTs,NULL,A,B)
         } else {
-            out$cov_wT_snd=SNDcorrection(out$Ts_mean,out$u_mean,out$v_mean,out$cov_uw,out$cov_vw,out$cov_wTs,out$cov_qw,A,B)
+            out$cov_wT_snd=SNDcorrection(out$Ts_mean,out$u_mean,out$v_mean,out$cov_uw,out$cov_vw,out$cov_wTs,out$cov_h2ow,A,B)
         }
         out$sh=cov2sh(out$cov_wT_snd)
     } else {
@@ -209,9 +209,9 @@ EC_processing_realtime = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     }
     #------------------------------------------------
     #store post-processed data
+    systime=Sys.time()
+    systime_string=format(systime,"%F_%H%M%S",tz="utc")
     if (is.null(filename)) {
-        systime=Sys.time()
-        systime_string=format(systime,"%F_%H%M%S",tz="utc")
         filename=paste0("ec-processing_Reddy_",systime_string,".",format_out)
     }
     #out=out[,colSums(is.na(out))<nint] #remove columns that contain only NA
@@ -299,7 +299,7 @@ apply_quality_control = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     #despiking
     if (do_despiking==TRUE) {
         cat("\n... do despiking ...")
-        u=despiking(u,c(despike_u[1],despike_u[2]),despike_u[3],despike_u[4],despike_v[5])
+        u=despiking(u,c(despike_u[1],despike_u[2]),despike_u[3],despike_u[4],despike_u[5])
         v=despiking(v,c(despike_v[1],despike_v[2]),despike_v[3],despike_v[4],despike_v[5])
         w=despiking(w,c(despike_w[1],despike_w[2]),despike_w[3],despike_w[4],despike_w[5])
         temp=despiking(temp,c(despike_temp[1],despike_temp[2]),despike_temp[3],despike_temp[4],despike_temp[5])
@@ -308,14 +308,14 @@ apply_quality_control = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         if (do_ch4) ch4=despiking(ch4,c(despike_ch4[1],despike_ch4[2]),despike_ch4[3],despike_ch4[4],despike_ch4[5])
     }
     #rotation
-    if (do_double_rotation==TRUE) {
-        wind_rotated=test=rotate_double(tmp_raw$u,tmp_raw$v,tmp_raw$w)
+    if (do_double_rotation == TRUE) {
+        wind_rotated=rotate_double(u,v,w)
         u=wind_rotated$u
         v=wind_rotated$v
         w=wind_rotated$w
     }
-    if (do_planar_fit==TRUE) {
-        wind_rotated=test=rotate_planar(tmp_raw$u,tmp_raw$v,tmp_raw$w)
+    if (do_planar_fit == TRUE) {
+        wind_rotated=rotate_planar(u,v,w)
         u=wind_rotated$u
         v=wind_rotated$v
         w=wind_rotated$w    
@@ -332,9 +332,9 @@ apply_quality_control = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     }
     #------------------------------------------------
     # prepare return 
-    out = list("u"=u,"v"=v,"w"=w,"Ts"=temp)
-    if (do_h2o) out = list("u"=u,"v"=v,"w"=w,"Ts"=temp,"h2o"=h2o)
-    if (do_co2) out = list("u"=u,"v"=v,"w"=w,"Ts"=temp,"h2o"=h2o,"co2"=co2)
-    if (do_ch4) out = list("u"=u,"v"=v,"w"=w,"Ts"=temp,"h2o"=h2o,"co2"=co2,"ch4"=ch4)
+    out=list(u=u,v=v,w=w,Ts=temp)
+    if(do_h2o) out$h2o=h2o
+    if(do_co2) out$co2=co2
+    if(do_ch4) out$ch4=ch4
     return(out)
 }

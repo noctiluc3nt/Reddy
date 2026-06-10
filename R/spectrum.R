@@ -16,10 +16,10 @@
 #'
 calc_spectrum = function(ts,nbins=100,plot=TRUE,na.rm=TRUE) {
 	s=spectrum(ts[!is.na(ts)],plot=FALSE)
-    bins=seq(log(min(s$freq,na.rm=TRUE)),log(max(s$freq,na.rm=TRUE)),length.out=nbins)
+    bins=seq(log(min(s$freq,na.rm=na.rm)),log(max(s$freq,na.rm=na.rm)),length.out=nbins)
     sbin=binning(s$spec,s$freq,10^bins)
     if (plot==TRUE) {
-        plot(bins[2:nbins],log(sbin[,2]),pch=20,main="Spectrum",xlab="frequency",ylab="spectrum",xlim=range(bins[2:nbins][!is.na(sbin[,2])],na.rm=TRUE),xaxt="n",yaxt="n")
+        plot(bins[2:nbins],log(sbin[,2]),pch=20,main="Spectrum",xlab="frequency",ylab="spectrum",xlim=range(bins[2:nbins][!is.na(sbin[,2])],na.rm=na.rm),xaxt="n",yaxt="n")
         axis(1,at=(-10):0,10^(-10:0))
         axis(2,at=(-10):10,10^(-10:10))
         fit=lm(log(sbin[,2]) ~ bins[2:nbins])
@@ -64,11 +64,11 @@ calc_spectrum1D = function(ts,tres=0.05,nbins=NULL,method="fft",na.rm=TRUE,plot=
         ssb=spec[1:(nt/2)] #single side band
         ssb[2:(nt/2)]=2*ssb[2:(nt/2)]
         spec=abs(ssb)*2/nt
-        freq=seq(0,(nt/2)-1)*tres/nt #frequencies
+        freq=seq(0,(nt/2)-1)/(tres*nt) #frequencies
         out=data.frame("frequency"=freq,"spectrum"=spec)
     } else if (method=="dct" | method=="DCT") { #dct and frequencies
         spec=abs(dct(ts))
-        freq=seq(0,(nt)-1)*tres/nt #frequencies
+        freq=seq(0,(nt)-1)/(tres*nt) #frequencies
         out=data.frame("frequency"=freq,"spectrum"=spec)
     }
     #binning
@@ -81,7 +81,7 @@ calc_spectrum1D = function(ts,tres=0.05,nbins=NULL,method="fft",na.rm=TRUE,plot=
     }
     if (plot==TRUE) {
         plot(out$frequency,out$spectrum,log="xy",xlab="frequency [1/s]",...)
-        abline(v=tres*2,lty=3,col=4) #nyquist frequency
+        abline(v=1/(2*tres),lty=3,col=4) #nyquist frequency
         #points(out$frequency,out$frequency^(-5/3),type="l",lty=2)
         #fit=lm(log(out$spectrum) ~ log(out$frequency))
         #print(summary(fit))
@@ -191,44 +191,4 @@ calc_k2d=function(kx,ky) {
         }
     }
     return(sqrt(mat))
-}
-
-
-#' Helmholtz-Hodge decomposition
-#'
-#'@description Calculates Helmholtz-Hodge decomposition of horizontal wind using a spectral FFT-based method: decomposition of horizontal wind in rotational and divergent part: (u,v) = (u_rot,v_rot) + (u_div,v_div)
-#'@details The implementation is based on the Python version from https://github.com/shixun22/helmholtz.
-#'@param u zonal wind field with dimension (x,y)
-#'@param v meridional wind field with dimension (x,y)
-#'@param res spatial resolution (assuming equidistant grid)
-#'
-#'@return list containing u_div, v_div, u_rot, v_rot
-#'@export
-#'
-#'@examples
-#'set.seed(5)
-#'u=matrix(rnorm(100),ncol=10)
-#'v=matrix(rnorm(100),ncol=10)
-#'hd=calc_helmholtz_decomposition(u,v,100)
-#'
-calc_helmholtz_decomposition = function(u,v,res=1) {
-    nx=dim(u)[1]
-    ny=dim(u)[2]
-    #fft
-    ufft=fft(u)
-    vfft=fft(v)
-    #wave numbers
-    kx=fftfreq(nx,res)
-    ky=fftfreq(ny,res)
-    k2=calc_k2d(kx,ky)^2
-    k2[1,1]=1
-    kx2=matrix(rep(kx,ny),nrow=nx,ncol=ny,byrow=F)
-    ky2=matrix(rep(ky,nx),nrow=nx,ncol=ny,byrow=T)
-    #decomposition
-    div=ufft*kx2 + vfft*ky2
-    u_div=gsignal::ifft(div/k2*kx2)
-    v_div=gsignal::ifft(div/k2*ky2)
-    u_rot=u-u_div
-    v_rot=v-v_div
-    return(list("u_div"=u_div,"v_div"=v_div,"u_rot"=u_rot,"v_rot"=v_rot))
 }

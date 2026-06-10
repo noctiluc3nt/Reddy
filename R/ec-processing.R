@@ -128,7 +128,7 @@ rotate_double = function(u,v,w) {
 #'wind_rotated=rotate_planar(u,v,w) #for planar fit a timeseries is required
 #'
 rotate_planar = function(u,v,w,bias=c(0,0,0)) {
-    if (!identical(length(u),length(v),length(w))) { 
+    if (length(u) != length(v) || length(u) != length(w)) {
         stop("u, v, w have to be of same length.")
     }
     #linear regression
@@ -141,7 +141,7 @@ rotate_planar = function(u,v,w,bias=c(0,0,0)) {
     beta=atan(b2)
     sin_alpha=-b1/(sqrt(1+b1^2))
     cos_alpha=1/(sqrt(1+b1^2))
-    sin_beta=b2/(sqrt(1+b2))
+    sin_beta=b2/(sqrt(1+b2^2))
     cos_beta=1/(sqrt(1+b2^2))
     #rotation matrix P
     P=matrix(c(cos_alpha,sin_alpha*sin_beta,-sin_alpha*cos_beta,0,cos_beta,sin_beta,sin_alpha,-sin_beta*cos_alpha,cos_alpha*cos_beta),nrow=3,byrow=T)
@@ -240,7 +240,7 @@ flag_distortion = function(u,v,dir_blocked,threshold_cr=0.9) {
     #horizontal wind speed
     ws=sqrt(mean(u,na.rm=TRUE)^2+mean(v,na.rm=TRUE)^2)
     #constancy ratio cr
-    cr=sqrt(sum(u^2,na.rm=TRUE)+sum(v^2,na.rm=TRUE))/(ws)
+    cr=ws/mean(sqrt(u^2+v^2),na.rm=TRUE)
     #flow distortion flag considering cr
     if (!is.na(ws) & !is.na(cr)) {
         if (ws>0.1 & cr>threshold_cr) {
@@ -290,7 +290,7 @@ flag_most = function(w_sd,ustar,zeta,thresholds_most=c(0.3,0.8)) {
 #'@export
 #'
 Ts2T = function(Ts,q) {  
-    return(Ts*(1+Rd()/Rv()*q))
+    return(Ts/(1+Rd()/Rv()*q))
 }
 
 #' SND and cross-wind correction of sensible heat flux
@@ -305,12 +305,11 @@ Ts2T = function(Ts,q) {
 #'@param cov_qw cov(q,w) [kg/kg*m/s] (optional)
 #'@param A constant used in cross-wind correction, default \code{A = 7/8} for CSAT3
 #'@param B constant used in cross-wind correction, default \code{B = 7/8} for CSAT3
-#'@param sos speed of sound [m/s], default \code{sos = csound()} corresponding to 343 m/s
 #'
 #'@return SND correction of sensible heat flux
 #'@export
 #'
-SNDcorrection = function(Ts_mean,u_mean,v_mean,cov_uw,cov_vw,cov_wTs,cov_qw=NULL,A=7/8,B=7/8,sos=csound()) {
+SNDcorrection = function(Ts_mean,u_mean,v_mean,cov_uw,cov_vw,cov_wTs,cov_qw=NULL,A=7/8,B=7/8) {
     if (!is.null(cov_qw)) { #considering q
         #second term: SND correction, third term: cross-wind correction
         return(cov_wTs - 0.51*cov_qw + 2*Ts_mean/csound()^2*(A*u_mean*cov_uw + B*v_mean*cov_vw))
@@ -518,6 +517,6 @@ RTcorrection = function(cospectrum,freq,tau=1) {
 #'
 smaller_than_machine_epsilon = function(vec) {
     epsilon=.Machine$double.eps
-    vec[vec<epsilon]=0
+    vec[abs(vec)<epsilon]=0
     return(vec)
 }

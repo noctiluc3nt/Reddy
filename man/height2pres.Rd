@@ -20,6 +20,6 @@ pressure [Pa] (at the given height levels)
 Converts physical height to pressure based on given surface pressure and temperature
 }
 \examples{
-height2pres(c(10,100,1000),pres=99900)
+height2pres(c(10,100,1000),pres0=99900)
 
 }

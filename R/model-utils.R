@@ -51,7 +51,7 @@ sigma2height=function(hybrid,Tv=273.15) {
 #'@export
 #'
 #'@examples
-#'height2pres(c(10,100,1000),pres=99900)
+#'height2pres(c(10,100,1000),pres0=99900)
 #'
 height2pres=function(height,pres0=101315,temp0=273.15) {
     return(pres0*(1-height*0.0065/temp0)^5.255)

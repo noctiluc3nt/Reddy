@@ -367,7 +367,7 @@ plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1)),mode="distance"
         } else {
             if (!exists("xlim")) xlim=range(ffp$x2d_earth)
             if (!exists("ylim")) ylim=range(ffp$y2d_earth)
-            fields::image.plot(ffp$x2d_earth,ffp$y2d_earth,ffp$f2d*100,xlab="lon",ylab="lat",main="Flux Footprint",xlim=xlim,ylim=ylim)
+            fields::image.plot(ffp$x_earth,ffp$y_earth,ffp$f2d*100,xlab="lon",ylab="lat",main="Flux Footprint",xlim=xlim,ylim=ylim)
             tryCatch({
                 for (i in 1:length(ffp$xcontour)) {
                     lines(ffp$xcontour_earth[[i]],ffp$ycontour_earth[[i]],type="l",lwd=1)
@@ -408,13 +408,15 @@ plot_flux_footprint = function(ffp,levels=c(0,10^seq(-6,-3,0.1)),mode="distance"
 #'
 locate_flux_footprint = function(ffp,lon_station,lat_station) {
     x2lon=function(xmat,lon_s=lon_station,lat_s=lat_station) {
-        return(lon_s + xmat/R_earth()*180/pi*cos(lat_s*pi/180))
+        return(lon_s + xmat/(R_earth()*cos(lat_s*pi/180))*180/pi)
     }
     y2lat=function(ymat,lat_s=lat_station) {
         return(lat_s + ymat/R_earth()*180/pi)
     }
     ffp$x_earth = x2lon(ffp$x)
     ffp$y_earth = y2lat(ffp$y)
+    #ffp$x2d_earth = x2lon(ffp$x2d)
+    #ffp$y2d_earth = y2lat(ffp$y2d)
     ffp$xcontour_earth = lapply(ffp$xcontour,x2lon)
     ffp$ycontour_earth = lapply(ffp$ycontour,y2lat)
     return(ffp)

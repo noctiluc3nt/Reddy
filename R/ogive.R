@@ -43,7 +43,10 @@ calc_ogive=function(mrd,plot=TRUE,...) {
 #'
 #'@description Plots ogive
 #'@param ogive an object returned from \code{calc_ogive}
-#'@param ... arguments passed to plot function
+#'@param xlab x-axis label (optional)
+#'@param ylab y-axis label (optional)
+#'@param ylim y-axis limits (optional)
+#'@param ... more arguments passed to plot function
 #'@return creates a plot of an ogive with logarithmic time scale (no return)
 #'@export
 #'
@@ -54,11 +57,11 @@ calc_ogive=function(mrd,plot=TRUE,...) {
 #'ogive_test=calc_ogive(mrd_test)
 #'plot_ogive(ogive_test)
 #'
-plot_ogive=function(ogive,...) {
+plot_ogive=function(ogive,xlab=NULL,ylab=NULL,ylim=NULL,...) {
     #that's in principle the same function as plot_mrd()
-    if (!exists("ylab")) { ylab="Ogive" }
-    if (!exists("xlab")) { xlab="time [s]"}
-    if (!exists("ylim")) { ylim=c(min(ogive$q25[!is.na(ogive$q25)]),max(ogive$q75[!is.na(ogive$q75)])) }
+    if (is.null(ylab)) { ylab="Ogive" }
+    if (is.null(xlab)) { xlab="time [s]"}
+    if (is.null(ylim)) { ylim=c(min(ogive$q25[!is.na(ogive$q25)]),max(ogive$q75[!is.na(ogive$q75)])) }
     plot(log10(ogive$time),ogive$median,lwd=2,pch=4,col=4,xlab=xlab,ylab=ylab,ylim=ylim,xaxt="n",type="o",...)
     suppressWarnings({
 	    #arrows(log10(ogive$time),ogive$median,log10(ogive$time),ogive$q75,lwd=1,col=4,angle=90,length=0.05)

@@ -4,14 +4,14 @@
 \alias{calc_tempprofile}
 \title{Temperature profile from Monin-Obukhov similarity theory}
 \usage{
-calc_tempprofile(zs, ustar, z0 = 0, d = 0, zeta = 0, T0 = 273.15)
+calc_tempprofile(zs, Tstar, z0H = 1e-04, d = 0, zeta = 0, T0 = 273.15)
 }
 \arguments{
 \item{zs}{scalar or vector, heights [m] at which the horizontal wind speed should be calculate}
 
-\item{ustar}{friction velocity [m/s]}
+\item{Tstar}{temperature scale [K], e.g. \code{Tstar = -cov_wT/ustar}}
 
-\item{z0}{surface roughness length [m], default \code{z0=0} (note: it could be an option to calculate z0 from ustar with \code{ustar2z0()})}
+\item{z0H}{surface roughness length for heat [m], default \code{z0=0.0001}}
 
 \item{d}{displacement height [m], optional, default \code{d=0} (i.e. no displacement)}
 
@@ -27,9 +27,9 @@ Calculates vertical profile of horizontal wind speed following Monin-Obukhov sim
 }
 \examples{
 zs=seq(1,100)
-ustar=0.2
-T_neutral=calc_tempprofile(zs,ustar)
-T_unstable=calc_tempprofile(zs,ustar,zeta=-0.2)
-T_stable=calc_tempprofile(zs,ustar,zeta=0.2)
+Tstar=0.2
+T_neutral=calc_tempprofile(zs,Tstar)
+T_unstable=calc_tempprofile(zs,Tstar,zeta=-0.2)
+T_stable=calc_tempprofile(zs,Tstar,zeta=0.2)
 
 }

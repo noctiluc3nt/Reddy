@@ -35,7 +35,6 @@ calc_vpd = function(temp,rh) {
     d=1.289036*10^-5
     e=-2.4780681*10^-9
     f=6.5459673
-    temp=temp*5/9 #K to deg R (Rankine scale)
     es=exp(a/temp+b+c*temp+d*temp^2+e*temp^3+f*log(temp))
     return(es*(1-rh/100))
 }
@@ -68,7 +67,7 @@ calc_theta = function(temp,pres) {
 #'calc_Tv(273,0.1)
 #'
 calc_Tv = function(temp,q) {
-    return(temp*(1+Rd()/Rv()*q))
+    return(temp*(1+(Rv()/Rd()-1)*q))
 }
 
 #' Converts pressure to height (using barometric formula)

@@ -73,7 +73,7 @@ calc_TPI = function(xi,yi,elevi,x,y,elev,dmax=1000,mode="cartesian") {
         warning("The mode has to be either cartesian or lonlat.")
     }
     cond=(dists<dmax)
-    TPI=elevi-mean(elev[cond],na.rm=T)
+    TPI=elevi-mean(elev[cond],dmax=dmax,na.rm=T)
     return(TPI)
 }
 

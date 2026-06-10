@@ -61,7 +61,7 @@ shift2maxccf=function(var1,var2,plot=TRUE) {
 	n=max(n1,n2)
 	#calc cross-correlation
 	notna=(!is.na(var1) & !is.na(var2))
-	cc=ccf(var1[notna],var2[notna])
+	cc=ccf(var1[notna],var2[notna],plot=FALSE)
 	maxcc=max(cc$acf) #max positive cross-correlation
 	lag=cc$lag[which(cc$acf==max(cc$acf))] #respective time lag
 	if (plot == TRUE) {
@@ -117,7 +117,7 @@ gapfilling=function(var,nmissing=4,method="linear") {
 #'@param tres2 desired time resolution(s) [s] of the averaged timeseries (scalar or vector), default \code{tres2 = c(1,10,30)*60} (for 1, 10 and 30 minutes)
 #'@return list containing mean and standard deviation of the timeseries for the desired time interval(s)
 #'@export
-#'@importFrom RcppRoll roll_mean roll_sd roll_max
+#'@importFrom RcppRoll roll_mean roll_sd roll_max roll_min roll_median roll_sum
 #'
 #'@examples
 #'ts=rnorm(10*60*20) #10 minutes of 20 Hz measurements
@@ -128,7 +128,7 @@ accumulate_timeseries=function(var,tres1=0.05,tres2=c(1,10,30)*60) {
 	nt=length(tres2)
     maxt=max(tres2)
 	if (n<(maxt/tres1)) warning("The timeseries is not long enough for the desired (maximum) averaging time.")
-	nav=tres2/tres1 #number of values to be averaged
+	nav=round(tres2/tres1) #number of values to be averaged
 	averaged_mean=list()
 	averaged_sd=list()
 	averaged_max=list()

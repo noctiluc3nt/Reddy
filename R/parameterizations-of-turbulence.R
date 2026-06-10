@@ -153,7 +153,7 @@ calc_phim = function(U1,U2,ustar,zm,dz) {
 #'@export
 #'
 calc_phih = function(T1,T2,cov_wT,ustar,zm,dz) {
-    tstar=calc_xstar(cov_wT,ustar)
+    tstar=-calc_xstar(cov_wT,ustar)
 	dTbar_dz=(T2-T1)/dz
 	phi=karman()*zm*abs(dTbar_dz)/tstar
 	return(phi)
@@ -315,7 +315,7 @@ calc_CM = function(Ri,z=10,z0=0.001,method="LTG") {
 #'calc_CH(0.1)
 #'
 calc_CH = function(Ri,z=10,z0=0.001,z0H=NULL,method="LTG") {
-    z0=ifelse(!is.null(z0H),z0H,z0/10) #overwrite z0 bei z0H for calculation 
+    z0=ifelse(!is.null(z0H),z0H,z0/10) #overwrite z0 by z0H for calculation 
     CN=(karman()/log(z/z0)) #diffusivity under neutral conditions
     return(calc_FH(Ri,method=method)*CN)
 }
@@ -325,7 +325,7 @@ calc_CH = function(Ri,z=10,z0=0.001,z0H=NULL,method="LTG") {
 #'@description Calculates vertical profile of horizontal wind speed following Monin-Obukhov similarity theory
 #'@param zs scalar or vector, heights [m] at which the horizontal wind speed should be calculate 
 #'@param ustar friction velocity [m/s]
-#'@param z0 surface roughness length [m], default \code{z0=0} (note: it could be an option to calculate z0 from ustar with \code{ustar2z0()})
+#'@param z0 surface roughness length [m], default \code{z0=0.0001} (note: it could be an option to calculate z0 from ustar with \code{ustar2z0()})
 #'@param d displacement height [m], optional, default \code{d=0} (i.e. no displacement)
 #'@param zeta stability parameter [-] to correct for stability effects, default \code{zeta=0} (i.e. no stability correction, resulting in classical logarithmic wind profile)
 #'
@@ -339,14 +339,10 @@ calc_CH = function(Ri,z=10,z0=0.001,z0H=NULL,method="LTG") {
 #'u_unstable=calc_windprofile(zs,ustar,zeta=-0.2)
 #'u_stable=calc_windprofile(zs,ustar,zeta=0.2)
 #'
-calc_windprofile = function(zs,ustar,z0=0,d=0,zeta=0) {
+calc_windprofile = function(zs,ustar,z0=0.0001,d=0,zeta=0) {
     zs=c(zs)
     Psi=-5.3*zeta #integral form of Phim folowing BD relation
-    if (z0==0) {
-        uz=ustar/karman()*(log(zs-d)-Psi)
-    } else {
-        uz=ustar/karman()*log((zs-d)/z0-Psi)
-    }
+    uz=ustar/karman()*(log((zs-d)/z0)-Psi)
 	return(data.frame("height"=zs,"windspeed"=uz))
 }
 
@@ -354,8 +350,8 @@ calc_windprofile = function(zs,ustar,z0=0,d=0,zeta=0) {
 #'
 #'@description Calculates vertical profile of horizontal wind speed following Monin-Obukhov similarity theory
 #'@param zs scalar or vector, heights [m] at which the horizontal wind speed should be calculate 
-#'@param ustar friction velocity [m/s]
-#'@param z0 surface roughness length [m], default \code{z0=0} (note: it could be an option to calculate z0 from ustar with \code{ustar2z0()})
+#'@param Tstar temperature scale [K], e.g. \code{Tstar = -cov_wT/ustar}
+#'@param z0H surface roughness length for heat [m], default \code{z0=0.0001}
 #'@param d displacement height [m], optional, default \code{d=0} (i.e. no displacement)
 #'@param zeta stability parameter [-] to correct for stability effects, default \code{zeta=0} (i.e. no stability correction, resulting in classical logarithmic wind profile)
 #'@param T0 reference temperature [K], default \code{T0=273.15}
@@ -365,19 +361,15 @@ calc_windprofile = function(zs,ustar,z0=0,d=0,zeta=0) {
 #'
 #'@examples
 #'zs=seq(1,100)
-#'ustar=0.2
-#'T_neutral=calc_tempprofile(zs,ustar)
-#'T_unstable=calc_tempprofile(zs,ustar,zeta=-0.2)
-#'T_stable=calc_tempprofile(zs,ustar,zeta=0.2)
+#'Tstar=0.2
+#'T_neutral=calc_tempprofile(zs,Tstar)
+#'T_unstable=calc_tempprofile(zs,Tstar,zeta=-0.2)
+#'T_stable=calc_tempprofile(zs,Tstar,zeta=0.2)
 #'
-calc_tempprofile = function(zs,ustar,z0=0,d=0,zeta=0,T0=273.15) {
+calc_tempprofile = function(zs,Tstar,z0H=0.0001,d=0,zeta=0,T0=273.15) {
     zs=c(zs)
     Psi=-8/0.95*zeta #integral form of Phim folowing BD relation
-    if (z0==0) {
-        Tz=T0+ustar/karman()*(log(zs-d)-Psi)
-    } else {
-        Tz=T0+ustar/karman()*log((zs-d)/z0-Psi)
-    }
+    Tz=T0+Tstar/karman()*(log((zs-d)/z0H)-Psi)
 	return(data.frame("height"=zs,"temperature"=Tz))
 }
 

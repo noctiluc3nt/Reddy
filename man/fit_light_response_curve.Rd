@@ -12,7 +12,7 @@ fit_light_response_curve(NEE, PAR)
 \item{PAR}{PAR (or shortwave incoming radiation) [mu mol photons/(m^2 s)], timeseries corresponding to NEE}
 }
 \value{
-summary of non-linear fit (with nls) for the activation energy using the Arrhenius type-temperature model
+non-linear fit (with nls) for the light-response curve
 }
 \description{
 Fit light-response curve (rectangular-hyperbola) of NEE based on PAR (for daytime conditions)

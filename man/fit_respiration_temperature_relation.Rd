@@ -4,19 +4,17 @@
 \alias{fit_respiration_temperature_relation}
 \title{Fit Arrhenius-type temperature-respiration model}
 \usage{
-fit_respiration_temperature_relation(Reco, temp, Rref = 8.134, Tref = 283.15)
+fit_respiration_temperature_relation(Reco, temp, Tref = 283.15)
 }
 \arguments{
 \item{Reco}{ecosystem respiration [mu mol CO2/(m^2 s)] (during nighttime: Reco = NEE, CO2-flux), timeseries}
 
 \item{temp}{temperature [K], timeseries corresponding to Reco}
 
-\item{Rref}{reference respiration [J/(mol*K)], default \code{Rref=8.314}}
-
 \item{Tref}{reference temperature [K], default \code{T_ref=283.15}}
 }
 \value{
-summary of non-linear fit (with nls) for the activation energy using the Arrhenius type-temperature model
+non-linear fit (with nls) for the activation energy using the Arrhenius type-temperature model
 }
 \description{
 Fit Arrhenius-type temperature-respiration model, e.g. applied to fit for nighttime (when Reco = NEE) and use this further to estimate GPP

@@ -68,7 +68,7 @@ calc_ustar = function(cov_uw,cov_vw=0) {
 #'calc_L(0.2,273,-0.1) #stable
 #'
 calc_L = function(ustar,T_mean,cov_wT) {
-	return(-abs(ustar^3)*T_mean/(karman()*g()*cov_wT))
+	return(-ustar^3*T_mean/(karman()*g()*cov_wT))
 }
 
 
@@ -189,7 +189,7 @@ calc_decoupling_metric = function(w_sd,N,z=2) {
 #'calc_ozmidov_scale(-5/3,1*10^-4)
 #'
 calc_ozmidov_scale = function(epsilon,N) {
-	return(sqrt(epsilon/N^3))
+	return(sqrt(abs(epsilon)/N^3))
 }
 
 ### intermittency indicator ###
@@ -216,6 +216,7 @@ calc_flux_intermittency = function(ts1,ts2=NULL,nsub=6000) {
     nint=n%/%nsub
     if (nint<=1) {
         warning("nsub is chosen to large.")
+		return(NA)
     }
     cov_subs=array(NA,dim=nint)
     if (!is.null(ts2)) {
@@ -225,7 +226,7 @@ calc_flux_intermittency = function(ts1,ts2=NULL,nsub=6000) {
 	}
     for (i in 1:nint) {
         isub=((i-1)*nsub+1):(i*nsub)
-        if (!is.null(ts2)) cov_sub=cov(ts1[isub],ts1[isub],use="pairwise.complete.obs")
+        if (!is.null(ts2)) cov_sub=cov(ts1[isub],ts2[isub],use="pairwise.complete.obs")
 		if (is.null(ts2)) cov_sub=mean(ts1[isub],na.rm=TRUE)
         cov_subs[i]=cov_sub
     }
@@ -300,7 +301,7 @@ lh2et = function(lh,temp=NULL) {
 #'calc_coriolis(45)
 #'
 calc_coriolis = function(phi) {
-	Omega=1/86400 #earth rotation frequency
+	Omega=2*pi/86400 #earth's angular velocity [1/s]
 	return(2*Omega*sin(phi*pi/180))
 }
 
@@ -352,7 +353,7 @@ calc_blh = function(L,ustar,f) {
 calc_N2 = function(T1,T2,dz) {
 	T0=(T1+T2)/2
 	dT_dz=(T2-T1)/dz
-	return(T0/g()*dT_dz)
+	return(g()/T0*dT_dz)
 }
 
 #' Calculates bulk Richardson number Ri

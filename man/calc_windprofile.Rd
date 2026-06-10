@@ -4,14 +4,14 @@
 \alias{calc_windprofile}
 \title{Wind profile from Monin-Obukhov similarity theory}
 \usage{
-calc_windprofile(zs, ustar, z0 = 0, d = 0, zeta = 0)
+calc_windprofile(zs, ustar, z0 = 1e-04, d = 0, zeta = 0)
 }
 \arguments{
 \item{zs}{scalar or vector, heights [m] at which the horizontal wind speed should be calculate}
 
 \item{ustar}{friction velocity [m/s]}
 
-\item{z0}{surface roughness length [m], default \code{z0=0} (note: it could be an option to calculate z0 from ustar with \code{ustar2z0()})}
+\item{z0}{surface roughness length [m], default \code{z0=0.0001} (note: it could be an option to calculate z0 from ustar with \code{ustar2z0()})}
 
 \item{d}{displacement height [m], optional, default \code{d=0} (i.e. no displacement)}
 

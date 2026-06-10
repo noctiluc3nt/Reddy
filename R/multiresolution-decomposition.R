@@ -91,7 +91,10 @@ suggest_avgtime_from_mrd=function(mrd_out) {
 #'@description Plots multiresolution decomposition (MRD)
 #'@param mrd_out an object returned from \code{calc_mrd}
 #'@param suggest_avgtime logical, should the suggested averaging time be plotted? default \code{TRUE}
-#'@param ... arguments passed to plot function
+#'@param xlab x-axis label (optional)
+#'@param ylab y-axis label (optional)
+#'@param ylim y-axis limits (optional)
+#'@param ... more arguments passed to plot function
 #'@return creates a plot of MRD with logarithmic time scale (no return)
 #'@export
 #'
@@ -101,10 +104,10 @@ suggest_avgtime_from_mrd=function(mrd_out) {
 #'mrd_test=calc_mrd(c(series))
 #'plot_mrd(mrd_test)
 #'
-plot_mrd=function(mrd_out,suggest_avgtime=TRUE,...) {
-    if (!exists("ylab")) { ylab="MRD" }
-    if (!exists("xlab")) { xlab="time [s]"}
-    if (!exists("ylim")) { ylim=c(min(mrd_out$q25[!is.na(mrd_out$q25)]),max(mrd_out$q75[!is.na(mrd_out$q75)])) }
+plot_mrd=function(mrd_out,suggest_avgtime=TRUE,xlab=NULL,ylab=NULL,ylim=NULL,...) {
+    if (is.null(ylab)) { ylab="MRD" }
+    if (is.null(xlab)) { xlab="time [s]"}
+    if (is.null(ylim)) { ylim=c(min(mrd_out$q25[!is.na(mrd_out$q25)]),max(mrd_out$q75[!is.na(mrd_out$q75)])) }
     plot(log10(mrd_out$time),mrd_out$median,lwd=2,pch=4,col=4,xlab=xlab,ylab=ylab,ylim=ylim,xaxt="n",type="b",...)
     suppressWarnings({
 	    #arrows(log10(mrd_out$time),mrd_out$median,log10(mrd_out$time),mrd_out$q75,lwd=1,col=4,angle=90,length=0.05)

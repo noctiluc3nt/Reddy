@@ -17,15 +17,15 @@
 #'
 plot_seb = function(sw_in,sw_out,lw_in,lw_out,sh=NULL,lh=NULL,gh=NULL,time_vector=NULL,print_fit=TRUE,...) {
     #check which fluxes are given
-    if (is.null(sh)) sh = 0
-    if (is.null(lh)) lh = 0
-    if (is.null(gh)) gh = 0
+    n=length(sw_in)
+    if (is.null(sh)) sh = rep(0,n)
+    if (is.null(lh)) lh = rep(0,n)
+    if (is.null(gh)) gh = rep(0,n)
     #balances
     rad_balance = sw_in-sw_out+lw_in-lw_out #radiation balance
     seb_balance = rad_balance-gh-sh-lh #surface energy balance (residual flux)
-    cr = (rad_balance-gh)/(sh+lh) #closure ratio
+    cr = (sh+lh)/(rad_balance-gh) #closure ratio
     #plot
-    n=length(rad_balance)
     if (is.null(time_vector)) time_vector = 1:n
     #if (!exists("ylim")) ylim=c(-100,500)
     #if (!exists("pch")) pch=20
@@ -45,7 +45,7 @@ plot_seb = function(sw_in,sw_out,lw_in,lw_out,sh=NULL,lh=NULL,gh=NULL,time_vecto
     abline(fit,lwd=2,col=2,lty=2)
     abline(0,1,lwd=2,lty=1)
     grid()
-    legend("topleft",legend=c("1:1","lineare regression"),col=c(1,2),lty=c(1,2),lwd=2)
-    if (print_fit==TRUE) print(paste("mean closure ratio: ", round(mean(cr,na.rm=TRUE))))
+    legend("topleft",legend=c("1:1","linear regression"),col=c(1,2),lty=c(1,2),lwd=2)
+    if (print_fit==TRUE) print(paste("mean closure ratio: ", round(mean(cr,na.rm=TRUE),2)))
     if (print_fit==TRUE) print(paste("mean residual flux: ", round(mean(seb_balance,na.rm=TRUE)),"W/m^2"))
 }

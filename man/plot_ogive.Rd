@@ -4,12 +4,18 @@
 \alias{plot_ogive}
 \title{Plotting Ogive}
 \usage{
-plot_ogive(ogive, ...)
+plot_ogive(ogive, xlab = NULL, ylab = NULL, ylim = NULL, ...)
 }
 \arguments{
 \item{ogive}{an object returned from \code{calc_ogive}}
 
-\item{...}{arguments passed to plot function}
+\item{xlab}{x-axis label (optional)}
+
+\item{ylab}{y-axis label (optional)}
+
+\item{ylim}{y-axis limits (optional)}
+
+\item{...}{more arguments passed to plot function}
 }
 \value{
 creates a plot of an ogive with logarithmic time scale (no return)

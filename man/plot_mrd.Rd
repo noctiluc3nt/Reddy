@@ -4,14 +4,27 @@
 \alias{plot_mrd}
 \title{Plotting Multiresolution Decomposition}
 \usage{
-plot_mrd(mrd_out, suggest_avgtime = TRUE, ...)
+plot_mrd(
+  mrd_out,
+  suggest_avgtime = TRUE,
+  xlab = NULL,
+  ylab = NULL,
+  ylim = NULL,
+  ...
+)
 }
 \arguments{
 \item{mrd_out}{an object returned from \code{calc_mrd}}
 
 \item{suggest_avgtime}{logical, should the suggested averaging time be plotted? default \code{TRUE}}
 
-\item{...}{arguments passed to plot function}
+\item{xlab}{x-axis label (optional)}
+
+\item{ylab}{y-axis label (optional)}
+
+\item{ylim}{y-axis limits (optional)}
+
+\item{...}{more arguments passed to plot function}
 }
 \value{
 creates a plot of MRD with logarithmic time scale (no return)

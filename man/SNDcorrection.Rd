@@ -13,8 +13,7 @@ SNDcorrection(
   cov_wTs,
   cov_qw = NULL,
   A = 7/8,
-  B = 7/8,
-  sos = csound()
+  B = 7/8
 )
 }
 \arguments{
@@ -35,8 +34,6 @@ SNDcorrection(
 \item{A}{constant used in cross-wind correction, default \code{A = 7/8} for CSAT3}
 
 \item{B}{constant used in cross-wind correction, default \code{B = 7/8} for CSAT3}
-
-\item{sos}{speed of sound [m/s], default \code{sos = csound()} corresponding to 343 m/s}
 }
 \value{
 SND correction of sensible heat flux

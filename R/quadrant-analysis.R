@@ -29,25 +29,30 @@ calc_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=seq(0
     product = array(NA,dim=c(4,nh))
     covariance = array(NA,dim=c(4,nh))
     for (i in 1:nh) {
+        hole=hole_sizes[i]
+        is.q1=(xval>0 & yval>0 & abs(xval * yval)>hole)
+        is.q2=(xval<0 & yval>0 & abs(xval * yval)>hole)
+        is.q3=(xval<0 & yval<0 & abs(xval * yval)>hole)
+        is.q4=(xval>0 & yval<0 & abs(xval * yval)>hole)
         #q1
-        is.q1 = (xval>(hole_sizes[i]/xval) & yval>(-hole_sizes[i]/yval))
+        #is.q1 = (xval>(hole_sizes[i]/xval) & yval>(-hole_sizes[i]/yval))
         occurrence[1,i] = sum(is.q1,na.rm=TRUE)
         product[1,i] = mean(xval[is.q1] * yval[is.q1],na.rm=TRUE)
         covariance[1,i] = cov(xval[is.q1],yval[is.q1])
         #q2
-        is.q2 = (xval<(-hole_sizes[i]/xval) & yval>(-hole_sizes[i]/xval))
+        #is.q2 = (xval<(-hole_sizes[i]/xval) & yval>(-hole_sizes[i]/xval))
         occurrence[2,i] = sum(is.q2,na.rm=TRUE)
         product[2,i] = mean(xval[is.q2] * yval[is.q2],na.rm=TRUE)
         covariance[2,i] = cov(xval[is.q2],yval[is.q2])
         #q3
-        is.q3 = (xval<(hole_sizes[i]/xval) & yval<(hole_sizes[i]/yval))
+        #is.q3 = (xval<(hole_sizes[i]/xval) & yval<(hole_sizes[i]/yval))
         occurrence[3,i] = sum(is.q3,na.rm=TRUE)
         product[3,i] = mean(xval[is.q3] * yval[is.q3],na.rm=TRUE)
         covariance[3,i] = cov(xval[is.q3],yval[is.q3])
         #q4
-        is.q4 = (xval>(-hole_sizes[i]/xval) & yval<(-hole_sizes[i]/xval))
+        #is.q4 = (xval>(-hole_sizes[i]/xval) & yval<(-hole_sizes[i]/xval))
         occurrence[4,i] = sum(is.q4,na.rm=TRUE)
-        product[4,i] = mean(xval[is.q4] * yval[is.q4],rm=TRUE)
+        product[4,i] = mean(xval[is.q4] * yval[is.q4],na.rm=TRUE)
         covariance[4,i] = cov(xval[is.q4],yval[is.q4])
     }
     #exuberance and organization ratio
@@ -102,9 +107,8 @@ plot_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=c(1,2
         xval=(xval-mean(xval,na.rm=TRUE))/sd(xval)
         yval=(yval-mean(yval,na.rm=TRUE))/sd(yval)
     }
-    if (!exists("pch")) pch = 20
-    if (typeof(col)=="closure") col = rgb(0.6,0.6,0.6,0.1)
-    plot(xval,yval,col=col,pch=pch,...)
+    col = rgb(0.6,0.6,0.6,0.1)
+    plot(xval,yval,col=col,pch=20,...)
     abline(h=0,lty=2,col=1,lwd=2)
     abline(v=0,lty=2,col=1,lwd=2)
     #linear regression
@@ -122,8 +126,8 @@ plot_quadrant_analysis=function(xval,yval,do_normalization=TRUE,hole_sizes=c(1,2
     #draw holes
     xs=seq(-10,10,0.1)
     for (h in hole_sizes) {
-        points(xs,h/xs,col=1,type="l",lty=2,lwd=1,pch=pch)
-        points(xs,-h/xs,col=1,type="l",lty=2,lwd=1,pch=pch)
+        points(xs,h/xs,col=1,type="l",lty=2,lwd=1,pch=20)
+        points(xs,-h/xs,col=1,type="l",lty=2,lwd=1,pch=20)
     }
     legend("bottomleft",legend=c("linear fit","hyperbolic holes"), col=c("darkred",1),lwd=c(2,1),lty=c(1,2))
 }
