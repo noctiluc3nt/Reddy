@@ -49,7 +49,7 @@ EC_processing_realtime = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     do_SNDcorrection=TRUE,A=7/8,B=7/8,
     do_WPLcorrection=FALSE,
     store=TRUE,format_out="txt",filename=NULL,
-    meta=TRUE
+    meta=FALSE
     ) {
     #given data
     do_h2o=!(is.null(h2o))
@@ -96,14 +96,15 @@ EC_processing_realtime = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
         if (do_h2o & !is.null(despike_h2o)) out$nr_spikes_h2o=count_spikes(h2o,c(despike_h2o[1],despike_h2o[2]))
         if (do_co2 & !is.null(despike_co2)) out$nr_spikes_co2=count_spikes(co2,c(despike_co2[1],despike_co2[2]))
         if (do_ch4 & !is.null(despike_ch4)) out$nr_spikes_ch4=count_spikes(ch4,c(despike_ch4[1],despike_ch4[2]))
-        out$ampl_res_u=get_amplitude_resolution(u)
-        out$ampl_res_v=get_amplitude_resolution(v)
-        out$ampl_res_w=get_amplitude_resolution(w)
-        out$ampl_res_Ts=get_amplitude_resolution(temp)
-        if (do_h2o) out$ampl_res_h2o=get_amplitude_resolution(h2o)
-        if (do_co2) out$ampl_res_co2=get_amplitude_resolution(co2)
-        if (do_ch4) out$ampl_res_ch4=get_amplitude_resolution(ch4)
     }
+    #amplitude resolution
+    out$ampl_res_u=get_amplitude_resolution(u)
+    out$ampl_res_v=get_amplitude_resolution(v)
+    out$ampl_res_w=get_amplitude_resolution(w)
+    out$ampl_res_Ts=get_amplitude_resolution(temp)
+    if (do_h2o) out$ampl_res_h2o=get_amplitude_resolution(h2o)
+    if (do_co2) out$ampl_res_co2=get_amplitude_resolution(co2)
+    if (do_ch4) out$ampl_res_ch4=get_amplitude_resolution(ch4)
     cat("\n... start loop over data: do double rotation and stationarity flagging (if requested) ...")
     for (i in 1:nint) {
         #cat(paste0("\n\t #index: ",i,"\t progress: ",round(i/nint*100,2)," %"))
@@ -190,11 +191,11 @@ EC_processing_realtime = function(u,v,w,temp,h2o=NULL,co2=NULL,ch4=NULL,
     if (do_co2) out$co2_flux=cov2cf(out$cov_co2w)
     #WPL correction
     if (do_WPLcorrection==TRUE) {
-        if (do_h2o) cov_h2ow_wpl=WPLcorrection(h2o,w,temp)
-        if (do_co2) cov_co2w_wpl=WPLcorrection(co2,w,temp)
-        if (do_ch4) cov_ch4w_wpl=WPLcorrection(ch4,w,temp)
-        out$lh=cov2lh(cov_h2ow_wpl)
-        out$co2_flux=cov2cf(cov_co2w_wpl)
+        if (do_h2o) out$cov_h2ow=WPLcorrection(out$Ts_mean,out$h2o_mean/1.2,out$cov_wTs,out$h2o_mean,out$cov_h2ow)
+        if (do_co2) out$cov_co2w=WPLcorrection(out$Ts_mean,out$h2o_mean/1.2,out$cov_wTs,out$h2o_mean,out$cov_h2ow,out$co2_mean,out$cov_co2w)
+        if (do_ch4) out$cov_ch4w=WPLcorrection(out$Ts_mean,out$h2o_mean/1.2,out$cov_wTs,out$h2o_mean,out$cov_h2ow,out$ch4_mean,out$cov_ch4w)
+        out$lh=cov2lh(out$cov_h2ow)
+        out$co2_flux=cov2cf(out$cov_co2w)
     }
     #calculate turbulence statistics
     out$tke=calc_tke(out$u_sd,out$v_sd,out$w_sd)
