@@ -3,7 +3,7 @@ Type: Package
 Title: An open-source package for analyzing eddy-covariance measurements 
 Version: 0.0.0.9000
 Author: Laura Mack
-Maintainer: Laura Mack <laura.mack@geo.uio.no>
+Maintainer: Laura Mack <laura.mack@tuta.io>
 Description: The R-package Reddy provides functions to post-process, analyze and visualize eddy-covariance measurements.
 Imports: pracma, MASS, RcppRoll, gsignal, fields, omnibus, rootSolve
 License: GPL-3

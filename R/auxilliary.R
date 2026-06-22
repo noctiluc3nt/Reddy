@@ -35,57 +35,6 @@ binning=function(var1,var2,bins) {
     }
 }
 
-#' Shifting two timeseries to match maximum cross-correlation
-#'
-#'@description Shifts two timeseries to match their maximum cross-correlation (can be used e.g. for lag-time correction)
-#'@param var1 vector, first timeseries
-#'@param var2 vector, second timeseries
-#'@param maxlag maximum number of lags to be shifted (number of samples, not time), optional
-#'@param plot logical, should the cross-correlation be plotted? default \code{plot = FALSE}
-#'@return a matrix cotaining timeseries \code{var1} and \code{var2} as columns after shifting to the maximum cross-correlation
-#'@export
-#'
-#'@examples
-#'ts1=runif(10)
-#'ts2=c(1,1,ts1)
-#'shifted=shift2maxccf(ts1,ts2)
-#'
-shift2maxccf=function(var1,var2,maxlag=NA,plot=FALSE) {
-	#equalize lengths of timeseries
-	n1=length(var1)
-	n2=length(var2)
-	if (n1<n2) {
-		var1=c(var1,rep(NA,n2-n1))
-	} else if (n2<n1) {
-		var2=c(var2,rep(NA,n1-n2))
-	}
-	n=max(n1,n2)
-	#calc cross-correlation
-	notna=(!is.na(var1) & !is.na(var2))
-	cc=ccf(var1[notna],var2[notna],plot=FALSE)
-	maxcc=max(cc$acf) #max positive cross-correlation
-	lag=cc$lag[which(cc$acf==max(cc$acf))] #respective time lag
-	if (plot == TRUE) {
-		plot(cc)
-		points(lag,maxcc,col=2,lwd=2,cex=2)
-		print(paste("lag:",lag,"\n maximum cross-correlation:",maxcc))
-	}
-	if (lag>maxlag) {
-		print("note: the calculated lag is larger than the given maximum lag for shifting the time series (maxlag).")
-		lag=maxlag
-	}
-	#shift timeseries
-	mat=array(NA,dim=c(n+abs(lag),2))
-	if (lag>0) { #positive lag = var1 leads var2
-		mat[,1]=c(var1,rep(NA,lag))
-		mat[,2]=c(rep(NA,lag),var2[1:n])
-	} else { #negative lag = var2 leads var1
-		mat[,1]=c(rep(NA,abs(lag)),var1[1:n])
-		mat[,2]=c(var2,rep(NA,abs(lag)))
-	}
-	return(mat)
-}
-
 
 #' Very basic constant/linear gap-filling
 #'
