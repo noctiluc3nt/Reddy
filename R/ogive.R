@@ -75,3 +75,29 @@ plot_ogive=function(ogive,xlab=NULL,ylab=NULL,ylim=NULL,...) {
 	abline(v=log10(60*30),lty=3)
     abline(h=0,lty=3)
 }
+
+
+#' Fits sigmoid curve to ogive
+#'
+#'@description Fits a sigmoid curve of the form L/(1+exp(-k*(x-x0)) (with: L: upper asymptote, k: slope, x0: midpoint) to an ogive
+#'@param x x-values (time-axis) or directly an ogive from \code{calc_ogive}
+#'@param y y-values (ogive) (if x is a vector)
+#'@return fit of sigmoid curve (\code{nls}-object)
+#'
+#'@export
+#'
+fit_sigmoid_ogive=function(x,y) {
+    if (is.vector(x)) {
+        if (length(x)!=length(y)) stop("x and y have to be vectors of the same length.")
+    } else { #if x is an ogive object
+        y=x$median
+        x=x$time
+    }
+    direction=ifelse(cor(x,y,use="pairwise.complete.obs")>0,1,-1) #monotonically increasing/decreasing
+    fit=minpack.lm::nlsLM(y~L2+(L1-L2)/(1+exp(-k*(x-x0))),data=data.frame(x=x,y=y),
+        start=list(L1=max(y,na.rm=TRUE),L2=min(y,na.rm=TRUE),k=direction,x0=median(x,na.rm=TRUE))
+    ) #L1: upper asymptote, L2: lower asymptote, k: slope, x0: midpoint
+    return(fit)
+}
+
+

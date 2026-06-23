@@ -6,6 +6,7 @@ Author: Laura Mack
 Maintainer: Laura Mack <laura.mack@tuta.io>
 Description: The R-package Reddy provides functions to post-process, analyze and visualize eddy-covariance measurements.
 Imports: pracma, MASS, RcppRoll, gsignal, fields, omnibus, rootSolve
+Suggests: minpack.lm
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
