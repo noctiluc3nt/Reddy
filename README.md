@@ -52,8 +52,10 @@ The Reddy package provides functions for the post-processing, analysis and evalu
 
 Contact: laura.mack@geo.uio.no
 
-## Literature
-- Mack, L., Berntsen, T.K., Vercauteren, N., Pirk, N. (2024). Transfer Efficiency and Organization in Turbulent Transport over Alpine Tundra. Boundary-Layer Meteorology 190, 38. DOI: https://doi.org/10.1007/s10546-024-00879-5
+## Citation
+- Mack, Laura and Pirk, Norbert (2026). Reddy: An open-source toolbox for analyzing eddy-covariance measurements in heterogeneous environments. arXiv:ao-physics DOI: [ 	
+https://doi.org/10.48550/arXiv.2601.21890](	
+https://doi.org/10.48550/arXiv.2601.21890)
 
 
 
