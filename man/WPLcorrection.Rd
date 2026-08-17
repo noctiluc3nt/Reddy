@@ -17,7 +17,7 @@ WPLcorrection(
 \arguments{
 \item{Ts_mean}{temperature [K] (sonic temperature or corrected temperature)}
 
-\item{q_mean}{specific humidity [kg/kg] (if measured, default \code{NULL})}
+\item{q_mean}{specific humidity [kg/kg]}
 
 \item{cov_wTs}{covariance cov(w,Ts) [m/s*K]}
 

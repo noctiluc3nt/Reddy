@@ -186,6 +186,10 @@ flag_stationarity = function(var1,var2,nsub=3000,thresholds_stationarity=c(0.3,1
     }
     rnfs=array(NA,dim=nint)
     cov_complete=cov(var1,var2,use="pairwise.complete.obs")
+    if (cov_complete==0 || is.na(cov_complete)) {
+        warning("The total covariance is NA or 0, flag set to 2.")
+        return(2)
+    }
     for (i in 1:nint) {
         isub=((i-1)*nsub+1):(i*nsub)
         cov_sub=cov(var1[isub],var2[isub],use="pairwise.complete.obs")
@@ -270,10 +274,14 @@ flag_distortion = function(u,v,dir_blocked,threshold_cr=0.9) {
 #'itc_flag=flag_most(0.2,0.4,-0.3)
 #'
 flag_most = function(w_sd,ustar,zeta,thresholds_most=c(0.3,0.8)) {
+    if (is.na(ustar)) {
+        warning("ustar is NA, flag is set to 2.")
+        return(2)
+    }
     if (length(thresholds_most)!=2) {
         stop("thresholds_most has to be a vector of length 2.")
     }
-    parameterized=1.3*(1-2*abs(zeta))^(1/3) #w_sd/ustar parametrized according to scaling function based on zeta
+    parameterized=1.3/(1+3*abs(zeta))^(1/3) #w_sd/ustar parametrized according to scaling function based on zeta
     itc=abs((w_sd/ustar-parameterized)/parameterized)
     flag=ifelse(itc<thresholds_most[1],0,ifelse(itc<thresholds_most[2],1,2))
     return(flag)
@@ -322,7 +330,7 @@ SNDcorrection = function(Ts_mean,u_mean,v_mean,cov_uw,cov_vw,cov_wTs,cov_qw=NULL
 #'
 #'@description WPL correction: density correction for trace gas fluxes (i.e., converts volume- to mass-related quantity)
 #'@param Ts_mean temperature [K] (sonic temperature or corrected temperature)
-#'@param q_mean specific humidity [kg/kg] (if measured, default \code{NULL})
+#'@param q_mean specific humidity [kg/kg]
 #'@param cov_wTs covariance cov(w,Ts) [m/s*K]
 #'@param rhow_mean measured water vapor density [kg/m^3]
 #'@param cov_wrhow covariance cov (w,rhow) [m/s*kg/m^3]
@@ -555,13 +563,13 @@ shift2maxccf=function(var1,var2,maxlag=0,plot=FALSE) {
 	if (plot == TRUE) {
 		plot(cc)
 		points(lag,maxcc,col=2,lwd=2,cex=2)
-		print(paste("lag:",lag,"\n maximum cross-correlation:",maxcc))
+		message(paste("lag:",lag,"\n maximum cross-correlation:",maxcc))
 	}
 	if (abs(lag)>maxlag) {
-		print("note: the calculated lag is larger than the given maximum lag for shifting the time series (maxlag).")
+		message("note: the calculated lag is larger than the given maximum lag for shifting the time series (maxlag).")
 		lag=maxlag
 	} else {
-        print(paste0("time lag for maximizing cross-correlation: ", lag))
+        message(paste0("time lag for maximizing cross-correlation: ", lag))
     }
 	#shift timeseries
 	mat=array(NA,dim=c(n+abs(lag),2))
