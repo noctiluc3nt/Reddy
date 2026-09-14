@@ -1,10 +1,10 @@
 Package: Reddy
 Type: Package
-Title: An open-source package for analyzing eddy-covariance measurements 
+Title: An Open-Source Toolbox for Analyzing Eddy-Covariance Measurements in Heterogeneous Environments 
 Version: 1.1.0.9000
 Author: Laura Mack
 Maintainer: Laura Mack <laura.mack@geo.uio.no>
-Description: The R-package Reddy provides functions to process, analyze and visualize eddy-covariance measurements.
+Description: Reddy is a modular R package for processing, analysing, and visualizing eddy-covariance (EC) data. It supports flexible processing configurations for diverse sites and terrain, including coordinate rotations, quality control, density corrections, covariance maximization, footprint and energy balance diagnostics. Advanced tools cover turbulence anisotropy, ogive optimization, and stable boundary layer diagnostics. Reddy can also handle virtual EC measurements from turbulence-resolving simulations and facilitates comparison with output from Earth system models. Methods and workflows are described in [Mack and Pirk, 2026, <doi:10.1007/s10546-026-01003-5>].
 Imports: pracma, MASS, RcppRoll, gsignal, fields, omnibus, rootSolve
 Suggests: minpack.lm
 License: GPL-3

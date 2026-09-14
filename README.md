@@ -1,13 +1,12 @@
-# Reddy: A toolbox for analyzing eddy-covariance measurements
+# Reddy: A Toolbox for Analyzing Eddy-Covariance Measurements in Heterogeneous Environments
 <!-- badges: start 
 [![CRAN status](https://www.r-pkg.org/badges/version/Reddy)](https://cran.r-project.org/package=Reddy) -->
-[![doc](https://img.shields.io/badge/Reddy-documentation-blue)](https://noctiluc3nt.github.io/ec_analyze/)
+[![doc](https://img.shields.io/badge/Reddy-tutorials-blue)](https://noctiluc3nt.github.io/ec_analyze/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Last Commit](https://img.shields.io/github/last-commit/noctiluc3nt/Reddy)](https://github.com/noctiluc3nt/Reddy)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21976179.svg)](https://doi.org/10.5281/zenodo.21976179)
-
-
-
+[![Journal article](https://img.shields.io/badge/Journal_article-10.1007%2Fs10546--026--01003--5-purple.svg)](https://doi.org/10.1007/s10546-026-01003-5)
+<!--[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21976179.svg)](https://doi.org/10.5281/zenodo.21976179)
+-->
 <!--[![maintained](https://img.shields.io/badge/maintained-black)
 <!-- badges: end -->
 
@@ -57,9 +56,7 @@ The Reddy package provides functions for the post-processing, analysis and evalu
 Contact: laura.mack@geo.uio.no
 
 ## Citation
-- Mack, Laura and Pirk, Norbert (2026). Reddy: An open-source toolbox for analyzing eddy-covariance measurements in heterogeneous environments. arXiv:ao-physics DOI: [ 	
-https://doi.org/10.48550/arXiv.2601.21890](	
-https://doi.org/10.48550/arXiv.2601.21890)
+- Mack, Laura and Pirk, Norbert (2026). Reddy: An Open-Source Toolbox for Analyzing Eddy-Covariance Measurements in Heterogeneous Environments. Boundary-Layer Meteorology 192(9), 53. DOI: [https://doi.org/10.1007/s10546-026-01003-5](https://doi.org/10.1007/s10546-026-01003-5)
 
 
 
