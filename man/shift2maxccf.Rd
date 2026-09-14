@@ -11,12 +11,12 @@ shift2maxccf(var1, var2, maxlag = 0, plot = FALSE)
 
 \item{var2}{vector, second timeseries}
 
-\item{maxlag}{maximum number of lags to be shifted (number of samples, not time), optional}
+\item{maxlag}{maximum number of lags to be shifted (number of samples, not time), default \code{maxlag=0} (no shift)}
 
 \item{plot}{logical, should the cross-correlation be plotted? default \code{plot = FALSE}}
 }
 \value{
-a matrix cotaining timeseries \code{var1} and \code{var2} as columns after shifting to the maximum cross-correlation
+a list containing the timeseries \code{var1} and \code{var2} after shifting to the maximum cross-correlation and the lag
 }
 \description{
 Shifts two timeseries to match their maximum cross-correlation (can be used e.g. for lag-time correction)

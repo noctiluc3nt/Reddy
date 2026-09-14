@@ -2,17 +2,19 @@
 % Please edit documentation in R/ec-processing.R
 \name{calc_cov}
 \alias{calc_cov}
-\title{Calculates covariance of two timeseries using pair-wise complete observations}
+\title{Calculates covariance and maximized covariance of two timeseries using pair-wise complete observations}
 \usage{
-calc_cov(x, y)
+calc_cov(x, y, maxlag = 120)
 }
 \arguments{
 \item{x}{timeseries 1}
 
 \item{y}{timeseries 2}
+
+\item{maxlag}{maximum lag for shifting the timeseries (in records), default \code{maxlag=120} (= 6 s for 20 Hz sampling frequency), optional}
 }
 \value{
-cov(x,y)
+list containing the covariance cov(x,y), the maximized covariance and the lag
 }
 \description{
 Calculates cov(x,y)

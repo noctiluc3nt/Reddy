@@ -4,6 +4,10 @@
 [![doc](https://img.shields.io/badge/Reddy-documentation-blue)](https://noctiluc3nt.github.io/ec_analyze/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Last Commit](https://img.shields.io/github/last-commit/noctiluc3nt/Reddy)](https://github.com/noctiluc3nt/Reddy)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21976179.svg)](https://doi.org/10.5281/zenodo.21976179)
+
+
+
 <!--[![maintained](https://img.shields.io/badge/maintained-black)
 <!-- badges: end -->
 

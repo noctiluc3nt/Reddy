@@ -472,13 +472,14 @@ cov2cf = function(cov_co2w,rho=NULL) {
 }
 
 
-#' Calculates covariance of two timeseries using pair-wise complete observations
+#' Calculates covariance and maximized covariance of two timeseries using pair-wise complete observations
 #'
 #'@description Calculates cov(x,y)
 #'@param x timeseries 1
 #'@param y timeseries 2
+#'@param maxlag maximum lag for shifting the timeseries (in records), default \code{maxlag=120} (= 6 s for 20 Hz sampling frequency), optional
 #'
-#'@return cov(x,y)
+#'@return list containing the covariance cov(x,y), the maximized covariance and the lag
 #'@export
 #'
 #'@examples
@@ -488,8 +489,12 @@ cov2cf = function(cov_co2w,rho=NULL) {
 #'y[1:10]=NA
 #'cov_xy=calc_cov(x,y)
 #'
-calc_cov = function(x,y) {
-	return(cov(x,y,use="pairwise.complete.obs"))
+calc_cov = function(x,y,maxlag=120) {
+    mat=shift2maxccf(x,y,maxlag=maxlag)
+    return(list("cov"=cov(x,y,use="pairwise.complete.obs"),
+            "cov_maximized"=cov(mat$var1_shifted,mat$var2_shifted,use="pairwise.complete.obs"),
+            "lag"=mat$lag))
+
 }
 
 
@@ -535,9 +540,9 @@ smaller_than_machine_epsilon = function(vec) {
 #'@description Shifts two timeseries to match their maximum cross-correlation (can be used e.g. for lag-time correction)
 #'@param var1 vector, first timeseries
 #'@param var2 vector, second timeseries
-#'@param maxlag maximum number of lags to be shifted (number of samples, not time), optional
+#'@param maxlag maximum number of lags to be shifted (number of samples, not time), default \code{maxlag=0} (no shift)
 #'@param plot logical, should the cross-correlation be plotted? default \code{plot = FALSE}
-#'@return a matrix cotaining timeseries \code{var1} and \code{var2} as columns after shifting to the maximum cross-correlation
+#'@return a list containing the timeseries \code{var1} and \code{var2} after shifting to the maximum cross-correlation and the lag
 #'@export
 #'
 #'@examples
@@ -563,7 +568,7 @@ shift2maxccf=function(var1,var2,maxlag=0,plot=FALSE) {
 	if (plot == TRUE) {
 		plot(cc)
 		points(lag,maxcc,col=2,lwd=2,cex=2)
-		message(paste("lag:",lag,"\n maximum cross-correlation:",maxcc))
+		message(paste("lag:",lag," maximum cross-correlation:",maxcc))
 	}
 	if (abs(lag)>maxlag) {
 		message("note: the calculated lag is larger than the given maximum lag for shifting the time series (maxlag).")
@@ -580,5 +585,5 @@ shift2maxccf=function(var1,var2,maxlag=0,plot=FALSE) {
 		mat[,1]=c(rep(NA,abs(lag)),var1[1:n])
 		mat[,2]=c(var2,rep(NA,abs(lag)))
 	}
-	return(mat)
+	return(list("var1_shifted"=mat[,1],"var2_shifted"=mat[,2],"lag"=lag))
 }
