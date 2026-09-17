@@ -563,7 +563,7 @@ shift2maxccf=function(var1,var2,maxlag=0,plot=FALSE) {
 	#calc cross-correlation
 	notna=(!is.na(var1) & !is.na(var2))
 	cc=ccf(var1[notna],var2[notna],plot=FALSE)
-	maxcc=max(cc$acf) #max positive cross-correlation
+	maxcc=max(abs(cc$acf)) #max absolute cross-correlation
 	lag=cc$lag[which(cc$acf==max(cc$acf))] #respective time lag
 	if (plot == TRUE) {
 		plot(cc)
