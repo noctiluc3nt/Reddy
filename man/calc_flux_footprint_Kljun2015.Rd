@@ -19,7 +19,7 @@ calc_flux_footprint_Kljun2015(
 )
 }
 \arguments{
-\item{zm}{measurement height [m]}
+\item{zm}{measurement height [m] (effective height above displacement height)}
 
 \item{ws_mean}{mean horizontal wind speed [m/s] (alternatively you can also use \code{z0})}
 
@@ -37,7 +37,7 @@ calc_flux_footprint_Kljun2015(
 
 \item{contours}{which contour lines should be calculated? default: \code{contours=seq(0.9,0.1,-0.1)}}
 
-\item{nres}{resolution (default: \code{nres=1000})}
+\item{nres}{number of grid cells used to discretize the flux footprint (integer, default: \code{nres=1000})}
 
 \item{plot}{logical, should the flux footprint be plotted? default \code{plot=TRUE}}
 }

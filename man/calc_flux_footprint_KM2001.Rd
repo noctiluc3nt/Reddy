@@ -35,7 +35,7 @@ calc_flux_footprint_KM2001(
 
 \item{contours}{which contour lines should be calculated? default: \code{contours=seq(0.9,0.1,-0.1)}}
 
-\item{nres}{domain size (default: \code{nres=1000} to get a domain ranging from -500 to 500)}
+\item{nres}{number of grid cells used to discretize the flux footprint (integer, default: \code{nres=1000} to get a domain ranging from -500 to 500)}
 
 \item{dx}{resolution (default: \code{dx=1})}
 

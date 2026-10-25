@@ -16,6 +16,7 @@ calc_flux_footprint_climatology(
   contours = seq(0.9, 0.1, -0.1),
   nres = 1000,
   method = "Kljun2015",
+  dx = 1,
   plot = TRUE,
   ...
 )
@@ -42,6 +43,8 @@ calc_flux_footprint_climatology(
 \item{nres}{resolution (scalar) (default: \code{nres=1000})}
 
 \item{method}{method used to calculate FFP: can be either \code{method="Kljun2015"} (default) or \code{method="KM2001"}}
+
+\item{dx}{horizontal resolution [m] (dx = dy)}
 
 \item{plot}{logical, should the flux footprint be plotted? default \code{plot=TRUE}}
 

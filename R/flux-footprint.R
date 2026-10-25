@@ -1,7 +1,7 @@
 #' Flux-Footprint Parametrization (FFP) according to Kljun et al., 2015
 #'
 #'@description Calculates the Flux-Footprint Parametrization (FFP) according to Kljun et al., 2015
-#'@param zm measurement height [m]
+#'@param zm measurement height [m] (effective height above displacement height)
 #'@param ws_mean mean horizontal wind speed [m/s] (alternatively you can also use \code{z0})
 #'@param wd_mean mean wind direction [deg] (used to rotate flux footprint, optional)
 #'@param L Obukhov length [m]
@@ -10,7 +10,7 @@
 #'@param z0 roughness length [m] (either \code{ws_mean} or \code{z0} have to be given)
 #'@param blh boundary-layer height [m]
 #'@param contours which contour lines should be calculated? default: \code{contours=seq(0.9,0.1,-0.1)}
-#'@param nres resolution (default: \code{nres=1000})
+#'@param nres number of grid cells used to discretize the flux footprint (integer, default: \code{nres=1000})
 #'@param plot logical, should the flux footprint be plotted? default \code{plot=TRUE}
 #'
 #'@return list containing all relevant flux footprint information
@@ -27,6 +27,16 @@
 #'      v_sd=0.6,ustar=0.4,contours=0.8)
 #'
 calc_flux_footprint_Kljun2015 = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z0=NA,blh,contours=seq(0.9,0.1,-0.1),nres=1000,plot=TRUE) {
+    #print("Given parameters for flux footprint calculation:")
+    #print(list(zm = zm,ws_mean = ws_mean,wd_mean = wd_mean,L = L,v_sd = v_sd,ustar = ustar,z0 = z0,blh = blh,contours = contours,nres = nres,plot = plot))
+    #print("----------------------------\n")
+    if (nres%%2 != 0) {
+        nres=nres+1
+        warning("`nres` has been changed to `nres + 1` as an even grid cell number is required. FFP calculation continues.")
+    }
+    #if (zm<=0 || ustar<=0 || v_sd<=0) {
+    #    stop("Check input parameters: `zm, ustar, v_sd` have all to be positive.")
+    #}
     #fitting parameters for crosswind-integrated footprint, see (Kljun et al., 2015) eq. 17
     a=1.452
     b=-1.991
@@ -38,7 +48,7 @@ calc_flux_footprint_Kljun2015 = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z
     bc=1.66
     cc=20
     #prepare non-dimensional upwind distance
-    xstar=seq(d,30,length=nres)[-1]
+    xstar=seq(d,30,length=nres+1)[-1]
     #calculate crosswind-integrated footprint
     fstar=a*(xstar-d)^b*exp(-c/(xstar-d)) #eq. 14
     #calculate standard deviation of crosswind distance
@@ -66,34 +76,25 @@ calc_flux_footprint_Kljun2015 = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z
     } else {
         stop("You have to know either ws_mean or z0.")
     }
-    #calculate real scale y_sd
+    #real-scale, coordinates, 2d footprint
     ps1=min(1,abs(1/(zm/L))*1E-5 + ifelse(L<=0,0.8,0.55))
     sigmay=sigmay_star/ps1*zm*v_sd/ustar #eq. 13 inverted
-    #calculate real scale f(x,y)
-    dx=x[3]-x[2]
-    ypos=x #seq(0,length(x)/2*dx*1.5,dx)
-    fpos=matrix(NA,nrow=length(fy_mean),ncol=length(ypos))
-    for (i in 1:length(fy_mean)) {
-        fpos[i,]=fy_mean[i]/(sqrt(2*pi)*sigmay[i])*exp(-ypos^2/(2*sigmay[i]^2)) #eq. 10
+    npos=nres/2
+    x_pos=x[seq_len(npos)]
+    fy_pos=fy_mean[seq_len(npos)]
+    sigmay_pos=sigmay[seq_len(npos)]
+    dx=median(diff(x_pos),na.rm=TRUE)
+    y=seq(-(nres/2)*dx,(nres/2-1)*dx,dx)
+    dy=median(diff(y),na.rm=TRUE)
+    fmat_pos=matrix(NA_real_,nrow=npos,ncol=length(y))
+    for (i in seq_len(npos)) {
+        fmat_pos[i,]=fy_pos[i]/(sqrt(2*pi)*sigmay_pos[i])*exp(-y^2/(2*sigmay_pos[i]^2)) #eq. 10
     }
-    #footprint 2d
-    n1=1
-    n2=length(ypos)
-    nf=nrow(fpos)
-    fmat=array(NA,dim=c(nf,2*n2-1))
-    fmat[,1:(n2-1)]=fpos[,n2:2] #symmetry
-    fmat[,n2:(2*n2-1)]=fpos
-    nx=length(x)
-    y=c(-rev(ypos),ypos[2:n2])
-    ny=length(y)
-    #cut coordinates/fmat
-    ny_mid=round(ny/2)
-    yselect=(ny_mid-nres/2+1):(ny_mid+nres/2)
-    fmat=fmat[1:(nres/2),yselect]
-    fmat=rbind(fmat*0,fmat)
-    x=seq(min(-x),max(x),length.out=dim(fmat)[1])
-    y=x
-    crosswind_integrated=apply(fmat,1,mean,na.rm=TRUE)
+    fmat=rbind(matrix(0,nrow=npos,ncol=length(y)),fmat_pos)
+    x=c(-rev(x_pos),x_pos)
+    #normalize for calculating crosswind-integated flux footprint
+    fmat=fmat/sum(fmat*dx*dy,na.rm=TRUE)
+    crosswind_integrated=rowSums(fmat,na.rm=TRUE)*dy
     #rotate flux footprint
     if (!is.na(wd_mean)) {
         #rotate area (2d data) using polar coordinates
@@ -105,6 +106,7 @@ calc_flux_footprint_Kljun2015 = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z
         wd_mean=ifelse(wd_mean<180,wd_mean+180,wd_mean-180)
         fmat=omnibus::rotateMatrix(fmat,wd_mean+90)
         fmat[which(is.na(fmat),arr.ind=TRUE)]=0
+        fmat=fmat/sum(fmat*dx*dy,na.rm=TRUE) #renormalize after rotation
         #rotate contours
         #for (i in 1:length(contours)) {  
         #    wd=wd_mean*pi/180
@@ -127,7 +129,7 @@ calc_flux_footprint_Kljun2015 = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z
     ffp$ycontour=ycont
     ffp$contour_levels=contours
     ffp$crosswind_integrated=crosswind_integrated
-    ffp$xmax=x[which(crosswind_integrated==max(crosswind_integrated,na.rm=TRUE))]
+    ffp$xmax=xmax #x[which(crosswind_integrated==max(crosswind_integrated,na.rm=TRUE))] #use analytical xmax instead of numerical
     tryCatch({
         if (plot==TRUE) plot_flux_footprint(ffp)
     }, warning = function(w) {
@@ -148,7 +150,7 @@ calc_flux_footprint_Kljun2015 = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z
 #'@param ustar friction velocity [m/s]
 #'@param z0 roughness length [m] (either \code{ws_mean} or \code{z0} have to be given)
 #'@param contours which contour lines should be calculated? default: \code{contours=seq(0.9,0.1,-0.1)}
-#'@param nres domain size (default: \code{nres=1000} to get a domain ranging from -500 to 500)
+#'@param nres number of grid cells used to discretize the flux footprint (integer, default: \code{nres=1000} to get a domain ranging from -500 to 500)
 #'@param dx resolution (default: \code{dx=1})
 #'@param plot logical, should the flux footprint be plotted? default \code{plot=TRUE}
 #'
@@ -164,11 +166,19 @@ calc_flux_footprint_Kljun2015 = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z
 #'      v_sd=0.6,ustar=0.4,z0=0.1,contours=0.8)
 #'
 calc_flux_footprint_KM2001 = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z0,contours=seq(0.9,0.1,-0.1),nres=1000,dx=1,plot=TRUE) {
-    #ctodo heck all same length
+    #print("Given parameters for flux footprint calculation:")
+    #print(list(zm = zm,ws_mean = ws_mean,wd_mean = wd_mean,L = L,v_sd = v_sd,ustar = ustar,z0 = z0,contours = contours,nres = nres,dx = dx, plot = plot))
+    #print("----------------------------\n")
+    #if (zm<=0 || ustar<=0 || v_sd<=0) {
+    #    stop("Check input parameters: `zm, ustar, v_sd` have all to be positive.")
+    #}
     #init + create domain
-    ngrid=as.integer(nres/2)
-    x=seq(-ngrid,ngrid,dx)
-    y=seq(-ngrid,ngrid,dx)
+    if (nres%%2 != 0) {
+        nres=nres+1
+        warning("`nres` has been changed to `nres + 1` as an even grid cell number is required. FFP calculations continues.")
+    }
+    x=seq(-nres/2*dx,nres/2*dx,dx)
+    y=x
     nx=length(x)
     grid=expand.grid(x,y)
     x2d=matrix(grid[,1],nrow=nx,byrow=TRUE)
@@ -232,7 +242,7 @@ calc_flux_footprint_KM2001 = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z0,c
     f2d=1/(sqrt(2*pi)*h0)*exp(-y_tmp^2/(2*h0^2))*C*x_masked^(-A)*exp(-B/x_masked) #eq 2 in Neftel et al, 2007
     f2d[which(is.na(f2d))]=0
     #normalize
-    f2d=f2d/(sum(f2d))
+    f2d=f2d/(sum(f2d*dx^2,na.rm=T))
     #output
     ffp=list()
     ffp$x=x
@@ -251,7 +261,7 @@ calc_flux_footprint_KM2001 = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z0,c
     ffp$xmax=x[which(crosswind_integrated==max(crosswind_integrated,na.rm=TRUE))]
     tryCatch({
         if (plot==TRUE) plot_flux_footprint(ffp)
-    }, warning = function(w) {
+    }, error = function(w) {
         message("An error occurred when plotting the flux footprint.")
     })
     return(ffp)
@@ -274,8 +284,9 @@ get_contours_from_f2d=function(x,y,fmat,contours=seq(0,0.9,0.1)) {
     nc=length(contours)
     fsort=rev(sort(c(fmat)))
     fsort=fsort[!is.na(fsort)]
-    dx=x[3]-x[2]
-    fint=cumsum(fsort)*dx^2
+    dx=median(diff(x))
+    dy=median(diff(y))
+    fint=cumsum(fsort)*dx*dy
     xcont=list()
     ycont=list()
     for (i in 1:nc) {
@@ -313,16 +324,16 @@ get_ffp_area=function(fmat,alpha=0.8,dx=1,dy=1) {
 }
 
 
-#' Plot Flux-Footprint
+#' Plot flux footprint
 #'
 #'@description Plots Flux-Footprint Parametrization (FFP)
 #'@param ffp an object returned from \code{calc_flux_footprint_[method]}
 #'@param levels levels used for filled contour plot of footprint, default \code{levels=c(0,10^seq(-6,-3,0.1))}
-#'@param mode can be either \code{mode="distance"} for plotting footprint relative to station location in cartesian coordinates or \code{mode="lonlat"} for plotting in (lon,lat)-ccordinates
+#'@param mode can be either \code{mode="distance"} for plotting footprint relative to station location in cartesian coordinates or \code{mode="lonlat"} for plotting in (lon,lat)-coordinates
 #'@param version plot 2d or 1d flux footprint? default \code{version="2d"}
 #'@param xlim range of x-axis in plot
 #'@param ylim range of y-axis in plot
-#'@param ... paraemters passed to image.plot function 
+#'@param ... parameters passed to image.plot function 
 #'
 #'@return no return
 #'@importFrom grDevices colorRampPalette contourLines rgb
@@ -435,6 +446,7 @@ locate_flux_footprint = function(ffp,lon_station,lat_station) {
 #'@param z0 roughness length [m] (either \code{ws_mean} or \code{z0} have to be given)
 #'@param contours which contour lines should be calculated? default: \code{contours=seq(0.9,0.1,-0.1)}
 #'@param nres resolution (scalar) (default: \code{nres=1000})
+#'@param dx horizontal resolution [m] (dx = dy)
 #'@param method method used to calculate FFP: can be either \code{method="Kljun2015"} (default) or \code{method="KM2001"}
 #'@param plot logical, should the flux footprint be plotted? default \code{plot=TRUE}
 #'@param ... paraemters passed to image.plot function
@@ -447,31 +459,51 @@ locate_flux_footprint = function(ffp,lon_station,lat_station) {
 #'#ffp=calc_flux_footprint_climatology(zm=20,ws_mean=rep(2,nit),blh=rep(200,nit),L=rep(-1.5,nit),
 #'#          v_sd=rep(0.6,nit),ustar=rep(0.4,nit),contours=0.8,wd_mean=c(50,240)) #todo
 #'
-calc_flux_footprint_climatology = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z0=NA,blh=NA,contours=seq(0.9,0.1,-0.1),nres=1000,method="Kljun2015",plot=TRUE,...) {
+calc_flux_footprint_climatology = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar,z0=NA,blh=NA,contours=seq(0.9,0.1,-0.1),nres=1000,method="Kljun2015",dx=1,plot=TRUE,...) {
+    if (nres%%2 != 0) {
+        nres=nres+1
+        warning("`nres` has been changed to `nres + 1` as an even grid cell number is required. FFP calculation continues.")
+    }
     n=length(ws_mean)
     ffp_clim=array(0,dim=c(nres+1,nres+1))
     ncount=0
+    #for Kljun2015: define common grid first, as grid is adapted to wind speed, stability etc.
+    xcommon=seq(-nres/2*dx,nres/2*dx,dx) #symmetric for x and y
     for (i in 1:n) {
         #cat("progress: ",round(i/n*100))
+        ws_tmp=ws_mean[i]
+        wd_tmp=wd_mean[i]
+        L_tmp=L[i]
+        v_sd_tmp=v_sd[i]
+        ustar_tmp=ustar[i]
+        z0_tmp=z0[i]
+        blh_tmp=blh[i]
         tryCatch({
             if (method=="Kljun2015") {
-                ffp_tmp=calc_flux_footprint_Kljun2015(zm=zm,ws_mean=ws_mean[i],wd_mean=wd_mean[i],blh=blh[i],L=L[i],v_sd=v_sd[i],ustar=ustar[i],z0=z0[i],nres=nres,plot=FALSE)
+                ffp_tmp=calc_flux_footprint_Kljun2015(zm=zm,ws_mean=ws_tmp,wd_mean=wd_tmp,blh=blh_tmp,L=L_tmp,v_sd=v_sd_tmp,ustar=ustar_tmp,z0=z0_tmp,nres=nres,plot=FALSE)
+                f2d_tmp=ffp_tmp$f2d
+                f2d_tmp[which(is.na(f2d_tmp),arr.ind=TRUE)]=0
+                f2d_tmp=fields::interp.surface.grid(list(ffp_tmp$x,ffp_tmp$y,f2d_tmp),list(x=xcommon,y=xcommon))$z
+                f2d_tmp[which(is.na(f2d_tmp),arr.ind=TRUE)]=0
             } else if (method=="KM2001") {
-                ffp_tmp=calc_flux_footprint_KM2001(zm=zm,ws_mean=ws_mean[i],wd_mean=wd_mean[i],L=L[i],v_sd=v_sd[i],ustar=ustar[i],z0=z0[i],nres=nres,plot=FALSE)
+                ffp_tmp=calc_flux_footprint_KM2001(zm=zm,ws_mean=ws_tmp,wd_mean=wd_tmp,L=L_tmp,v_sd=v_sd_tmp,ustar=ustar_tmp,z0=z0_tmp,nres=nres,dx=dx,plot=FALSE)
             } else {
                 warning("The requested flux footprint calculation method is not implemented: method has to be either Kljun2015 or KM2001.")
             }
             f2d_tmp=ffp_tmp$f2d
             f2d_tmp[which(is.na(f2d_tmp),arr.ind=TRUE)]=0
+            #f2d_tmp=fields::interp.surface.grid(list(ffp_tmp$x,ffp_tmp$y,f2d_tmp),list(x=xcommon,y=xcommon))$z
+            #f2d_tmp[which(is.na(f2d_tmp),arr.ind=TRUE)]=0
+            f2d_tmp=f2d_tmp/(sum(f2d_tmp,na.rm=TRUE)*dx^2)
             ffp_clim=ffp_clim+f2d_tmp
             ncount=ncount+1
         },
         error = function(e) {
-            message("an error occurred.")
+            message(sprintf("An error occurred in the flux footprint climatology calculation for record %d: %s",i,conditionMessage(e)))
         })
     }
-    x=ffp_tmp$x
-    y=ffp_tmp$y
+    x=xcommon
+    y=x
     fmat=ffp_clim/ncount
     #output
     ffp=list()
@@ -492,7 +524,7 @@ calc_flux_footprint_climatology = function(zm,ws_mean=NA,wd_mean=NA,L,v_sd,ustar
     })
     tryCatch({
         if (plot==TRUE) plot_flux_footprint(ffp,...)
-    }, warning = function(w) {
+    }, error = function(w) {
         message("An error occurred when plotting the flux footprint.")
     })
     return(ffp)
