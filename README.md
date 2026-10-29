@@ -2,7 +2,8 @@
 <!-- badges: start 
 [![CRAN status](https://www.r-pkg.org/badges/version/Reddy)](https://cran.r-project.org/package=Reddy) -->
 [![doc](https://img.shields.io/badge/Reddy-tutorials-blue)](https://noctiluc3nt.github.io/ec_analyze/)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![doc](https://img.shields.io/badge/Reddy-manual-blue)](https://raw.githubusercontent.com/noctiluc3nt/Reddy/main/inst/manual/Reddy-manual.pdf)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-lightblue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Last Commit](https://img.shields.io/github/last-commit/noctiluc3nt/Reddy)](https://github.com/noctiluc3nt/Reddy)
 [![Journal article](https://img.shields.io/badge/Journal_article-10.1007%2Fs10546--026--01003--5-purple.svg)](https://doi.org/10.1007/s10546-026-01003-5)
 <!--[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21976179.svg)](https://doi.org/10.5281/zenodo.21976179)
@@ -28,12 +29,12 @@ The Reddy package provides functions for the post-processing, analysis and evalu
 - `diagnostics-meteorology.R`: calculation of "background-meteorology" quantities (e.g., clear-sky index, vapor pressure deficit, unit conversions of moisture variables)
 - `diagnostics-topography.R`: calculation of topographic and surface properties (e.g. topographic position index, slope-based parameter, roughness length)
 - `diagnostics-turbulence.R`: calculation of some standard turbulence diagnostics (e.g., friction velocity, TKE, turbulence intensity, stability parameter)
-- `ec-processing.R`: collection of functions for post-processing and quality control of eddy-covariance measurements
-- `ec-processing-routine.R`: an example for a post-processing and quality control routine of eddy-covariance measurements utilizing the functions in `ec-processing.R` with storing the final averaged output data in an external file
+- `ec-processing.R`: collection of functions for processing and quality control of raw eddy-covariance measurements
+- `ecosystem-respiration.R`: GPP partitioning of CO$_2$ flux by fitting temperature-respiration model and light response curve
 - `flux-footprint.R`: calculation and visualization of 1D and 2D flux footprint based on the parameterization from Kormann & Meixner, 2001 and Kljun et al., 2015
 - `model-utils.R`: collection of function to post-process NWP model output (e.g. flux deaccumulation, conversion of sigma levels to physical height)
 - `multiresolution-decomposition.R`: calculation and visualization of multiresolution decomposition (MRD) and derivation of a suggestion for a suitable averaging time following the MRD-based algorithm from Vickers & Mahrt, 2003
-- `ogive.R`: calculation and visualization of ogives, i.e. cumulative distribution functions
+- `ogive.R`: calculation and visualization of ogives, i.e. cumulative distribution functions, flux estimation using ogive opimization
 - `parameterizations-of-turbulence.R`: collection of functions used to calculated bulk closures, flux-profile and flux-variance relations (e.g. Richardson number, eddy viscosity, eddy conductivity, scaling functions) used in turbulence parameterizations in numerical weather prediction and climate models
 - `quadrant-analysis.R`: calculation and visualization of quadrant analysis to study coherent structures and their organization
 - `spectrum.R`: calculation and visualization of frequency (temporal) and wavenumber (spatial) spectra, possibility to bin them to compare the dissipation rates with theoretically expected slopes
